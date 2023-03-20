@@ -5,12 +5,11 @@ import { LoadingButton } from '@mui/lab'
 
 import '../styles/Home.css'
 
-const Request = () => {
+const Request = ({ name, setName, fetchQuestions }) => {
 	const navigate = useNavigate()
 	const [quizData, setQuizData] = useState({})
 
 	const [form, setForm] = useState({
-		name: '',
 		content: '',
 	})
 
@@ -33,13 +32,15 @@ const Request = () => {
 				})
 
 				const data = await response.json()
-				console.log(data)
-				setQuizData(data)
+				console.log(data.results)
+				setQuizData(data.results)
+				fetchQuestions('science', 'medium', 'chatGPT', data)
 			} catch (err) {
 				alert(err)
 			} finally {
 				setGeneratingQuiz(false)
 				setLoading(false)
+				navigate('/quiz')
 			}
 		} else {
 			alert('Please provide proper content')
@@ -60,7 +61,7 @@ const Request = () => {
 						name="name"
 						label="Enter Your Name"
 						variant="outlined"
-						onChange={handleChange}
+						onChange={(e) => setName(e.target.value)}
 					/>
 					<TextField
 						style={{ marginBottom: 25 }}

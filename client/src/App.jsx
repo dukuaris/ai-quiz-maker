@@ -7,6 +7,7 @@ import Footer from './components/Footer'
 import Home from './pages/Home'
 import Request from './pages/Request'
 import Quiz from './pages/Quiz'
+import AiQuiz from './pages/AiQuiz'
 import Result from './pages/Result'
 
 function App() {
@@ -14,16 +15,27 @@ function App() {
 	const [name, setName] = useState()
 	const [score, setScore] = useState(0)
 
-	const fetchQuestions = async (category = '', difficulty = '') => {
-		const { data } = await axios.get(
-			`https://opentdb.com/api.php?amount=10${
-				category && `&category=${category}`
-			}${difficulty && `&difficulty=${difficulty}`}&type=multiple`
-		)
+	const fetchQuestions = async (
+		category = '',
+		difficulty = '',
+		source = '',
+		questions = {}
+	) => {
+		let problems = {}
+		if (source == 'trivia') {
+			const { data } = await axios.get(
+				`https://opentdb.com/api.php?amount=10${
+					category && `&category=${category}`
+				}${difficulty && `&difficulty=${difficulty}`}&type=multiple`
+			)
+			problems = data
+		} else {
+			problems = questions
+		}
 
-		console.log(data.results)
+		console.log(problems.results)
 
-		setQuestions(data.results)
+		setQuestions(problems.results)
 	}
 
 	return (
@@ -31,7 +43,7 @@ function App() {
 			<Header />
 			<Routes>
 				<Route
-					path="/"
+					path="/trivia"
 					element={
 						<Home
 							name={name}
@@ -40,7 +52,16 @@ function App() {
 						/>
 					}
 				/>
-				<Route path="/request" element={<Request />} />
+				<Route
+					path="/"
+					element={
+						<Request
+							name={name}
+							setName={setName}
+							fetchQuestions={fetchQuestions}
+						/>
+					}
+				/>
 				<Route
 					path="/quiz"
 					element={
@@ -53,7 +74,7 @@ function App() {
 						/>
 					}
 				/>
-				<Route path="/result" element={<Result />} />
+				<Route path="/result" element={<Result name={name} score={score} />} />
 			</Routes>
 			<Footer />
 		</div>

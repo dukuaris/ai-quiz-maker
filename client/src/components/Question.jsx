@@ -32,7 +32,7 @@ const Question = ({
 
 	const handleNext = () => {
 		console.log(currQues)
-		if (currQues > 8) {
+		if (currQues > 3) {
 			navigate('/result')
 		} else if (selected) {
 			setCurrQues(currQues + 1)
