@@ -6,6 +6,8 @@ const Footer = () => {
 				marginBottom: 10,
 			}}
 		>
+			<br />
+			<br />
 			Created by{' '}
 			<a href="https://www.junacraft.com" style={{ cursor: 'pointer' }}>
 				Deokoo

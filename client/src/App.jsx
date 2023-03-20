@@ -4,10 +4,9 @@ import { useState } from 'react'
 
 import Header from './components/Header'
 import Footer from './components/Footer'
+import Trivia from './pages/Trivia'
 import Home from './pages/Home'
-import Request from './pages/Request'
 import Quiz from './pages/Quiz'
-import AiQuiz from './pages/AiQuiz'
 import Result from './pages/Result'
 
 function App() {
@@ -43,7 +42,7 @@ function App() {
 			<Header />
 			<Routes>
 				<Route
-					path="/trivia"
+					path="/"
 					element={
 						<Home
 							name={name}
@@ -53,9 +52,9 @@ function App() {
 					}
 				/>
 				<Route
-					path="/"
+					path="/trivia"
 					element={
-						<Request
+						<Trivia
 							name={name}
 							setName={setName}
 							fetchQuestions={fetchQuestions}

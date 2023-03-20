@@ -62,7 +62,7 @@ function csvToListOfObjects(csvText, delimiter = '|') {
 
 	for (i = 0; i < 5; i++) {
 		const quiz = new QuizQuestion()
-		quiz.category = 'science'
+		quiz.category = 'general'
 		quiz.correct_answer = results[i].correct_answer
 		quiz.difficulty = 'medium'
 		quiz.incorrect_answers = incorrect_list[i]
