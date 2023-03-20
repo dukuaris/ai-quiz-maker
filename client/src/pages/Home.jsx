@@ -22,7 +22,8 @@ const Home = ({ name, setName, fetchQuestions }) => {
 			try {
 				setGeneratingQuiz(true)
 				// https://quiz-maker.onrender.com
-				const response = await fetch('http://localhost:5001', {
+				// http://localhost:5001
+				const response = await fetch('https://quiz-maker.onrender.com', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
