@@ -33,37 +33,24 @@ class QuizQuestion {
 	}
 }
 
-function csvToListOfObjects(csvText, delimiter = '|') {
-	const lines = csvText.trim().split('\n')
-	const rows = lines.slice(lines.length - 5, lines.length)
-	const headers = ['question', 'a1', 'a2', 'a3', 'a4', 'correct_answer']
-
-	const results = rows.map((row) => {
-		const values = row.split(delimiter)
-		return headers.reduce((obj, header, index) => {
-			obj[header] = values[index].trim()
-			return obj
-		}, {})
-	})
-
+function jsonToObject(jsonData) {
+	const results = JSON.parse(jsonData).questions
 	const incorrect_list = results.map((result) => {
 		const incorrect_answers = []
-		const answers = Object.values(result).slice(1, 5)
-		for (i = 0; i < 4; i++) {
-			console.log(answers[i])
-			if (!answers[i].includes(result.correct_answer.toString())) {
-				incorrect_answers.push(answers[i])
+		result.choices.map((choice) => {
+			if (!choice.includes(result.answer)) {
+				incorrect_answers.push(choice)
 			}
-		}
+		})
 		return incorrect_answers
 	})
 
 	let data = []
 
-	for (i = 0; i < 5; i++) {
+	for (i = 0; i < results.length; i++) {
 		const quiz = new QuizQuestion()
 		quiz.category = 'general'
-		quiz.correct_answer = results[i].correct_answer
+		quiz.correct_answer = results[i].answer
 		quiz.difficulty = 'medium'
 		quiz.incorrect_answers = incorrect_list[i]
 		quiz.question = results[i].question
@@ -73,6 +60,46 @@ function csvToListOfObjects(csvText, delimiter = '|') {
 	}
 
 	return data
+
+	// const lines = csvText.trim().split('\n')
+	// const rows = lines.slice(lines.length - 5, lines.length)
+	// const headers = ['question', 'a1', 'a2', 'a3', 'a4', 'correct_answer']
+
+	// const results = rows.map((row) => {
+	// 	const values = row.split(delimiter)
+	// 	return headers.reduce((obj, header, index) => {
+	// 		obj[header] = values[index].trim()
+	// 		return obj
+	// 	}, {})
+	// })
+
+	// const incorrect_list = results.map((result) => {
+	// 	const incorrect_answers = []
+	// 	const answers = Object.values(result).slice(1, 5)
+	// 	for (i = 0; i < 4; i++) {
+	// 		console.log(answers[i])
+	// 		if (!answers[i].includes(result.correct_answer.toString())) {
+	// 			incorrect_answers.push(answers[i])
+	// 		}
+	// 	}
+	// 	return incorrect_answers
+	// })
+
+	// let data = []
+
+	// for (i = 0; i < 5; i++) {
+	// 	const quiz = new QuizQuestion()
+	// 	quiz.category = 'general'
+	// 	quiz.correct_answer = results[i].correct_answer
+	// 	quiz.difficulty = 'medium'
+	// 	quiz.incorrect_answers = incorrect_list[i]
+	// 	quiz.question = results[i].question
+	// 	quiz.type = 'multiple'
+
+	// 	data.push(quiz)
+	// }
+
+	// return data
 }
 
 app.get('/', async (req, res) => {
@@ -84,7 +111,7 @@ app.get('/', async (req, res) => {
 app.post('/', async (req, res) => {
 	try {
 		const command =
-			"Generate 5 multiple-choice questions with following text, and provide the questions, the 4 choices, and the correct answer in a csv format with '|' as a delimiter instead of ',':"
+			'Generate 5 multiple-choice questions with following text, and provide the questions, the 4 choices, and the correct answer in JSON format:'
 		const prompt = req.body.content
 		const content = `${command}+\n+${prompt}`
 
@@ -94,11 +121,10 @@ app.post('/', async (req, res) => {
 			temperature: 0.2,
 		})
 
-		const text = completion.data.choices[0].message.content
-		console.log(text)
+		const jsonData = completion.data.choices[0].message.content
+		console.log(jsonData)
 
-		const questions = csvToListOfObjects(text)
-		console.log(questions)
+		const questions = jsonToObject(jsonData)
 
 		res.status(200).send({
 			results: questions,

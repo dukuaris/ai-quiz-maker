@@ -42,7 +42,9 @@ const Home = ({ name, setName, fetchQuestions }) => {
 					throw new Error()
 				}
 			} catch (err) {
-				alert('Something went wrong. Try again.')
+				alert(
+					'Failed to generate questions. You may reduce the amount of input or revise your content. Try again.'
+				)
 			} finally {
 				setGeneratingQuiz(false)
 				setLoading(false)
