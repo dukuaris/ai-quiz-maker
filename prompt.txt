@@ -1,0 +1,12 @@
+Generate 5 multiple-choice questions with following text, and provide the questions, the choices, and the correct answers in a csv format  file:
+
+How Should You Train Your Dog?
+There are two common methods of training a dog. 
+
+The first is the aversive-based method. The second is the reward-based method. Aversive-based (discipline) training is when you use positive punishment and negative reinforcement techniques with your dog. Reward-based methods use rewards only for the behaviors that you want your dog to follow.
+
+Aversive-based training uses techniques like loud, unpleasant noises, physical corrections, and harsh scoldings to get your dog to act the way you want. On the other hand, reward-based training uses rewards whenever your dog does something you want it to do. Treats, belly rubs, or other dog-pleasing actions are used to reinforce that a behavior was good. 
+
+Different experts prefer one method over the other. The one that you use is completely up to you. 
+
+Some people believe that a rewards-based method sets up an "event sequence" for your dog where they associate you with happy feelings when they do what they're told. Aversive-based methods do just the opposite, where they fear you. That fear means that your dog does what they are told to avoid unpleasant feelings.

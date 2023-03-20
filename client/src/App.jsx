@@ -5,6 +5,7 @@ import { useState } from 'react'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './pages/Home'
+import Request from './pages/Request'
 import Quiz from './pages/Quiz'
 import Result from './pages/Result'
 
@@ -19,6 +20,8 @@ function App() {
 				category && `&category=${category}`
 			}${difficulty && `&difficulty=${difficulty}`}&type=multiple`
 		)
+
+		console.log(data.results)
 
 		setQuestions(data.results)
 	}
@@ -37,6 +40,7 @@ function App() {
 						/>
 					}
 				/>
+				<Route path="/request" element={<Request />} />
 				<Route
 					path="/quiz"
 					element={

@@ -4,7 +4,8 @@ const Header = () => {
 	return (
 		<div className="header">
 			<Link to="/" className="title">
-				Intuitive Quiz Hub
+				<img src="questable_logo.png" alt="logo" width={220} />
+				<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AI Quiz Generator</span>
 			</Link>
 			<hr className="divider" />
 		</div>

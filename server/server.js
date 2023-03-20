@@ -9,9 +9,43 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration)
 
+const url = 'https://api.openai.com/v1/chat/completions'
+
 const app = express()
 app.use(cors())
 app.use(express.json())
+
+class QuizQuestion {
+	constructor(
+		category,
+		correct_answer,
+		difficulty,
+		incorrect_answers,
+		question,
+		type
+	) {
+		this.category = category
+		this.correct_answer = correct_answer
+		this.difficulty = difficulty
+		this.incorrect_answers = incorrect_answers
+		this.question = question
+		this.type = type
+	}
+}
+
+function csvToListOfObjects(csvText, delimiter = '|') {
+	const lines = csvText.trim().split('\n')
+	const rows = lines.slice(lines.length - 5, lines.length)
+	const headers = ['question', 'a1', 'a2', 'a3', 'a4', 'correct_answer']
+
+	return rows.map((row) => {
+		const values = row.split(delimiter)
+		return headers.reduce((obj, header, index) => {
+			obj[header.trim()] = values[index].trim()
+			return obj
+		}, {})
+	})
+}
 
 app.get('/', async (req, res) => {
 	res.status(200).send({
@@ -21,20 +55,25 @@ app.get('/', async (req, res) => {
 
 app.post('/', async (req, res) => {
 	try {
-		const prompt = req.body.prompt
+		const command =
+			"Generate 5 multiple-choice questions with following text, and provide the questions, the choices, and the correct answer in a csv format with '|' as a delimiter instead of ',':"
+		const prompt = req.body.content
+		const content = `${command}+\n+${prompt}`
 
-		const response = await openai.createCompletion({
-			model: 'text-davinci-003',
-			prompt: `${prompt}`,
-			temperature: 0, // Higher values means the model will take more risks.
-			max_tokens: 3000, // The maximum number of tokens to generate in the completion. Most models have a context length of 2048 tokens (except for the newest models, which support 4096).
-			top_p: 1, // alternative to sampling with temperature, called nucleus sampling
-			frequency_penalty: 0.5, // Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
-			presence_penalty: 0, // Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
+		const completion = await openai.createChatCompletion({
+			model: 'gpt-3.5-turbo',
+			messages: [{ role: 'user', content: content }],
+			temperature: 0.2,
 		})
 
+		const text = completion.data.choices[0].message.content
+		console.log(text)
+
+		const questions = csvToListOfObjects(text)
+		console.log(questions)
+
 		res.status(200).send({
-			bot: response.data.choices[0].text,
+			bot: questions,
 		})
 	} catch (error) {
 		console.error(error)
