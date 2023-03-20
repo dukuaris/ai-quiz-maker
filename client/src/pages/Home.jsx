@@ -23,7 +23,7 @@ const Home = ({ name, setName, fetchQuestions }) => {
 				setGeneratingQuiz(true)
 				// https://quiz-maker.onrender.com
 				// http://localhost:5001
-				const response = await fetch('https://quiz-maker.onrender.com', {
+				const response = await fetch('http://localhost:5001', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -34,15 +34,18 @@ const Home = ({ name, setName, fetchQuestions }) => {
 				})
 
 				const data = await response.json()
-				console.log(data.results)
-				setQuizData(data.results)
-				fetchQuestions('general', 'medium', 'chatGPT', data)
+				if (data.results != undefined) {
+					setQuizData(data.results)
+					fetchQuestions('general', 'medium', 'chatGPT', data)
+					navigate('/quiz')
+				} else {
+					throw new Error()
+				}
 			} catch (err) {
-				alert(err)
+				alert('Something went wrong. Try again.')
 			} finally {
 				setGeneratingQuiz(false)
 				setLoading(false)
-				navigate('/quiz')
 			}
 		} else {
 			alert('Please provide proper content')
