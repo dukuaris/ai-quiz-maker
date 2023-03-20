@@ -41,7 +41,7 @@ function csvToListOfObjects(csvText, delimiter = '|') {
 	return rows.map((row) => {
 		const values = row.split(delimiter)
 		return headers.reduce((obj, header, index) => {
-			obj[header.trim()] = values[index].trim()
+			obj[header] = values[index].trim()
 			return obj
 		}, {})
 	})
