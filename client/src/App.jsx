@@ -12,6 +12,7 @@ import Result from './pages/Result'
 function App() {
 	const [questions, setQuestions] = useState()
 	const [name, setName] = useState()
+	const [unit, setUnit] = useState(0)
 	const [score, setScore] = useState(0)
 
 	const fetchQuestions = async (
@@ -23,7 +24,7 @@ function App() {
 		let problems = {}
 		if (source == 'trivia') {
 			const { data } = await axios.get(
-				`https://opentdb.com/api.php?amount=10${
+				`https://opentdb.com/api.php?amount=${unit}${
 					category && `&category=${category}`
 				}${difficulty && `&difficulty=${difficulty}`}&type=multiple`
 			)
@@ -31,8 +32,6 @@ function App() {
 		} else {
 			problems = questions
 		}
-
-		console.log(problems.results)
 
 		setQuestions(problems.results)
 	}
@@ -47,6 +46,8 @@ function App() {
 						<Home
 							name={name}
 							setName={setName}
+							unit={unit}
+							setUnit={setUnit}
 							fetchQuestions={fetchQuestions}
 						/>
 					}
@@ -57,6 +58,8 @@ function App() {
 						<Trivia
 							name={name}
 							setName={setName}
+							unit={unit}
+							setUnit={setUnit}
 							fetchQuestions={fetchQuestions}
 						/>
 					}

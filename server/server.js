@@ -6,14 +6,21 @@ const { Configuration, OpenAIApi } = require('openai')
 const configuration = new Configuration({
 	apiKey: process.env.OPENAI_API_KEY,
 })
-
 const openai = new OpenAIApi(configuration)
-
 const url = 'https://api.openai.com/v1/chat/completions'
 
 const app = express()
 app.use(cors())
 app.use(express.json())
+
+let quizType //type of quiz
+const typeList = ['multiple', 'true-false', 'fill-in-the-blank', 'short-answer']
+const requestList = [
+	`multiple-choice questions with following text, and provide the questions, the 4 choices, and the correct answer in JSON format:`,
+	`true/false questions with following text, and provide the questions and the answers in JSON format:`,
+	`multiple-choice questions with following text, and provide the questions, the 4 choices, and the correct answer in JSON format:`,
+	`multiple-choice questions with following text, and provide the questions, the 4 choices, and the correct answer in JSON format:`,
+]
 
 class QuizQuestion {
 	constructor(
@@ -49,57 +56,17 @@ function jsonToObject(jsonData) {
 
 	for (i = 0; i < results.length; i++) {
 		const quiz = new QuizQuestion()
-		quiz.category = 'general'
+		quiz.category = 'custom'
 		quiz.correct_answer = results[i].answer
 		quiz.difficulty = 'medium'
 		quiz.incorrect_answers = incorrect_list[i]
 		quiz.question = results[i].question
-		quiz.type = 'multiple'
+		quiz.type = typeList[quizType]
 
 		data.push(quiz)
 	}
 
 	return data
-
-	// const lines = csvText.trim().split('\n')
-	// const rows = lines.slice(lines.length - 5, lines.length)
-	// const headers = ['question', 'a1', 'a2', 'a3', 'a4', 'correct_answer']
-
-	// const results = rows.map((row) => {
-	// 	const values = row.split(delimiter)
-	// 	return headers.reduce((obj, header, index) => {
-	// 		obj[header] = values[index].trim()
-	// 		return obj
-	// 	}, {})
-	// })
-
-	// const incorrect_list = results.map((result) => {
-	// 	const incorrect_answers = []
-	// 	const answers = Object.values(result).slice(1, 5)
-	// 	for (i = 0; i < 4; i++) {
-	// 		console.log(answers[i])
-	// 		if (!answers[i].includes(result.correct_answer.toString())) {
-	// 			incorrect_answers.push(answers[i])
-	// 		}
-	// 	}
-	// 	return incorrect_answers
-	// })
-
-	// let data = []
-
-	// for (i = 0; i < 5; i++) {
-	// 	const quiz = new QuizQuestion()
-	// 	quiz.category = 'general'
-	// 	quiz.correct_answer = results[i].correct_answer
-	// 	quiz.difficulty = 'medium'
-	// 	quiz.incorrect_answers = incorrect_list[i]
-	// 	quiz.question = results[i].question
-	// 	quiz.type = 'multiple'
-
-	// 	data.push(quiz)
-	// }
-
-	// return data
 }
 
 app.get('/', async (req, res) => {
@@ -110,9 +77,10 @@ app.get('/', async (req, res) => {
 
 app.post('/', async (req, res) => {
 	try {
-		const command =
-			'Generate 5 multiple-choice questions with following text, and provide the questions, the 4 choices, and the correct answer in JSON format:'
 		const prompt = req.body.content
+		const unit = req.body.unit
+		quizType = req.body.type
+		const command = 'Generate ' + unit + ' ' + requestList[quizType]
 		const content = `${command}+\n+${prompt}`
 
 		const completion = await openai.createChatCompletion({
@@ -124,7 +92,8 @@ app.post('/', async (req, res) => {
 		const jsonData = completion.data.choices[0].message.content
 		console.log(jsonData)
 
-		const questions = jsonToObject(jsonData)
+		// const questions = jsonToObject(jsonData)
+		const questions = {}
 
 		res.status(200).send({
 			results: questions,

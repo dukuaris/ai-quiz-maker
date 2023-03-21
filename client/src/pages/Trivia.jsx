@@ -7,7 +7,7 @@ import categories from '../data/categories.js'
 
 import '../styles/Home.css'
 
-const Trivia = ({ name, setName, fetchQuestions }) => {
+const Trivia = ({ name, setName, unit, setUnit, fetchQuestions }) => {
 	const [category, setCategory] = useState('')
 	const [difficulty, setDifficulty] = useState('')
 	const [error, setError] = useState(false)
@@ -15,7 +15,7 @@ const Trivia = ({ name, setName, fetchQuestions }) => {
 	const navigate = useNavigate()
 
 	const handleSubmit = () => {
-		if (!category || !difficulty || !name) {
+		if (!category || !difficulty || !name || !unit) {
 			setError(true)
 			return
 		} else {
@@ -30,7 +30,7 @@ const Trivia = ({ name, setName, fetchQuestions }) => {
 			<div className="settings">
 				<span style={{ fontSize: 30 }}>Quiz Settings</span>
 				<div className="settings__select">
-					{error && <ErrorMessage>Please Fill all the fields</ErrorMessage>}
+					{error && <ErrorMessages>Please Fill all the fields</ErrorMessages>}
 					<TextField
 						style={{ marginBottom: 25 }}
 						label="Enter Your Name"
@@ -51,6 +51,13 @@ const Trivia = ({ name, setName, fetchQuestions }) => {
 							</MenuItem>
 						))}
 					</TextField>
+					<TextField
+						style={{ marginBottom: 25 }}
+						name="unit"
+						label="Enter Number of Questions (1-20)"
+						variant="outlined"
+						onChange={(e) => setUnit(Number(e.target.value))}
+					/>
 					<TextField
 						select
 						label="Select Difficulty"
