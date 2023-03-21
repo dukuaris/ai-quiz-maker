@@ -42,26 +42,38 @@ class QuizQuestion {
 
 function jsonToObject(jsonData) {
 	const results = JSON.parse(jsonData).questions
-	const incorrect_list = results.map((result) => {
-		const incorrect_answers = []
-		result.choices.map((choice) => {
-			if (!choice.includes(result.answer)) {
-				incorrect_answers.push(choice)
-			}
-		})
-		return incorrect_answers
-	})
+	let incorrect_list = []
 
 	let data = []
 
 	for (i = 0; i < results.length; i++) {
 		const quiz = new QuizQuestion()
 		quiz.category = 'custom'
-		quiz.correct_answer = results[i].answer
-		quiz.difficulty = 'medium'
-		quiz.incorrect_answers = incorrect_list[i]
-		quiz.question = results[i].question
 		quiz.type = typeList[quizType]
+		quiz.difficulty = 'medium'
+		quiz.question = results[i].question
+		quiz.correct_answer = results[i].answer.toString().toUpperCase()
+
+		switch (quizType) {
+			case 0:
+				results[i].choices.map((choice) => {
+					if (!choice.includes(results[i].answer)) {
+						quiz.incorrect_answers.push(choice)
+					}
+				})
+				break
+			case 1:
+				quiz.correct_answer === 'TRUE'
+					? quiz.incorrect_answers.push('FALSE')
+					: quiz.incorrect_answers.push('TRUE')
+				break
+			case 2:
+				break
+			case 3:
+				break
+			default:
+				throw new Error('Select a type of quiz.')
+		}
 
 		data.push(quiz)
 	}
@@ -92,8 +104,8 @@ app.post('/', async (req, res) => {
 		const jsonData = completion.data.choices[0].message.content
 		console.log(jsonData)
 
-		// const questions = jsonToObject(jsonData)
-		const questions = {}
+		const questions = jsonToObject(jsonData)
+		console.log(questions)
 
 		res.status(200).send({
 			results: questions,

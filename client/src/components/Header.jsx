@@ -7,7 +7,7 @@ const Header = () => {
 				<img className="logo" src="questable_logo.png" alt="logo" width={350} />
 				{/* <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Quiz Generator</span> */}
 			</Link>
-			<hr className="divider" />
+			{/* <hr className="divider" /> */}
 		</div>
 	)
 }

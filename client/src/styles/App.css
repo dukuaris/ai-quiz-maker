@@ -42,6 +42,7 @@ a {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	background-color: rgb(189, 233, 218);
 }
 
 .divider {

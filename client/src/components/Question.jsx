@@ -1,5 +1,5 @@
 import { Button } from '@mui/material'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import ErrorMessage from './ErrorMessages'
 
@@ -15,6 +15,9 @@ const Question = ({
 }) => {
 	const [selected, setSelected] = useState()
 	const [error, setError] = useState(false)
+	// useEffect(() => {
+	// 	setScore(0)
+	// }, [])
 
 	const navigate = useNavigate()
 
@@ -25,6 +28,7 @@ const Question = ({
 	}
 
 	const handleCheck = (i) => {
+		console.log(i)
 		setSelected(i)
 		if (i === correct) setScore(score + 1)
 		setError(false)
