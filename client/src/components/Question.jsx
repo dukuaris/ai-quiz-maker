@@ -1,25 +1,21 @@
 import { Button } from '@mui/material'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { setQuestions, addScore, resetScore } from '../features/quiz/quizSlice'
 import ErrorMessage from './ErrorMessages'
 
-const Question = ({
-	currQues,
-	setCurrQues,
-	questions,
-	options,
-	correct,
-	setScore,
-	score,
-	setQuestions,
-}) => {
+const Question = ({ currQues, setCurrQues, options, correct }) => {
+	const navigate = useNavigate()
+	const dispatch = useDispatch()
+	const { questions } = useSelector((state) => state.quiz)
+
 	const [selected, setSelected] = useState()
 	const [error, setError] = useState(false)
 	// useEffect(() => {
 	// 	setScore(0)
 	// }, [])
-
-	const navigate = useNavigate()
 
 	const handleSelect = (i) => {
 		if (selected === i && selected === correct) return 'select'
@@ -28,9 +24,8 @@ const Question = ({
 	}
 
 	const handleCheck = (i) => {
-		console.log(i)
 		setSelected(i)
-		if (i === correct) setScore(score + 1)
+		if (i === correct) dispatch(addScore())
 		setError(false)
 	}
 
@@ -45,7 +40,8 @@ const Question = ({
 
 	const handleQuit = () => {
 		setCurrQues(0)
-		setQuestions()
+		dispatch(resetScore())
+		dispatch(setQuestions([]))
 	}
 
 	return (
@@ -86,7 +82,7 @@ const Question = ({
 						style={{ width: 185 }}
 						onClick={handleNext}
 					>
-						{currQues > 20 ? 'Submit' : 'Next Question'}
+						{currQues > questions.length - 2 ? 'Submit' : 'Next Question'}
 					</Button>
 				</div>
 			</div>

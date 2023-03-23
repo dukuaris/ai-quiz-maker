@@ -1,9 +1,12 @@
 import { CircularProgress } from '@mui/material'
 import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+
 import Question from '../components/Question'
 import '../styles/Quiz.css'
 
-const Quiz = ({ name, questions, score, setScore, setQuestions }) => {
+const Quiz = () => {
+	const { questions, name, score, unit } = useSelector((state) => state.quiz)
 	const [options, setOptions] = useState()
 	const [currQues, setCurrQues] = useState(0)
 
@@ -23,6 +26,7 @@ const Quiz = ({ name, questions, score, setScore, setQuestions }) => {
 
 	return (
 		<div className="quiz">
+			<br />
 			<span className="subtitle">Welcome, {name}</span>
 
 			{questions ? (
@@ -31,18 +35,14 @@ const Quiz = ({ name, questions, score, setScore, setQuestions }) => {
 						<span>{questions[currQues].category}</span>
 						<span>
 							{/* {questions[currQues].difficulty} */}
-							Score : {score}
+							Score : {score}/{unit}
 						</span>
 					</div>
 					<Question
 						currQues={currQues}
 						setCurrQues={setCurrQues}
-						questions={questions}
 						options={options}
 						correct={questions[currQues]?.correct_answer}
-						score={score}
-						setScore={setScore}
-						setQuestions={setQuestions}
 					/>
 				</>
 			) : (

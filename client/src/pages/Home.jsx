@@ -3,20 +3,24 @@ import { useNavigate } from 'react-router'
 import { Button, TextField, MenuItem } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 
+import { setQuestions, setName, setUnit } from '../features/quiz/quizSlice'
+import { useDispatch, useSelector } from 'react-redux'
+
 import ErrorMessages from '../components/ErrorMessages'
 import types from '../data/types.js'
 import '../styles/Home.css'
 
-const Home = ({ name, setName, unit, setUnit, fetchQuestions }) => {
+const Home = () => {
+	const { name, unit } = useSelector((state) => state.quiz)
+	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const [type, setType] = useState('')
-	const [quizData, setQuizData] = useState({})
 	const [form, setForm] = useState({
 		content: '',
 	})
 	const [error, setError] = useState(false)
 
-	const [generatingQuiz, setGeneratingQuiz] = useState(false)
+	// const [generatingQuiz, setGeneratingQuiz] = useState(false)
 	const [loading, setLoading] = useState(false)
 
 	const handleSubmit = async () => {
@@ -27,10 +31,10 @@ const Home = ({ name, setName, unit, setUnit, fetchQuestions }) => {
 		if (form.content) {
 			setLoading(true)
 			try {
-				setGeneratingQuiz(true)
+				// setGeneratingQuiz(true)
 				// https://quiz-maker.onrender.com
 				// http://localhost:5001
-				const response = await fetch('https://quiz-maker.onrender.com', {
+				const response = await fetch('http://localhost:5001', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -44,8 +48,7 @@ const Home = ({ name, setName, unit, setUnit, fetchQuestions }) => {
 
 				const data = await response.json()
 				if (data.results != undefined) {
-					setQuizData(data.results)
-					fetchQuestions('custom', 'medium', 'chatGPT', data)
+					dispatch(setQuestions(data.results))
 					navigate('/quiz')
 				} else {
 					throw new Error()
@@ -55,7 +58,7 @@ const Home = ({ name, setName, unit, setUnit, fetchQuestions }) => {
 					'Failed to generate questions. You may reduce the amount of input or revise your content. Try again.'
 				)
 			} finally {
-				setGeneratingQuiz(false)
+				// setGeneratingQuiz(false)
 				setLoading(false)
 			}
 		} else {
@@ -78,7 +81,7 @@ const Home = ({ name, setName, unit, setUnit, fetchQuestions }) => {
 						name="name"
 						label="Enter Your Name"
 						variant="outlined"
-						onChange={(e) => setName(e.target.value)}
+						onChange={(e) => dispatch(setName(e.target.value))}
 					/>
 					<TextField
 						select
@@ -99,7 +102,7 @@ const Home = ({ name, setName, unit, setUnit, fetchQuestions }) => {
 						name="unit"
 						label="Enter Number of Questions (1-20)"
 						variant="outlined"
-						onChange={(e) => setUnit(Number(e.target.value))}
+						onChange={(e) => dispatch(setUnit(Number(e.target.value)))}
 					/>
 					<TextField
 						style={{ marginBottom: 25 }}
@@ -119,6 +122,7 @@ const Home = ({ name, setName, unit, setUnit, fetchQuestions }) => {
 					>
 						Generate Quiz & Start
 					</LoadingButton>
+					<br />
 					<Button
 						color="secondary"
 						onClick={() => {
