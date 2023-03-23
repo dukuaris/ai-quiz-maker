@@ -1,26 +1,44 @@
+import axios from 'axios'
 import { Button, MenuItem, TextField } from '@mui/material'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
+
+import { setQuestions, setName, setUnit } from '../features/quiz/quizSlice'
+import { useDispatch, useSelector } from 'react-redux'
 
 import ErrorMessages from '../components/ErrorMessages'
 import categories from '../data/categories.js'
 
 import '../styles/Home.css'
 
-const Trivia = ({ name, setName, unit, setUnit, fetchQuestions }) => {
+const Trivia = () => {
+	const { name, unit } = useSelector((state) => state.quiz)
+	const dispatch = useDispatch()
+	const navigate = useNavigate()
 	const [category, setCategory] = useState('')
 	const [difficulty, setDifficulty] = useState('')
 	const [error, setError] = useState(false)
 
-	const navigate = useNavigate()
+	const fetchQuestions = async (category = '', difficulty = '') => {
+		let problems = {}
+		const { data } = await axios.get(
+			`https://opentdb.com/api.php?amount=${unit}${
+				category && `&category=${category}`
+			}${difficulty && `&difficulty=${difficulty}`}&type=multiple`
+		)
+		problems = data.results
+		problems.source = 'trivia'
 
-	const handleSubmit = () => {
+		dispatch(setQuestions(problems))
+	}
+
+	const handleSubmit = async () => {
 		if (!category || !difficulty || !name || !unit) {
 			setError(true)
 			return
 		} else {
 			setError(false)
-			fetchQuestions(category, difficulty, 'trivia')
+			await fetchQuestions(category, difficulty)
 			navigate('/quiz')
 		}
 	}
@@ -28,14 +46,14 @@ const Trivia = ({ name, setName, unit, setUnit, fetchQuestions }) => {
 	return (
 		<div className="content">
 			<div className="settings">
-				<span style={{ fontSize: 30 }}>Quiz Settings</span>
+				<span style={{ fontSize: 30 }}>Trivia Quiz</span>
 				<div className="settings__select">
 					{error && <ErrorMessages>Please Fill all the fields</ErrorMessages>}
 					<TextField
 						style={{ marginBottom: 25 }}
 						label="Enter Your Name"
 						variant="outlined"
-						onChange={(e) => setName(e.target.value)}
+						onChange={(e) => dispatch(setName(e.target.value))}
 					/>
 					<TextField
 						select
@@ -56,7 +74,7 @@ const Trivia = ({ name, setName, unit, setUnit, fetchQuestions }) => {
 						name="unit"
 						label="Enter Number of Questions (1-20)"
 						variant="outlined"
-						onChange={(e) => setUnit(Number(e.target.value))}
+						onChange={(e) => dispatch(setUnit(Number(e.target.value)))}
 					/>
 					<TextField
 						select
@@ -90,8 +108,7 @@ const Trivia = ({ name, setName, unit, setUnit, fetchQuestions }) => {
 							navigate('/')
 						}}
 					>
-						{' '}
-						Go to Custom Quiz
+						<br /> Go to Custom Quiz
 					</Button>
 				</div>
 			</div>

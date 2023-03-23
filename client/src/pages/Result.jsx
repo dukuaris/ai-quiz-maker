@@ -14,13 +14,7 @@ import '../styles/Result.css'
 const Result = () => {
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
-	const { name, score } = useSelector((state) => state.quiz)
-
-	// useEffect(() => {
-	// 	if (!name) {
-	// 		navigate('/')
-	// 	}
-	// }, [])
+	const { questions, name, score } = useSelector((state) => state.quiz)
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
@@ -33,7 +27,11 @@ const Result = () => {
 			dispatch(setName(''))
 			dispatch(setUnit(0))
 			dispatch(setQuestions([]))
-			navigate('/')
+			if (questions.source == 'trivia') {
+				navigate('/trivia')
+			} else {
+				navigate('/')
+			}
 		}
 	}
 

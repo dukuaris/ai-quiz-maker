@@ -29,7 +29,8 @@ class QuizQuestion {
 		difficulty,
 		incorrect_answers = [],
 		question,
-		type
+		type,
+		source
 	) {
 		this.category = category
 		this.correct_answer = correct_answer
@@ -37,6 +38,7 @@ class QuizQuestion {
 		this.incorrect_answers = incorrect_answers
 		this.question = question
 		this.type = type
+		this.source = source
 	}
 }
 
@@ -48,11 +50,12 @@ function jsonToObject(jsonData) {
 
 	for (i = 0; i < results.length; i++) {
 		const quiz = new QuizQuestion()
+		quiz.source = 'GPT'
 		quiz.category = 'custom'
 		quiz.type = typeList[quizType]
 		quiz.difficulty = 'medium'
 		quiz.question = results[i].question
-		quiz.correct_answer = results[i].answer.toString().toUpperCase()
+		quiz.correct_answer = results[i].answer.toString()
 
 		switch (quizType) {
 			case 0:

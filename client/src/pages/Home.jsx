@@ -20,7 +20,6 @@ const Home = () => {
 	})
 	const [error, setError] = useState(false)
 
-	// const [generatingQuiz, setGeneratingQuiz] = useState(false)
 	const [loading, setLoading] = useState(false)
 
 	const handleSubmit = async () => {
@@ -31,7 +30,6 @@ const Home = () => {
 		if (form.content) {
 			setLoading(true)
 			try {
-				// setGeneratingQuiz(true)
 				// https://quiz-maker.onrender.com
 				// http://localhost:5001
 				const response = await fetch('http://localhost:5001', {
@@ -58,7 +56,6 @@ const Home = () => {
 					'Failed to generate questions. You may reduce the amount of input or revise your content. Try again.'
 				)
 			} finally {
-				// setGeneratingQuiz(false)
 				setLoading(false)
 			}
 		} else {
