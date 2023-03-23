@@ -14,12 +14,12 @@ app.use(cors())
 app.use(express.json())
 
 let quizType //type of quiz
-const typeList = ['multiple', 'true-false', 'fill-in-the-blank', 'short-answer']
+const typeList = ['multiple', 'true-false', 'fill-in-the-blank', 'matching']
 const requestList = [
 	`multiple-choice questions with following text, and provide the questions, the 4 choices, the answers, and the difficulties from high to medium to low in JSON format:`,
 	`true/false questions with following text, and provide the questions, the answers, and the difficulties from high to medium to low in JSON format:`,
 	`fill-in-the-blank quizzes to be filled with no more than 3 words, with following information, and provide a sentence with one blank space, an answer, lists of incorrect answers, and the difficulty from high to medium to low for each quiz, in JSON format:`,
-	`multiple-choice questions with following text, and provide the questions, the 4 choices, and the correct answer in JSON format:`,
+	`matching quizzes with following information and provide a title of the information and a list with 10 pairs of a term and a description consisting of less than 10 words, both the title and the pairs in JSON format:`,
 ]
 
 class QuizQuestion {

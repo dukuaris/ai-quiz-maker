@@ -12,7 +12,7 @@ const categories = [
 		value: 2,
 	},
 	{
-		type: 'Short Answer',
+		type: 'Matching',
 		value: 3,
 	},
 	// {
