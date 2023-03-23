@@ -1,0 +1,44 @@
+{
+	"matchingQuiz": [
+		{
+			"item": "Stick to a sleep schedule",
+			"description": "Set aside no more than eight hours for sleep. Go to bed and get up at the same time every day, including weekends. Being consistent reinforces your body's sleep-wake cycle."
+		},
+		{
+			"item": "Pay attention to what you eat and drink",
+			"description": "Avoid heavy or large meals within a couple of hours of bedtime. Nicotine, caffeine and alcohol can interfere with sleep. "
+		},
+		{
+			"item": "Create a restful environment",
+			"description": "Keep your room cool, dark and quiet. Avoid light-emitting screens before bedtime. Consider using room-darkening shades, earplugs, or other devices to create an environment that suits your needs. "
+		},
+		{
+			"item": "Limit daytime naps",
+			"description": "Long daytime naps can interfere with nighttime sleep. Limit naps to no more than one hour and avoid napping late in the day."
+		},
+		{
+			"item": "Include physical activity in your daily routine",
+			"description": "Regular physical activity can promote better sleep. Avoid being active too close to bedtime. Spending time outside every day might be helpful, too."
+		},
+		{
+			"item": "Manage worries",
+			"description": "Try to resolve your worries or concerns before bedtime. Jot down what's on your mind and then set it aside for tomorrow. Stress management might help, including getting organized, setting priorities, delegating tasks, and meditation."
+		},
+		{
+			"item": "Recommended amount of sleep for a healthy adult",
+			"description": "At least seven hours"
+		},
+		{
+			"item": "Most people don't need more than this amount of sleep",
+			"description": "Eight hours"
+		},
+		{
+			"item": "What to do if you don't fall asleep within about 20 minutes of going to bed",
+			"description": "Leave your bedroom and do something relaxing. Read or listen to soothing music. Go back to bed when you're tired. Repeat as needed, but continue to maintain your sleep schedule and wake-up time."
+		},
+		{
+			"item": "What to do if you work nights and need to make up sleep debt",
+			"description": "Nap late in the day before work."
+		}
+	]
+}

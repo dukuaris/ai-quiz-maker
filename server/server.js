@@ -16,9 +16,9 @@ app.use(express.json())
 let quizType //type of quiz
 const typeList = ['multiple', 'true-false', 'fill-in-the-blank', 'short-answer']
 const requestList = [
-	`multiple-choice questions with following text, and provide the questions, the 4 choices, and the correct answer in JSON format:`,
-	`true/false questions with following text, and provide the questions and the answers in JSON format:`,
-	`multiple-choice questions with following text, and provide the questions, the 4 choices, and the correct answer in JSON format:`,
+	`multiple-choice questions with following text, and provide the questions, the 4 choices, the answers, and the difficulties from high to medium to low in JSON format:`,
+	`true/false questions with following text, and provide the questions, the answers, and the difficulties from high to medium to low in JSON format:`,
+	`fill-in-the-blank quizzes to be filled with no more than 3 words, with following information, and provide a sentence with one blank space, an answer, lists of incorrect answers, and the difficulty from high to medium to low for each quiz, in JSON format:`,
 	`multiple-choice questions with following text, and provide the questions, the 4 choices, and the correct answer in JSON format:`,
 ]
 
@@ -42,23 +42,32 @@ class QuizQuestion {
 	}
 }
 
-function jsonToObject(jsonData) {
-	const results = JSON.parse(jsonData).questions
-	let incorrect_list = []
-
+function jsonToObject(jsonData, unit) {
+	let results = []
 	let data = []
+	const resultObject = JSON.parse(jsonData)
+	const resultKeys = Object.keys(resultObject)
+
+	if (resultKeys.length === unit) {
+		resultKeys.map((key) => {
+			results.push(resultObject[key])
+		})
+	} else {
+		results = resultObject.questions
+	}
 
 	for (i = 0; i < results.length; i++) {
 		const quiz = new QuizQuestion()
 		quiz.source = 'GPT'
 		quiz.category = 'custom'
+		quiz.difficulty = results[i].difficulty
 		quiz.type = typeList[quizType]
-		quiz.difficulty = 'medium'
-		quiz.question = results[i].question
+
 		quiz.correct_answer = results[i].answer.toString()
 
 		switch (quizType) {
 			case 0:
+				quiz.question = results[i].question
 				results[i].choices.map((choice) => {
 					if (!choice.includes(results[i].answer)) {
 						quiz.incorrect_answers.push(choice)
@@ -66,11 +75,14 @@ function jsonToObject(jsonData) {
 				})
 				break
 			case 1:
+				quiz.question = results[i].question
 				quiz.correct_answer === 'TRUE'
 					? quiz.incorrect_answers.push('FALSE')
 					: quiz.incorrect_answers.push('TRUE')
 				break
 			case 2:
+				quiz.question = results[i].sentence
+				quiz.incorrect_answers = results[i].incorrect_answers
 				break
 			case 3:
 				break
@@ -107,8 +119,8 @@ app.post('/', async (req, res) => {
 		const jsonData = completion.data.choices[0].message.content
 		console.log(jsonData)
 
-		const questions = jsonToObject(jsonData)
-		console.log(questions)
+		const questions = jsonToObject(jsonData, unit)
+		// console.log(questions)
 
 		res.status(200).send({
 			results: questions,
