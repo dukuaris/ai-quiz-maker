@@ -6,7 +6,7 @@ import Question from '../components/Question'
 import '../styles/Quiz.css'
 
 const Quiz = () => {
-	const { questions, name, score, unit } = useSelector((state) => state.quiz)
+	const { questions, name, score } = useSelector((state) => state.quiz)
 	const [options, setOptions] = useState()
 	const [currQues, setCurrQues] = useState(0)
 
@@ -35,7 +35,7 @@ const Quiz = () => {
 						<span>{questions[currQues].category}</span>
 						<span>
 							{/* {questions[currQues].difficulty} */}
-							Score : {score}/{unit}
+							Score : {score}/{questions.length}
 						</span>
 					</div>
 					<Question

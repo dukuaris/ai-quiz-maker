@@ -70,7 +70,7 @@ const Home = () => {
 	return (
 		<div className="content">
 			<div className="settings">
-				<p style={{ fontSize: 30 }}>Custom Quiz</p>
+				<p style={{ fontSize: 30 }}>Ask for Your Quiz</p>
 				<div className="settings__select">
 					{error && <ErrorMessages>Please Fill all the fields</ErrorMessages>}
 					<TextField
@@ -120,14 +120,14 @@ const Home = () => {
 						Generate Quiz & Start
 					</LoadingButton>
 					<br />
-					<Button
+					{/* <Button
 						color="secondary"
 						onClick={() => {
 							navigate('/trivia')
 						}}
 					>
 						Go to Trivia Quiz
-					</Button>
+					</Button> */}
 				</div>
 			</div>
 		</div>

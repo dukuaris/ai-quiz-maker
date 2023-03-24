@@ -63,7 +63,7 @@ const Result = () => {
 					style={{ width: 250 }}
 					onClick={handleSubmit}
 				>
-					Come Back Home
+					Go Home
 				</Button>
 			</div>
 		</div>

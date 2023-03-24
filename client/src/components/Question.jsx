@@ -42,6 +42,7 @@ const Question = ({ currQues, setCurrQues, options, correct }) => {
 		setCurrQues(0)
 		dispatch(resetScore())
 		dispatch(setQuestions([]))
+		navigate('/')
 	}
 
 	return (

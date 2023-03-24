@@ -16,12 +16,12 @@ app.use(express.json())
 let quizType //type of quiz
 const typeList = ['multiple', 'true-false', 'fill-in-the-blank', 'matching']
 const requestList = [
-	`multiple-choice questions with following text, and provide a question, an answer, a list of incorrect answers, and the difficulty from high to medium to low for each question in JSON format:`,
-	`true/false questions with following text, and provide the questions, the answers, and the difficulties from high to medium to low in JSON format:`,
-	`fill-in-the-blank quizzes to be filled with no more than 3 words, with following information, and provide a sentence with one blank space, an answer, a list of incorrect answers, and the difficulty from high to medium to low for each quiz, in JSON format:`,
+	'multiple-choice questions with following text, and provide a question, an answer, a list of incorrect answers, and the difficulty from high to medium to low for each question in a JSON format:',
+	'true/false questions with following text, and provide the questions, the answers, and the difficulties from high to medium to low in a JSON format:',
+	'fill-in-the-blank quizzes to be filled with no more than 3 words, with following information, and provide a sentence with one blank space, an answer, a list of incorrect answers, and the difficulty from high to medium to low for each quiz, all in a JSON format:',
 	[
-		`a matching quiz with following information and provide a title of the information and a list with`,
-		`pairs of a term and a description consisting of less than 10 words, both the title and the pairs in JSON format:`,
+		'a matching quiz with following information and provide a title of the information and a list with',
+		'pairs of a term and a description consisting of less than 10 words, both the title and the pairs in a JSON format:',
 	],
 ]
 
@@ -127,7 +127,7 @@ app.post('/', async (req, res) => {
 			command = 'Generate ' + unit + ' ' + requestList[quizType]
 		}
 
-		const content = `${command}+\n+${prompt}`
+		let content = command + '\n' + prompt
 
 		const completion = await openai.createChatCompletion({
 			model: 'gpt-3.5-turbo',
@@ -135,12 +135,38 @@ app.post('/', async (req, res) => {
 			temperature: 0.2,
 		})
 
-		const jsonData = completion.data.choices[0].message.content
+		let jsonData = completion.data.choices[0].message.content
+		let resultObject = {}
+		const objIndex = jsonData.indexOf('{')
 		console.log(jsonData)
 
-		const resultObject = JSON.parse(jsonData)
+		// Exception Handling of Response Data
+		try {
+			resultObject = JSON.parse(jsonData)
+		} catch (error) {
+			console.log('The first get request failed: ', error)
+			try {
+				if (objIndex == -1) {
+					content = `Create a JSON format with below text:`
+					const revision = await openai.createChatCompletion({
+						model: 'gpt-3.5-turbo',
+						messages: [{ role: 'user', content: jsonData }],
+						temperature: 0.2,
+					})
+					jsonData = revision.data.choices[0].message.content
+				} else if (objIndex == 0) {
+					jsonData = `{"questions":[ ${jsonData} ]}`
+				} else {
+					jsonData = jsonData.substring(objIndex)
+				}
+				resultObject = JSON.parse(jsonData)
+				console.log('Succeed in the exception handling!')
+			} catch (error) {
+				throw new Error('Finally failed: ', error)
+			}
+		}
+
 		const questions = jsonToObject(resultObject, unit, quizType)
-		// console.log(questions)
 
 		res.status(200).send({
 			results: questions,
