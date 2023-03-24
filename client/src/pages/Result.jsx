@@ -8,7 +8,7 @@ import {
 	setUnit,
 	resetScore,
 } from '../features/quiz/quizSlice'
-
+import createSheet from '../utils/createSheet.js'
 import '../styles/Result.css'
 
 const Result = () => {
@@ -61,7 +61,7 @@ const Result = () => {
 					color="secondary"
 					size="large"
 					style={{ width: 185 }}
-					onClick={() => {}}
+					onClick={() => createSheet(questions, name)}
 				>
 					Download
 				</Button>
