@@ -13,9 +13,6 @@ const Question = ({ currQues, setCurrQues, options, correct }) => {
 
 	const [selected, setSelected] = useState()
 	const [error, setError] = useState(false)
-	// useEffect(() => {
-	// 	setScore(0)
-	// }, [])
 
 	const handleSelect = (i) => {
 		if (selected === i && selected === correct) return 'select'
@@ -47,10 +44,10 @@ const Question = ({ currQues, setCurrQues, options, correct }) => {
 
 	return (
 		<div className="question">
-			<h1>Question {currQues + 1} :</h1>
+			<h2>Question {currQues + 1}</h2>
 
 			<div className="singleQuestion">
-				<h2>{questions[currQues].question}</h2>
+				<h3>{questions[currQues].question}</h3>
 				<div className="options">
 					{error && <ErrorMessage>{error}</ErrorMessage>}
 					{options &&
@@ -70,7 +67,7 @@ const Question = ({ currQues, setCurrQues, options, correct }) => {
 						variant="contained"
 						color="secondary"
 						size="large"
-						style={{ width: 185 }}
+						style={{ width: 150 }}
 						href="/"
 						onClick={() => handleQuit()}
 					>
@@ -80,10 +77,10 @@ const Question = ({ currQues, setCurrQues, options, correct }) => {
 						variant="contained"
 						color="primary"
 						size="large"
-						style={{ width: 185 }}
+						style={{ width: 150 }}
 						onClick={handleNext}
 					>
-						{currQues > questions.length - 2 ? 'Submit' : 'Next Question'}
+						{currQues > questions.length - 2 ? 'Submit' : 'Next'}
 					</Button>
 				</div>
 			</div>

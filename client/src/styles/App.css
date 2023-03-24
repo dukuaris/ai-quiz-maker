@@ -71,7 +71,9 @@ a {
 	flex-direction: column;
 	align-items: center;
 	justify-content: space-around;
-	border: 5px solid grey;
+	background-color: rgb(243, 214, 174);
+	border-radius: 10px;
+	/* border: 5px solid grey; */
 	padding: 20px;
 	margin-top: 10px;
 }
@@ -93,11 +95,16 @@ a {
 	padding: 5px 10px;
 	margin: 10px;
 	box-shadow: 0 0 2px black;
+	overflow: visible;
 }
 
 @media (max-width: 614px) {
 	.singleOption {
 		width: 100%;
+		font-size: medium;
+	}
+	.title {
+		font-size: 5vw;
 	}
 }
 

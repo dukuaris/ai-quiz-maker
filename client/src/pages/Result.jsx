@@ -50,7 +50,7 @@ const Result = () => {
 					variant="contained"
 					color="primary"
 					size="large"
-					style={{ width: 250 }}
+					style={{ width: 150 }}
 					onClick={handleSubmit}
 				>
 					Try Again
@@ -60,7 +60,7 @@ const Result = () => {
 					variant="contained"
 					color="secondary"
 					size="large"
-					style={{ width: 250 }}
+					style={{ width: 150 }}
 					onClick={handleSubmit}
 				>
 					Go Home

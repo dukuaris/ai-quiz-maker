@@ -70,7 +70,7 @@ const Home = () => {
 	return (
 		<div className="content">
 			<div className="settings">
-				<p style={{ fontSize: 30 }}>Ask for Your Quiz</p>
+				<p style={{ fontSize: 30 }}>Create Your Quiz</p>
 				<div className="settings__select">
 					{error && <ErrorMessages>Please Fill all the fields</ErrorMessages>}
 					<TextField
@@ -117,7 +117,7 @@ const Home = () => {
 						loading={loading}
 						onClick={handleSubmit}
 					>
-						Generate Quiz & Start
+						Submit
 					</LoadingButton>
 					<br />
 					{/* <Button

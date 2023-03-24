@@ -28,7 +28,6 @@ const Quiz = () => {
 		<div className="quiz">
 			<br />
 			<span className="subtitle">Welcome, {name}</span>
-
 			{questions ? (
 				<>
 					<div className="quizInfo">
