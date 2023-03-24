@@ -1,6 +1,7 @@
 import { CircularProgress } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { resetScore } from '../features/quiz/quizSlice'
 
 import Question from '../components/Question'
 import '../styles/Quiz.css'
@@ -9,6 +10,11 @@ const Quiz = () => {
 	const { questions, name, score } = useSelector((state) => state.quiz)
 	const [options, setOptions] = useState()
 	const [currQues, setCurrQues] = useState(0)
+	const dispatch = useDispatch()
+
+	useEffect(() => {
+		dispatch(resetScore())
+	}, [])
 
 	useEffect(() => {
 		setOptions(

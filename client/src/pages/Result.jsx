@@ -44,23 +44,33 @@ const Result = () => {
 			<br />
 			<br />
 			<br />
-			<div className="controls">
+			<div className="controlsVertical">
 				<Button
 					name="retry"
 					variant="contained"
 					color="primary"
 					size="large"
-					style={{ width: 150 }}
+					style={{ width: 185 }}
 					onClick={handleSubmit}
 				>
 					Try Again
 				</Button>
 				<Button
-					name="home"
+					name="download"
 					variant="contained"
 					color="secondary"
 					size="large"
-					style={{ width: 150 }}
+					style={{ width: 185 }}
+					onClick={() => {}}
+				>
+					Download
+				</Button>
+				<Button
+					name="home"
+					variant="contained"
+					color="success"
+					size="large"
+					style={{ width: 185 }}
 					onClick={handleSubmit}
 				>
 					Go Home
