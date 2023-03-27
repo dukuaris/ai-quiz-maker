@@ -37,9 +37,11 @@ const Result = () => {
 
 	return (
 		<div className="result">
-			<span className="title">
-				{name}'s Score: {score}
-			</span>
+			<p className="title">
+				{name}'s Score
+				<br />
+				{score} / {questions.length}
+			</p>
 			<br />
 			<br />
 			<br />
