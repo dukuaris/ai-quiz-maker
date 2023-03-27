@@ -17,11 +17,21 @@ const Quiz = () => {
 	}, [])
 
 	useEffect(() => {
+		let incorrect_answers = []
+		if (questions[currQues].type === 'matching') {
+			questions.map((question, i) => {
+				if (currQues !== i) {
+					incorrect_answers.push(question.correct_answer)
+				}
+			})
+		} else {
+			incorrect_answers = [...questions[currQues]?.incorrect_answers]
+		}
 		setOptions(
 			questions &&
 				handleShuffle([
 					questions[currQues]?.correct_answer,
-					...questions[currQues]?.incorrect_answers,
+					...incorrect_answers,
 				])
 		)
 	}, [currQues, questions])
@@ -33,11 +43,11 @@ const Quiz = () => {
 	return (
 		<div className="quiz">
 			<br />
-			<span className="subtitle">Welcome, {name}</span>
+			<span className="subtitle">Go! {name}</span>
 			{questions ? (
 				<>
 					<div className="quizInfo">
-						<span>{questions[currQues].category}</span>
+						<span>{questions[currQues].type}</span>
 						<span>
 							{/* {questions[currQues].difficulty} */}
 							Score : {score}/{questions.length}

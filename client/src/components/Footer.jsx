@@ -3,7 +3,6 @@ const Footer = () => {
 		<div
 			style={{
 				textAlign: 'center',
-				marginBottom: 10,
 			}}
 		>
 			Created by{' '}

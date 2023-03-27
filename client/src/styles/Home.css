@@ -1,6 +1,7 @@
 .content {
 	display: flex;
 	justify-content: space-around;
+	background-color: #dbe4c6;
 }
 
 .settings {
@@ -19,14 +20,19 @@
 	padding: 8px;
 }
 
+.input-box {
+	background-color: white;
+}
+
 .url {
 	display: flex;
 	width: auto;
 	margin-bottom: 20px;
+	justify-content: space-between;
 }
 
 .url-box {
-	width: 80%;
+	width: 78%;
 }
 
 .url-button {
@@ -42,6 +48,15 @@
 
 .count {
 	width: fit-content;
+}
+
+.home-controls {
+	display: flex;
+	justify-content: space-between;
+}
+
+.home-controls > * {
+	width: 30%;
 }
 
 @media (max-width: 600px) {

@@ -89,7 +89,7 @@ function jsonToObject(resultObject, unit, quizType) {
 				quiz.incorrect_answers = results[i].incorrect_answers
 				break
 			case 3:
-				quiz.question = results[i].item
+				quiz.question = results[i].term
 				quiz.difficulty = 'medium'
 				quiz.correct_answer = results[i].description
 				quiz.incorrect_answers = []

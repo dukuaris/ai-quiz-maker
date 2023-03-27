@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { Button, TextField, MenuItem } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
@@ -30,9 +30,19 @@ const Home = () => {
 	const [loading, setLoading] = useState(false)
 	const [crawling, setCrawling] = useState(false)
 	const [wordCount, setWordCount] = useState(0)
+	const [ready, setReady] = useState(false)
+	const [activeColor, setActiveColor] = useState('')
+
+	useEffect(() => {
+		if (!ready) {
+			setActiveColor('grey')
+		} else {
+			setActiveColor('')
+		}
+	}, [ready])
 
 	const handleSubmit = async () => {
-		if (questions.length > 0) {
+		if (ready) {
 			dispatch(resetScore())
 			dispatch(setUnit(0))
 			dispatch(setQuestions([]))
@@ -64,6 +74,7 @@ const Home = () => {
 					const data = await response.json()
 					if (data.results != undefined) {
 						dispatch(setQuestions(data.results))
+						setReady(true)
 					} else {
 						throw new Error()
 					}
@@ -124,6 +135,7 @@ const Home = () => {
 				<div className="settings__select">
 					{error && <ErrorMessages>Please Fill all the fields</ErrorMessages>}
 					<TextField
+						className="input-box"
 						style={{ marginBottom: 25 }}
 						name="name"
 						label="Enter Your Name"
@@ -131,6 +143,7 @@ const Home = () => {
 						onChange={(e) => dispatch(setName(e.target.value))}
 					/>
 					<TextField
+						className="input-box"
 						select
 						label="Select Quiz Type"
 						value={type}
@@ -145,6 +158,7 @@ const Home = () => {
 						))}
 					</TextField>
 					<TextField
+						className="input-box"
 						style={{ marginBottom: 25 }}
 						name="unit"
 						label="Enter Number of Questions (1-20)"
@@ -158,6 +172,7 @@ const Home = () => {
 						</p>
 					</div>
 					<TextField
+						className="input-box"
 						style={{ marginBottom: 25 }}
 						name="content"
 						label="Enter Your Content"
@@ -169,15 +184,15 @@ const Home = () => {
 					/>
 					<div className="url">
 						<TextField
+							className="input-box url-box"
 							name="url"
-							className="url-box"
 							label="Enter Your URL"
 							variant="outlined"
 							onChange={handleChange}
 						/>
 						<LoadingButton
 							className="url-button"
-							variant="outlined"
+							variant="contained"
 							color="primary"
 							size="small"
 							loading={crawling}
@@ -186,38 +201,42 @@ const Home = () => {
 							Get Text
 						</LoadingButton>
 					</div>
-					<div className="controls">
+					<div className="home-controls">
 						<LoadingButton
-							variant="outlined"
-							color={`${questions.length > 0 ? 'error' : 'primary'}`}
-							size="medium"
-							style={{ width: 120 }}
+							className="control-button"
+							variant="contained"
+							color={`${ready ? 'error' : 'primary'}`}
+							size="large"
 							loading={loading}
 							onClick={handleSubmit}
 						>
-							{questions.length > 0 ? 'Clear' : 'Submit'}
+							{ready ? 'Clear' : 'Submit'}
 						</LoadingButton>
 						<Button
-							variant="outlined"
+							className="control-button"
+							variant="contained"
 							color="secondary"
-							size="medium"
-							style={{ width: 120 }}
-							onClick={
-								questions.length > 0 ? () => navigate('/quiz') : () => {}
-							}
+							sx={{
+								color: activeColor,
+								border: activeColor,
+								background: 'light' + activeColor,
+							}}
+							size="large"
+							onClick={ready ? () => navigate('/quiz') : () => {}}
 						>
 							Practice
 						</Button>
 						<Button
-							variant="outlined"
+							className="control-button"
+							variant="contained"
 							color="success"
-							size="medium"
-							style={{ width: 120 }}
-							onClick={
-								questions.length > 0
-									? () => createSheet(questions, name)
-									: () => {}
-							}
+							sx={{
+								color: activeColor,
+								border: activeColor,
+								background: 'light' + activeColor,
+							}}
+							size="large"
+							onClick={ready ? () => createSheet(questions, name) : () => {}}
 						>
 							Download
 						</Button>

@@ -20,7 +20,7 @@ a {
 .app {
 	min-height: 98.5vh;
 	border: 8px solid #39445a93;
-	/* background-color: white; */
+	/* background-color: yellow; */
 	margin: 5px;
 	padding: 5px;
 }
@@ -42,8 +42,8 @@ a {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	background-color: rgb(189, 233, 218);
-	/* background-color: rgb(239, 193, 129); */
+	background-color: #bbd6b8;
+	/* background-color: rgb(189, 233, 218); */
 }
 
 .divider {
@@ -89,11 +89,13 @@ a {
 }
 
 .singleOption {
+	cursor: pointer;
 	width: 46%;
 	height: 65px;
 	font-size: large;
 	padding: 5px 10px;
 	margin: 10px;
+	border-radius: 10px;
 	box-shadow: 0 0 2px black;
 	overflow: visible;
 }
