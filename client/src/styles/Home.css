@@ -19,6 +19,31 @@
 	padding: 8px;
 }
 
+.url {
+	display: flex;
+	width: auto;
+	margin-bottom: 20px;
+}
+
+.url-box {
+	width: 80%;
+}
+
+.url-button {
+	width: 20%;
+}
+
+.counting {
+	display: flex;
+	width: auto;
+	justify-content: end;
+	padding-bottom: 10px;
+}
+
+.count {
+	width: fit-content;
+}
+
 @media (max-width: 600px) {
 	.content {
 		flex-direction: column-reverse;

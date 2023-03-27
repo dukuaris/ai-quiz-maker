@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import { Button, TextField, MenuItem } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
@@ -21,12 +21,15 @@ const Home = () => {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const [type, setType] = useState('')
+	const [userInput, setUserInput] = useState('')
 	const [form, setForm] = useState({
 		content: '',
+		url: '',
 	})
 	const [error, setError] = useState(false)
-
 	const [loading, setLoading] = useState(false)
+	const [crawling, setCrawling] = useState(false)
+	const [wordCount, setWordCount] = useState(0)
 
 	const handleSubmit = async () => {
 		if (questions.length > 0) {
@@ -39,6 +42,7 @@ const Home = () => {
 				setError(true)
 				return
 			}
+
 			if (form.content) {
 				setLoading(true)
 				try {
@@ -51,6 +55,7 @@ const Home = () => {
 						},
 						body: JSON.stringify({
 							content: form.content,
+							url: form.url,
 							unit: unit,
 							type: type,
 						}),
@@ -75,8 +80,41 @@ const Home = () => {
 		}
 	}
 
+	const handleCrawl = async () => {
+		if (form.url.length > 0) {
+			try {
+				setCrawling(true)
+				const response = await fetch('http://localhost:5001/crawl', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						url: form.url,
+					}),
+				})
+				const data = await response.json()
+				setUserInput(data.results)
+				setWordCount(data.results.length)
+			} catch (err) {
+				alert('Failed to scrape content from the URL.Try again.')
+			} finally {
+				setCrawling(false)
+			}
+		} else {
+			alert('Please provide URL')
+		}
+	}
+
 	const handleChange = (e) => {
-		setForm({ ...form, [e.target.name]: e.target.value })
+		if (e.target.name === 'content') {
+			const text = e.target.value
+			setUserInput(text)
+			setForm({ ...form, [e.target.name]: text })
+			setWordCount(text.length)
+		} else {
+			setForm({ ...form, [e.target.name]: e.target.value })
+		}
 	}
 
 	return (
@@ -113,6 +151,12 @@ const Home = () => {
 						variant="outlined"
 						onChange={(e) => dispatch(setUnit(Number(e.target.value)))}
 					/>
+					<div className="counting">
+						<p className="count">
+							text count : <span style={{ color: 'red' }}>{'2000 >'}</span>{' '}
+							{wordCount}
+						</p>
+					</div>
 					<TextField
 						style={{ marginBottom: 25 }}
 						name="content"
@@ -121,10 +165,30 @@ const Home = () => {
 						rows={10}
 						variant="outlined"
 						onChange={handleChange}
+						value={userInput}
 					/>
+					<div className="url">
+						<TextField
+							name="url"
+							className="url-box"
+							label="Enter Your URL"
+							variant="outlined"
+							onChange={handleChange}
+						/>
+						<LoadingButton
+							className="url-button"
+							variant="outlined"
+							color="primary"
+							size="small"
+							loading={crawling}
+							onClick={handleCrawl}
+						>
+							Get Text
+						</LoadingButton>
+					</div>
 					<div className="controls">
 						<LoadingButton
-							variant="contained"
+							variant="outlined"
 							color={`${questions.length > 0 ? 'error' : 'primary'}`}
 							size="medium"
 							style={{ width: 120 }}
@@ -134,7 +198,7 @@ const Home = () => {
 							{questions.length > 0 ? 'Clear' : 'Submit'}
 						</LoadingButton>
 						<Button
-							variant={`${questions.length > 0 ? 'contained' : 'outlined'}`}
+							variant="outlined"
 							color="secondary"
 							size="medium"
 							style={{ width: 120 }}
@@ -145,7 +209,7 @@ const Home = () => {
 							Practice
 						</Button>
 						<Button
-							variant={`${questions.length > 0 ? 'contained' : 'outlined'}`}
+							variant="outlined"
 							color="success"
 							size="medium"
 							style={{ width: 120 }}

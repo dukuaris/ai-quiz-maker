@@ -1,4 +1,5 @@
 const express = require('express')
+const puppeteer = require('puppeteer')
 require('dotenv').config()
 const cors = require('cors')
 const { Configuration, OpenAIApi } = require('openai')
@@ -16,7 +17,7 @@ app.use(express.json())
 let quizType //type of quiz
 const typeList = ['multiple', 'true-false', 'fill-in-the-blank', 'matching']
 const requestList = [
-	'multiple-choice questions with following text, and provide a question, an answer, a list of incorrect answers, and the difficulty from high to medium to low for each question in a JSON format:',
+	'multiple-choice questions with following text, and provide a question, an answer, a list of incorrect answers, and the difficulty from high to medium to low for each question in a JSON format and in the language of following text:',
 	'true/false questions with following text, and provide the questions, the answers, and the difficulties from high to medium to low in a JSON format:',
 	'fill-in-the-blank quizzes to be filled with no more than 3 words, with following information, and provide a sentence with one blank space, an answer, a list of incorrect answers, and the difficulty from high to medium to low for each quiz, all in a JSON format:',
 	[
@@ -77,7 +78,7 @@ function jsonToObject(resultObject, unit, quizType) {
 				quiz.question = results[i].question
 				quiz.difficulty = results[i].difficulty
 				quiz.correct_answer = results[i].answer.toString().toUpperCase()
-				quiz.correct_answer === 'TRUE'
+				quiz.correct_answer === 'TRUE' || quiz.correct_answer === 'T'
 					? quiz.incorrect_answers.push('FALSE')
 					: quiz.incorrect_answers.push('TRUE')
 				break
@@ -109,12 +110,36 @@ app.get('/', async (req, res) => {
 	})
 })
 
+app.post('/crawl', async (req, res) => {
+	try {
+		const url = req.body.url
+		const browser = await puppeteer.launch()
+		const page = await browser.newPage()
+		await page.goto(url)
+
+		const title = await page.evaluate(() => document.title)
+		const text = await page.evaluate(() => document.body.innerText)
+
+		await browser.close()
+
+		res.status(200).send({
+			title: title,
+			results: text,
+		})
+	} catch (error) {
+		console.error(error)
+		res.status(500).send(error || 'Crawling failed!')
+	}
+})
+
 app.post('/', async (req, res) => {
 	try {
 		let command = ''
+		const url = req.body.url
 		const prompt = req.body.content
 		const unit = req.body.unit
 		quizType = req.body.type
+
 		if (quizType == 3) {
 			command =
 				'Generate' +
@@ -154,6 +179,9 @@ app.post('/', async (req, res) => {
 						temperature: 0.2,
 					})
 					jsonData = revision.data.choices[0].message.content
+				} else if (jsonData[0] === '[' && jsonData[jsonData.length] === ']') {
+					const coreData = jsonData.substring(1, jsonData.length - 1).trim()
+					jsonData = `{"questions":[ ${jsonData} ]}`
 				} else if (objIndex == 0) {
 					jsonData = `{"questions":[ ${jsonData} ]}`
 				} else {

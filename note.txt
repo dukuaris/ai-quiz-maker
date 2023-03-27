@@ -1,0 +1,2 @@
+Crawling lecture: https://youtu.be/S67gyqnYHmI
+    puppeteer codes sample: https://github.com/bradtraversy/courses-scrape 
