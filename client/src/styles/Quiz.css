@@ -1,6 +1,7 @@
 .quiz {
 	display: flex;
 	flex-direction: column;
+	height: 98.5vh;
 	align-items: center;
 	font-family: 'Poppins', sans-serif;
 	background-color: #dbe4c6;
