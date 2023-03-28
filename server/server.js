@@ -17,7 +17,7 @@ app.use(express.json())
 let quizType //type of quiz
 const typeList = ['multiple', 'true-false', 'fill-in-the-blank', 'matching']
 const requestList = [
-	'multiple-choice questions with following text, and provide a question, an answer, a list of incorrect answers, and the difficulty from high to medium to low for each question in a JSON format and in the language of following text:',
+	'multiple-choice questions with following text, and provide a question, an answer, a list of incorrect answers, and the difficulty from high to medium to low for each question in a JSON format:',
 	'true/false questions with following text, and provide the questions, the answers, and the difficulties from high to medium to low in a JSON format:',
 	'fill-in-the-blank quizzes to be filled with no more than 3 words, with following information, and provide a sentence with one blank space, an answer, a list of incorrect answers, and the difficulty from high to medium to low for each quiz, all in a JSON format:',
 	[
@@ -55,11 +55,21 @@ const generateQuiz = async (content) => {
 
 	let jsonData = completion.data.choices[0].message.content
 	let resultObject = {}
+	let dataKeys = []
+	let questionList = []
 	const objIndex = jsonData.indexOf('{')
 
 	// Exception Handling of Response Data
 	try {
 		resultObject = JSON.parse(jsonData)
+		dataKeys = Object.keys(resultObject)
+		if (dataKeys?.length > 1) {
+			dataKeys.map((key) => {
+				questionList.push(JSON.stringify(resultObject[key]))
+			})
+			jsonData = `{"questions":[${questionList}]}`
+			resultObject = JSON.parse(jsonData)
+		}
 	} catch (error) {
 		console.log('The first get request failed: ', error)
 		try {
@@ -178,7 +188,7 @@ app.post('/', async (req, res) => {
 	const prompt = req.body.content
 	const unit = req.body.unit
 	quizType = req.body.type
-	const threshold = 3000
+	const threshold = 2500
 	let command = ''
 	let resultObject = {}
 
@@ -200,32 +210,36 @@ app.post('/', async (req, res) => {
 					index++
 				}
 				chunk = list.join('\n')
+				chunkList.push(chunk)
+			}
 
+			chunkList.map((chunk) => {
 				if (quizType == 3) {
 					command =
 						'Generate' +
 						' ' +
 						requestList[quizType][0] +
-						Math.floor(unit / chunkList.length) +
+						Math.ceil(unit / chunkList.length) +
 						' ' +
 						requestList[quizType][1]
 				} else {
 					command =
 						'Generate ' +
-						Math.floor(unit / chunkList.length) +
+						Math.ceil(unit / chunkList.length) +
 						' ' +
 						requestList[quizType]
 				}
-				const content = command + '\n' + prompt
-
+				const content = command + '\n' + chunk
 				contentList.push(content)
-				chunkList.push(chunk)
+			})
+
+			let objectSum = []
+			for (let i = 0; i < contentList.length; i++) {
+				const partialResult = await generateQuiz(contentList[i])
+				objectSum = [...objectSum, ...partialResult.questions]
 			}
 
-			// console.log(chunkList)
-			// console.log(contentList)
-
-			throw new Error('Too Long Content!')
+			resultObject['questions'] = objectSum
 		} else {
 			if (quizType == 3) {
 				command =
@@ -242,8 +256,6 @@ app.post('/', async (req, res) => {
 
 			resultObject = await generateQuiz(content)
 		}
-
-		console.log(resultObject)
 
 		const questions = jsonToObject(resultObject, unit, quizType)
 

@@ -167,8 +167,8 @@ const Home = () => {
 					/>
 					<div className="counting">
 						<p className="count">
-							text count&nbsp;:&nbsp;{'3000 >'}&nbsp;
-							<span style={{ color: wordCount > 3000 ? 'red' : 'black' }}>
+							text count&nbsp;:&nbsp;{'2500 >'}&nbsp;
+							<span style={{ color: wordCount > 2500 ? 'red' : 'black' }}>
 								{wordCount}
 							</span>{' '}
 						</p>
