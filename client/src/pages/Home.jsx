@@ -58,7 +58,7 @@ const Home = () => {
 				try {
 					// https://quiz-maker.onrender.com
 					// http://localhost:5001
-					const response = await fetch('http://localhost:5001', {
+					const response = await fetch('https://quiz-maker.onrender.com', {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ const Home = () => {
 		if (form.url.length > 0) {
 			try {
 				setCrawling(true)
-				const response = await fetch('http://localhost:5001/crawl', {
+				const response = await fetch('https://quiz-maker.onrender.com/crawl', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
