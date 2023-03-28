@@ -65,7 +65,6 @@ const Home = () => {
 						},
 						body: JSON.stringify({
 							content: form.content,
-							url: form.url,
 							unit: unit,
 							type: type,
 						}),
@@ -106,6 +105,7 @@ const Home = () => {
 				})
 				const data = await response.json()
 				setUserInput(data.results)
+				setForm({ ...form, content: data.results })
 				setWordCount(data.results.length)
 			} catch (err) {
 				alert('Failed to scrape content from the URL.Try again.')
@@ -167,8 +167,10 @@ const Home = () => {
 					/>
 					<div className="counting">
 						<p className="count">
-							text count : <span style={{ color: 'red' }}>{'2000 >'}</span>{' '}
-							{wordCount}
+							text count&nbsp;:&nbsp;{'3000 >'}&nbsp;
+							<span style={{ color: wordCount > 3000 ? 'red' : 'black' }}>
+								{wordCount}
+							</span>{' '}
 						</p>
 					</div>
 					<TextField

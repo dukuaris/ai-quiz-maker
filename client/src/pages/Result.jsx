@@ -57,6 +57,7 @@ const Result = () => {
 				>
 					Try Again
 				</Button>
+				<br />
 				<Button
 					name="download"
 					variant="contained"
@@ -67,6 +68,7 @@ const Result = () => {
 				>
 					Download
 				</Button>
+				<br />
 				<Button
 					name="home"
 					variant="contained"

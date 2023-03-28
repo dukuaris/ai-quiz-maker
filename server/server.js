@@ -46,6 +46,8 @@ class QuizQuestion {
 	}
 }
 
+function generateQuiz() {}
+
 function jsonToObject(resultObject, unit, quizType) {
 	let results = []
 	let data = []
@@ -133,12 +135,39 @@ app.post('/crawl', async (req, res) => {
 })
 
 app.post('/', async (req, res) => {
+	const prompt = req.body.content
+	const unit = req.body.unit
+	quizType = req.body.type
+	const threshold = 3000
+	let chunkList = []
+
+	if (prompt.length > threshold) {
+		const paragraphs = prompt.split(/\n\s*\n/)
+		console.log(paragraphs)
+
+		let index = 0
+
+		while (index < paragraphs.length) {
+			let chunk = ''
+			let count = 0
+			let list = []
+			while (count <= threshold && index < paragraphs.length) {
+				list.push(paragraphs[index])
+				count += paragraphs[index].length
+				index++
+			}
+			chunk = list.join('\n')
+			chunkList.push(chunk)
+		}
+
+		console.log(chunkList)
+		console.log(chunkList.length)
+
+		throw new Error('Too Long Content!')
+	}
+
 	try {
 		let command = ''
-		const url = req.body.url
-		const prompt = req.body.content
-		const unit = req.body.unit
-		quizType = req.body.type
 
 		if (quizType == 3) {
 			command =
