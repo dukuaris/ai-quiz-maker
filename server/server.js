@@ -46,7 +46,47 @@ class QuizQuestion {
 	}
 }
 
-function generateQuiz() {}
+const generateQuiz = async (content) => {
+	const completion = await openai.createChatCompletion({
+		model: 'gpt-3.5-turbo',
+		messages: [{ role: 'user', content: content }],
+		temperature: 0.2,
+	})
+
+	let jsonData = completion.data.choices[0].message.content
+	let resultObject = {}
+	const objIndex = jsonData.indexOf('{')
+
+	// Exception Handling of Response Data
+	try {
+		resultObject = JSON.parse(jsonData)
+	} catch (error) {
+		console.log('The first get request failed: ', error)
+		try {
+			if (objIndex == -1) {
+				content = `Create a JSON format with below text:`
+				const revision = await openai.createChatCompletion({
+					model: 'gpt-3.5-turbo',
+					messages: [{ role: 'user', content: jsonData }],
+					temperature: 0.2,
+				})
+				jsonData = revision.data.choices[0].message.content
+			} else if (jsonData[0] === '[' && jsonData[jsonData.length] === ']') {
+				const coreData = jsonData.substring(1, jsonData.length - 1).trim()
+				jsonData = `{"questions":[ ${jsonData} ]}`
+			} else if (objIndex == 0) {
+				jsonData = `{"questions":[ ${jsonData} ]}`
+			} else {
+				jsonData = jsonData.substring(objIndex)
+			}
+			resultObject = JSON.parse(jsonData)
+			console.log('Succeed in the exception handling!')
+		} catch (error) {
+			throw new Error('Finally failed: ', error)
+		}
+	}
+	return resultObject
+}
 
 function jsonToObject(resultObject, unit, quizType) {
 	let results = []
@@ -139,89 +179,71 @@ app.post('/', async (req, res) => {
 	const unit = req.body.unit
 	quizType = req.body.type
 	const threshold = 3000
-	let chunkList = []
-
-	if (prompt.length > threshold) {
-		const paragraphs = prompt.split(/\n\s*\n/)
-		console.log(paragraphs)
-
-		let index = 0
-
-		while (index < paragraphs.length) {
-			let chunk = ''
-			let count = 0
-			let list = []
-			while (count <= threshold && index < paragraphs.length) {
-				list.push(paragraphs[index])
-				count += paragraphs[index].length
-				index++
-			}
-			chunk = list.join('\n')
-			chunkList.push(chunk)
-		}
-
-		console.log(chunkList)
-		console.log(chunkList.length)
-
-		throw new Error('Too Long Content!')
-	}
+	let command = ''
+	let resultObject = {}
 
 	try {
-		let command = ''
+		if (prompt.length > threshold) {
+			const paragraphs = prompt.split(/\n\s*\n/)
 
-		if (quizType == 3) {
-			command =
-				'Generate' +
-				' ' +
-				requestList[quizType][0] +
-				unit +
-				' ' +
-				requestList[quizType][1]
-		} else {
-			command = 'Generate ' + unit + ' ' + requestList[quizType]
-		}
+			let index = 0
+			let chunkList = []
+			let contentList = []
 
-		let content = command + '\n' + prompt
-
-		const completion = await openai.createChatCompletion({
-			model: 'gpt-3.5-turbo',
-			messages: [{ role: 'user', content: content }],
-			temperature: 0.2,
-		})
-
-		let jsonData = completion.data.choices[0].message.content
-		let resultObject = {}
-		const objIndex = jsonData.indexOf('{')
-		console.log(jsonData)
-
-		// Exception Handling of Response Data
-		try {
-			resultObject = JSON.parse(jsonData)
-		} catch (error) {
-			console.log('The first get request failed: ', error)
-			try {
-				if (objIndex == -1) {
-					content = `Create a JSON format with below text:`
-					const revision = await openai.createChatCompletion({
-						model: 'gpt-3.5-turbo',
-						messages: [{ role: 'user', content: jsonData }],
-						temperature: 0.2,
-					})
-					jsonData = revision.data.choices[0].message.content
-				} else if (jsonData[0] === '[' && jsonData[jsonData.length] === ']') {
-					const coreData = jsonData.substring(1, jsonData.length - 1).trim()
-					jsonData = `{"questions":[ ${jsonData} ]}`
-				} else if (objIndex == 0) {
-					jsonData = `{"questions":[ ${jsonData} ]}`
-				} else {
-					jsonData = jsonData.substring(objIndex)
+			while (index < paragraphs.length) {
+				let chunk = ''
+				let count = 0
+				let list = []
+				while (count <= threshold && index < paragraphs.length) {
+					list.push(paragraphs[index])
+					count += paragraphs[index].length
+					index++
 				}
-				resultObject = JSON.parse(jsonData)
-				console.log('Succeed in the exception handling!')
-			} catch (error) {
-				throw new Error('Finally failed: ', error)
+				chunk = list.join('\n')
+
+				if (quizType == 3) {
+					command =
+						'Generate' +
+						' ' +
+						requestList[quizType][0] +
+						Math.floor(unit / chunkList.length) +
+						' ' +
+						requestList[quizType][1]
+				} else {
+					command =
+						'Generate ' +
+						Math.floor(unit / chunkList.length) +
+						' ' +
+						requestList[quizType]
+				}
+				const content = command + '\n' + prompt
+
+				contentList.push(content)
+				chunkList.push(chunk)
 			}
+
+			// console.log(chunkList)
+			// console.log(contentList)
+
+			throw new Error('Too Long Content!')
+		} else {
+			if (quizType == 3) {
+				command =
+					'Generate' +
+					' ' +
+					requestList[quizType][0] +
+					unit +
+					' ' +
+					requestList[quizType][1]
+			} else {
+				command = 'Generate ' + unit + ' ' + requestList[quizType]
+			}
+			const content = command + '\n' + prompt
+
+			resultObject = await generateQuiz(content)
 		}
+
+		console.log(resultObject)
 
 		const questions = jsonToObject(resultObject, unit, quizType)
 
