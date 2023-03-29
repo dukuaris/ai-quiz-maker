@@ -1,7 +1,8 @@
 .content {
 	display: flex;
 	justify-content: space-around;
-	background-color: #dbe4c6;
+	background-color: rgb(228, 226, 226);
+	/* background-color: #dbe4c6; */
 }
 
 .settings {

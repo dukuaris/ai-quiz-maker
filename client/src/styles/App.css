@@ -43,7 +43,8 @@ a {
 	flex-direction: row;
 	align-items: center;
 	justify-content: center;
-	background-color: #bbd6b8;
+	background-color: rgb(190, 190, 190);
+	/* background-color: #bbd6b8; */
 	/* background-color: rgb(189, 233, 218); */
 }
 

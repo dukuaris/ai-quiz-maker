@@ -32,6 +32,9 @@ const Home = () => {
 	const [wordCount, setWordCount] = useState(0)
 	const [ready, setReady] = useState(false)
 	const [activeColor, setActiveColor] = useState('')
+	const serverAddress = 'http://localhost:5001'
+	// https://quiz-maker.onrender.com
+	// http://localhost:5001
 
 	useEffect(() => {
 		if (!ready) {
@@ -56,9 +59,7 @@ const Home = () => {
 			if (form.content) {
 				setLoading(true)
 				try {
-					// https://quiz-maker.onrender.com
-					// http://localhost:5001
-					const response = await fetch('https://quiz-maker.onrender.com', {
+					const response = await fetch(serverAddress, {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
@@ -94,7 +95,7 @@ const Home = () => {
 		if (form.url.length > 0) {
 			try {
 				setCrawling(true)
-				const response = await fetch('https://quiz-maker.onrender.com/crawl', {
+				const response = await fetch(serverAddress + '/crawl', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',

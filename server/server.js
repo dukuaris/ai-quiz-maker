@@ -46,7 +46,22 @@ class QuizQuestion {
 	}
 }
 
-const generateQuiz = async (content) => {
+const parseJson = (jsonData) => {
+	let dataKeys = []
+	let questionList = []
+	let resultObject = JSON.parse(jsonData)
+	dataKeys = Object.keys(resultObject)
+	if (dataKeys?.length > 1 && quizType !== 3) {
+		dataKeys.map((key) => {
+			questionList.push(JSON.stringify(resultObject[key]))
+		})
+		jsonData = `{"questions":[${questionList}]}`
+		resultObject = JSON.parse(jsonData)
+	}
+	return resultObject
+}
+
+const generateQuiz = async (content, quizType) => {
 	const completion = await openai.createChatCompletion({
 		model: 'gpt-3.5-turbo',
 		messages: [{ role: 'user', content: content }],
@@ -55,44 +70,69 @@ const generateQuiz = async (content) => {
 
 	let jsonData = completion.data.choices[0].message.content
 	let resultObject = {}
-	let dataKeys = []
-	let questionList = []
-	const objIndex = jsonData.indexOf('{')
 
+	console.log(jsonData)
+	console.log('*************************************')
 	// Exception Handling of Response Data
 	try {
-		resultObject = JSON.parse(jsonData)
-		dataKeys = Object.keys(resultObject)
-		if (dataKeys?.length > 1) {
-			dataKeys.map((key) => {
-				questionList.push(JSON.stringify(resultObject[key]))
-			})
-			jsonData = `{"questions":[${questionList}]}`
-			resultObject = JSON.parse(jsonData)
-		}
+		resultObject = parseJson(jsonData)
 	} catch (error) {
 		console.log('The first get request failed: ', error)
-		try {
-			if (objIndex == -1) {
-				content = `Create a JSON format with below text:`
-				const revision = await openai.createChatCompletion({
-					model: 'gpt-3.5-turbo',
-					messages: [{ role: 'user', content: jsonData }],
-					temperature: 0.2,
-				})
-				jsonData = revision.data.choices[0].message.content
-			} else if (jsonData[0] === '[' && jsonData[jsonData.length] === ']') {
-				const coreData = jsonData.substring(1, jsonData.length - 1).trim()
-				jsonData = `{"questions":[ ${jsonData} ]}`
-			} else if (objIndex == 0) {
-				jsonData = `{"questions":[ ${jsonData} ]}`
+		if (
+			jsonData[jsonData.length - 1] == ']' ||
+			jsonData[jsonData.length - 1] == '}'
+		) {
+			let objIndex = jsonData.indexOf('{')
+			let listIndex = jsonData.indexOf('[')
+			if (listIndex < objIndex) {
+				jsonData = `{"questions":${jsonData.substring(listIndex)}}`
+				resultObject = JSON.parse(jsonData)
 			} else {
 				jsonData = jsonData.substring(objIndex)
+				console.log(jsonData)
+				console.log('@@@@@@@@@@@@@@@@@@@@@@@@@')
+				resultObject = parseJson(jsonData)
 			}
-			resultObject = JSON.parse(jsonData)
-			console.log('Succeed in the exception handling!')
-		} catch (error) {
-			throw new Error('Finally failed: ', error)
+		} else {
+			const content =
+				'Provide a valid and complete JSON format data with below text:' +
+				'\n' +
+				jsonData
+			const revision = await openai.createChatCompletion({
+				model: 'gpt-3.5-turbo',
+				messages: [{ role: 'user', content: content }],
+				temperature: 0.2,
+			})
+			const reJsonData = revision.data.choices[0].message.content
+
+			console.log(reJsonData)
+			console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+			let objIndex = reJsonData.indexOf('{')
+			let listIndex = reJsonData.indexOf('[')
+			if (reJsonData[0] !== '{' || reJsonData[0] !== '[') {
+				jsonData = jsonData + reJsonData
+				if (jsonData[0] === '[' && jsonData[jsonData.length - 1] === ']') {
+					jsonData = '{"questions":' + jsonData + '}'
+				}
+				// if (listIndex < objIndex) {
+				// 	jsonData = `{"questions":${reJsonData.substring(listIndex)}}`
+				// } else if (listIndex > objIndex) {
+				// 	jsonData = reJsonData.substring(objIndex)
+				// } else {
+				// 	console.log('YES!!!!!!')
+				// 	jsonData = jsonData + reJsonData
+				// 	if (jsonData[0] === '[' && jsonData[jsonData.length - 1] === ']') {
+				// 		jsonData = '{"questions:' + jsonData + '}'
+				// 	}
+				// }
+			} else {
+				jsonData = reJsonData
+			}
+
+			console.log(jsonData)
+			console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
+
+			resultObject = parseJson(jsonData)
 		}
 	}
 	return resultObject
@@ -107,8 +147,6 @@ function jsonToObject(resultObject, unit, quizType) {
 		resultKeys.map((key) => {
 			results.push(resultObject[key])
 		})
-	} else if (quizType == 3) {
-		results = resultObject.pairs
 	} else {
 		results = resultObject.questions
 	}
@@ -127,7 +165,7 @@ function jsonToObject(resultObject, unit, quizType) {
 				quiz.incorrect_answers = results[i].incorrect_answers
 				break
 			case 1:
-				quiz.question = results[i].question
+				quiz.question = results[i].question || results[i].text
 				quiz.difficulty = results[i].difficulty
 				quiz.correct_answer = results[i].answer.toString().toUpperCase()
 				quiz.correct_answer === 'TRUE' || quiz.correct_answer === 'T'
@@ -135,9 +173,10 @@ function jsonToObject(resultObject, unit, quizType) {
 					: quiz.incorrect_answers.push('TRUE')
 				break
 			case 2:
-				quiz.question = results[i].sentence
+				quiz.question =
+					results[i].sentence || results[i].question || results[i].statement
 				quiz.difficulty = results[i].difficulty
-				quiz.correct_answer = results[i].answer.toString()
+				quiz.correct_answer = results[i].answer
 				quiz.incorrect_answers = results[i].incorrect_answers
 				break
 			case 3:
@@ -191,6 +230,7 @@ app.post('/', async (req, res) => {
 	const threshold = 2500
 	let command = ''
 	let resultObject = {}
+	let quizTitle = []
 
 	try {
 		if (prompt.length > threshold) {
@@ -233,13 +273,22 @@ app.post('/', async (req, res) => {
 				contentList.push(content)
 			})
 
-			let objectSum = []
+			let questionSum = []
+			let pairSum = []
 			for (let i = 0; i < contentList.length; i++) {
-				const partialResult = await generateQuiz(contentList[i])
-				objectSum = [...objectSum, ...partialResult.questions]
+				const partialResult = await generateQuiz(contentList[i], quizType)
+				if (quizType === 3) {
+					quizTitle.push(partialResult.title)
+					pairSum = [...pairSum, ...partialResult.pairs]
+				} else {
+					questionSum = [...questionSum, ...partialResult.questions]
+				}
 			}
-
-			resultObject['questions'] = objectSum
+			if (quizType === 3) {
+				resultObject['questions'] = pairSum
+			} else {
+				resultObject['questions'] = questionSum
+			}
 		} else {
 			if (quizType == 3) {
 				command =
@@ -254,14 +303,14 @@ app.post('/', async (req, res) => {
 			}
 			const content = command + '\n' + prompt
 
-			resultObject = await generateQuiz(content)
+			resultObject = await generateQuiz(content, quizType)
 		}
 
 		const questions = jsonToObject(resultObject, unit, quizType)
 
 		res.status(200).send({
 			results: questions,
-			title: quizType == 3 ? '' : resultObject.title,
+			title: quizType == 3 ? '' : quizTitle,
 		})
 	} catch (error) {
 		console.error(error)

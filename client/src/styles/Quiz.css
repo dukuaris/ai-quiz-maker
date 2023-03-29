@@ -1,10 +1,11 @@
 .quiz {
 	display: flex;
 	flex-direction: column;
-	height: 98.5vh;
+	height: 100%;
 	align-items: center;
 	font-family: 'Poppins', sans-serif;
-	background-color: #dbe4c6;
+	background-color: rgb(228, 226, 226);
+	/* background-color: #dbe4c6; */
 }
 
 .subtitle {
