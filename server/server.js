@@ -110,21 +110,16 @@ const generateQuiz = async (content, quizType) => {
 			let objIndex = reJsonData.indexOf('{')
 			let listIndex = reJsonData.indexOf('[')
 			if (reJsonData[0] !== '{' || reJsonData[0] !== '[') {
-				jsonData = jsonData + reJsonData
-				if (jsonData[0] === '[' && jsonData[jsonData.length - 1] === ']') {
-					jsonData = '{"questions":' + jsonData + '}'
+				if (listIndex < objIndex) {
+					jsonData = `{"questions":${reJsonData.substring(listIndex)}}`
+				} else if (listIndex > objIndex) {
+					jsonData = reJsonData.substring(objIndex)
+				} else {
+					jsonData = jsonData + reJsonData
+					if (jsonData[0] === '[' && jsonData[jsonData.length - 1] === ']') {
+						jsonData = '{"questions":' + jsonData + '}'
+					}
 				}
-				// if (listIndex < objIndex) {
-				// 	jsonData = `{"questions":${reJsonData.substring(listIndex)}}`
-				// } else if (listIndex > objIndex) {
-				// 	jsonData = reJsonData.substring(objIndex)
-				// } else {
-				// 	console.log('YES!!!!!!')
-				// 	jsonData = jsonData + reJsonData
-				// 	if (jsonData[0] === '[' && jsonData[jsonData.length - 1] === ']') {
-				// 		jsonData = '{"questions:' + jsonData + '}'
-				// 	}
-				// }
 			} else {
 				jsonData = reJsonData
 			}
