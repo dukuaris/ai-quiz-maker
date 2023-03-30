@@ -1,0 +1,90 @@
+#1 incomplete ending 1: 
+  #1-1: '{' 으로 시작하지만 '}' 로 끝나지 않는 경우
+    ...
+    "12": {
+            "question": "침실 창문에는 무엇을 해야 하는가?",
+            "answer": "커튼을 쳐서 외부의 빛이 들어오지 않도록 한다",
+            "incorrect_answers": ["창문을 열어서 신선한 공기를 통해 수면을 취한다", "창문을 닫아서 방 안의 공기를 유지한다", "창문을 깨끗하게 닦아서 빛이 잘 들어오도록 한다"],
+            "difficulty": "low"
+        },
+    "13": {
+        "question": "수면 부족 상태에서 평일에 부족했던 잠을 주말에 몰아서 자는 것
+
+    -  call gpt for revision
+    
+  #1-2: '{' 으로 시작하고 '}' 로 끝나지만 '{'와 '}' 짝이 맞지 않는 경우
+    ...
+    {
+        "question": "수면 부족에 대한 조언으로 옳지 않은 것은?",
+        "answer": "주말에 몰아서 자는 것이 좋다.",
+        "incorrect_answers": [
+          "선잠후일을 실천해야 한다.",
+          "침대에서 숙면을 방해하는 행동을 하지 않는다.",
+          "햇볕을 쬐는 것이 수면에 도움이 된다."
+        ],
+        "difficulty": "medium"
+      },
+
+    -  call gpt for revision
+
+
+#2 Wrong beginning of format 1: '[' 로 시작
+  #2-1 '[' 로 시작하고 ']'로 끝나는 경우
+    [
+        "1": {
+            "question": "자는 시간을 확보하기 위해서는 하루 24시간 가운데 먼저 무엇을 확보해야 할까?",
+            "answer": "수면 시간",
+            "incorrect_answers": ["일하는 시간", "운동하는 시간", "식사하는 시간"],
+            "difficulty": "medium"
+        },
+        ...
+    ]
+
+    - 아래코드로 재편집
+      jsonData = `{"questions":${jsonData.substring(listIndex)}}`
+
+  #2-2 '[' 로 시작하고 ']'로 끝나지만 '['와 ']' 짝이 맞지 않는 경우
+    [
+    "1": {
+        "question": "자는 시간을 확보하기 위해서는 하루 24시간 가운데 먼저 무엇을 확보해야 할까?",
+        "answer": "수면 시간",
+        "incorrect_answers": ["일하는 시간", "운동하는 시간", "식사하는 시간"],
+        "difficulty": "medium"
+
+    - call gpt for revision
+
+#3 Wrong beginning of format 2: '{' 도 '[' 도 아닌 문자로 시작되는 경우
+  #3-1 '{}' '[]'도 없이 문자만 있는 경우
+    1. What is the best food to eat before bed?
+    A. Chocolate
+    B. Pizza
+    C. Bananas
+    D. Ice cream
+    Answer: C
+    Incorrect answers: A, B, D
+    Difficulty: Medium
+
+    ...
+
+    13. What is the best way to deal with sleep disturbances caused by light?
+    A. Keep the lights on
+    B. Use a night light
+    C. Turn off all lights in the bedroom
+    D. Use a bright lamp
+    Answer: C
+    Incorrect answers: A, B, D
+    Difficulty: Medium
+
+    - call gpt for revision
+
+  #3-2 문자로 시작되지만 '{}'의 JSON format이 밑에 제공되는 경우
+    - #1 검토
+    - 아래코드로 재편집
+      let objIndex = jsonData.indexOf('{')
+      jsonData = ㅓsonData.substring(objIndex)
+
+  #3-3 문자로 시작되지만 '[]'의 list가 밑에 제공되는 경우
+    - #2 검토
+    - 아래코드로 재편집
+      let listIndex = jsonData.indexOf('[')
+      jsonData = ㅓsonData.substring(objIndex)

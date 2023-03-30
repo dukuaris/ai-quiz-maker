@@ -61,59 +61,118 @@ const parseJson = (jsonData) => {
 	return resultObject
 }
 
-const generateQuiz = async (content, quizType) => {
-	const completion = await openai.createChatCompletion({
-		model: 'gpt-3.5-turbo',
-		messages: [{ role: 'user', content: content }],
-		temperature: 0.2,
-	})
+const recallGPT = async (jsonData) => {
+	let tries = 0
+	let maxTries = 3
+	let response = null
+	const content =
+		'Provide a valid and complete JSON format data with below text:' +
+		'\n' +
+		jsonData
 
-	let jsonData = completion.data.choices[0].message.content
-	let resultObject = {}
+	while (tries < maxTries && response === null) {
+		try {
+			response = await openai.createChatCompletion({
+				model: 'gpt-3.5-turbo',
+				messages: [{ role: 'user', content: content }],
+				temperature: 0.1,
+			})
+		} catch (error) {
+			console.log(`Error on attempt ${tries + 1}: ${error}`)
+		}
+		tries++
+	}
+	const reJsonData = response.data.choices[0].message.content
+	return reJsonData
+}
 
-	console.log(jsonData)
-	console.log('*************************************')
-	// Exception Handling of Response Data
-	try {
-		resultObject = parseJson(jsonData)
-	} catch (error) {
-		console.log('The first get request failed: ', error)
-		if (
-			jsonData[jsonData.length - 1] == ']' ||
-			jsonData[jsonData.length - 1] == '}'
-		) {
-			let objIndex = jsonData.indexOf('{')
-			let listIndex = jsonData.indexOf('[')
-			if (listIndex < objIndex) {
-				jsonData = `{"questions":${jsonData.substring(listIndex)}}`
-				resultObject = JSON.parse(jsonData)
-			} else {
-				jsonData = jsonData.substring(objIndex)
-				console.log(jsonData)
-				console.log('@@@@@@@@@@@@@@@@@@@@@@@@@')
-				resultObject = parseJson(jsonData)
+const exceptionHandling = async (data) => {
+	let jsonData = data
+	let isJSON = false
+	const objIndex = jsonData.indexOf('{')
+	const listIndex = jsonData.indexOf('[')
+	if (objIndex === 0) {
+		return await recallGPT(jsonData)
+	} else if (listIndex === 0) {
+		if (jsonData[jsonData.length - 1] === ']') {
+			let count = 0
+			for (let i = 0; i < jsonData.length; i++) {
+				if (jsonData[i] === '[') {
+					count++
+				} else if (jsonData[i] === ']') {
+					count--
+				}
 			}
+			const isMatched = count === 0
+			if (isMatched) {
+				jsonData = `{"questions":${jsonData}}`
+				return jsonData
+			}
+			return await recallGPT(jsonData)
+		}
+		return await recallGPT(jsonData)
+	} else {
+		if (objIndex < listIndex) {
+			exceptionHandling(jsonData.substring(objIndex))
+		} else if (listIndex < objIndex) {
+			exceptionHandling(jsonData.substring(objIndex))
 		} else {
-			const content =
-				'Provide a valid and complete JSON format data with below text:' +
-				'\n' +
-				jsonData
-			const revision = await openai.createChatCompletion({
+			return await recallGPT(jsonData)
+		}
+	}
+}
+
+const generateQuiz = async (content, quizType) => {
+	/// Call to ChatGPT
+	let tries = 0
+	let maxTries = 3
+	let response = null
+
+	while (tries < maxTries && response === null) {
+		try {
+			response = await openai.createChatCompletion({
 				model: 'gpt-3.5-turbo',
 				messages: [{ role: 'user', content: content }],
 				temperature: 0.2,
 			})
-			const reJsonData = revision.data.choices[0].message.content
+		} catch (error) {
+			console.log(`Error on attempt ${tries + 1}: ${error}`)
+		}
+		tries++
+	}
 
-			console.log(reJsonData)
-			console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+	let jsonData = response.data.choices[0].message.content
+	let resultObject = {}
+
+	// Data Refining
+	let trials = 0
+	const pattern = /[^{}\[\]]+/
+	while (trials < 5 && Object.keys(resultObject).length === 0) {
+		try {
+			console.log(jsonData)
+			console.log(`--------------- ${trials + 1}th trial ---------------`)
+			resultObject = await parseJson(jsonData)
+		} catch (error) {
+			console.log(`The ${trials + 1} get request failed: `, error)
+			const reJsonData = await exceptionHandling(jsonData)
+
 			let objIndex = reJsonData.indexOf('{')
+			let objLastIndex = reJsonData.lastIndexOf('}')
 			let listIndex = reJsonData.indexOf('[')
-			if (reJsonData[0] !== '{' || reJsonData[0] !== '[') {
+			let listLastIndex = reJsonData.lastIndexOf(']')
+			if (pattern.test(reJsonData[0])) {
 				if (listIndex < objIndex) {
-					jsonData = `{"questions":${reJsonData.substring(listIndex)}}`
+					console.log(listLastIndex)
+					jsonData = `{"questions":${reJsonData.substring(
+						listIndex,
+						listIndex < listLastIndex && listLastIndex
+					)}}`
 				} else if (listIndex > objIndex) {
-					jsonData = reJsonData.substring(objIndex)
+					console.log(objLastIndex)
+					jsonData = reJsonData.substring(
+						objIndex,
+						objIndex < objLastIndex && objLastIndex
+					)
 				} else {
 					jsonData = jsonData + reJsonData
 					if (jsonData[0] === '[' && jsonData[jsonData.length - 1] === ']') {
@@ -123,13 +182,11 @@ const generateQuiz = async (content, quizType) => {
 			} else {
 				jsonData = reJsonData
 			}
-
-			console.log(jsonData)
-			console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
-
-			resultObject = parseJson(jsonData)
 		}
+		trials++
 	}
+	console.log(resultObject)
+	console.log('------------------- Final -------------------')
 	return resultObject
 }
 

@@ -32,7 +32,7 @@ const Home = () => {
 	const [wordCount, setWordCount] = useState(0)
 	const [ready, setReady] = useState(false)
 	const [activeColor, setActiveColor] = useState('')
-	const serverAddress = 'https://quiz-maker.onrender.com'
+	const serverAddress = 'http://localhost:5001'
 	// https://quiz-maker.onrender.com
 	// http://localhost:5001
 
@@ -72,6 +72,7 @@ const Home = () => {
 					})
 
 					const data = await response.json()
+					console.log(data)
 					if (data.results != undefined) {
 						dispatch(setQuestions(data.results))
 						setReady(true)
