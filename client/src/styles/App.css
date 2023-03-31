@@ -55,7 +55,12 @@ a {
 }
 
 .logo {
-	margin-top: 20px;
+	margin: 10px 0 5px 0;
+	width: 400px;
+}
+
+.beta {
+	width: 70px;
 }
 
 /* For Question */
@@ -109,6 +114,12 @@ a {
 	}
 	.title {
 		font-size: 5vw;
+	}
+	.logo {
+		width: 300px;
+	}
+	.beta {
+		width: 50px;
 	}
 }
 

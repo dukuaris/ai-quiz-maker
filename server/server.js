@@ -149,6 +149,7 @@ const generateQuiz = async (content, quizType) => {
 	const startRegex = /[{\[]/
 	const objEndRegex = /}\n}/
 	const listEndRegex = /}\n]/
+	const flawedJsonRegex = /,\s*]/g
 	let tries = 0
 	let maxTries = 3
 	let response = null
@@ -177,6 +178,9 @@ const generateQuiz = async (content, quizType) => {
 	const pattern = /[{}\[\]]+/
 	while (trials < 5 && Object.keys(resultObject).length === 0) {
 		try {
+			if (flawedJsonRegex.test(jsonData)) {
+				jsonData = jsonData.replace(flawedJsonRegex, ']')
+			}
 			resultObject = await parseJson(jsonData)
 		} catch (error) {
 			console.log(`The ${trials + 1} get request failed: `, error)
