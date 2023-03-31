@@ -19,9 +19,9 @@ const typeList = ['multiple', 'true-false', 'fill-in-the-blank', 'matching']
 const requestList = [
 	'multiple-choice questions with following text, and provide a question, an answer, a list of incorrect answers, and the difficulty from high to medium to low for each question in a JSON format:',
 	'true/false questions with following text, and provide the questions, the answers, and the difficulties from high to medium to low in a JSON format:',
-	'fill-in-the-blank quizzes to be filled with no more than 3 words, with following information, and provide a sentence with one blank space, an answer, a list of incorrect answers, and the difficulty from high to medium to low for each quiz, all in a JSON format:',
+	'fill-in-the-blank questions to be filled with no more than 3 words, with following information, and provide a sentence with one blank space, an answer, a list of incorrect answers, and the difficulty from high to medium to low for each question, all in a JSON format:',
 	[
-		'a matching quiz with following information and provide a title of the information and a list with',
+		'matching questions with following information and provide a title of the information and a list with',
 		'pairs of a term and a description consisting of less than 10 words, both the title and the pairs in a JSON format:',
 	],
 ]
@@ -61,14 +61,17 @@ const parseJson = (jsonData) => {
 	return resultObject
 }
 
-const recallGPT = async (jsonData) => {
+const recallGPT = async (jsonData, quizType) => {
 	let tries = 0
 	let maxTries = 3
 	let response = null
-	const content =
-		'Provide a valid and complete JSON format data with below text:' +
-		'\n' +
-		jsonData
+	const prompt = [
+		'Provide a complete data in JSON format with keys of "question","answer","incorrect_answers" and "difficulty" with below text:',
+		'Provide a complete data in JSON format with keys of "question","answer" and "difficulty" with below text:',
+		'Provide a complete data in JSON format with keys of "sentence","answer","incorrect_answers" and "difficulty" with below text:',
+		'Provide a complete data in JSON format with keys of "term" and "description" with below text:',
+	]
+	const content = prompt[quizType] + '\n' + jsonData
 
 	while (tries < maxTries && response === null) {
 		try {
@@ -86,13 +89,18 @@ const recallGPT = async (jsonData) => {
 	return reJsonData
 }
 
-const exceptionHandling = async (data) => {
+const exceptionHandling = async (data, quizType) => {
 	let jsonData = data
-	let isJSON = false
+	const objEndRegex = /}\n}$/.test(jsonData)
+	const listEndRegex = /}\n]$/.test(jsonData)
+	const objNoEndRegex = /}\n}/.test(jsonData)
+	const listNoEndRegex = /}\n]/.test(jsonData)
 	const objIndex = jsonData.indexOf('{')
 	const listIndex = jsonData.indexOf('[')
+	const objLastIndex = jsonData.lastIndexOf('}')
+	const listLastIndex = jsonData.lastIndexOf(']')
 	if (objIndex === 0) {
-		return await recallGPT(jsonData)
+		return await recallGPT(jsonData, quizType)
 	} else if (listIndex === 0) {
 		if (jsonData[jsonData.length - 1] === ']') {
 			let count = 0
@@ -103,27 +111,44 @@ const exceptionHandling = async (data) => {
 					count--
 				}
 			}
-			const isMatched = count === 0
-			if (isMatched) {
-				jsonData = `{"questions":${jsonData}}`
+			if (count === 0) {
+				jsonData = `{"questions":[${jsonData}]}`
 				return jsonData
 			}
-			return await recallGPT(jsonData)
+			return await recallGPT(jsonData, quizType)
 		}
-		return await recallGPT(jsonData)
+		return await recallGPT(jsonData, quizType)
 	} else {
 		if (objIndex < listIndex) {
-			exceptionHandling(jsonData.substring(objIndex))
+			if (objEndRegex) {
+				jsonData = jsonData.substring(objIndex)
+			} else if (objNoEndRegex) {
+				jsonData = jsonData.substring(objIndex, objLastIndex + 1)
+			} else {
+				return await recallGPT(jsonData, quizType)
+			}
 		} else if (listIndex < objIndex) {
-			exceptionHandling(jsonData.substring(objIndex))
+			if (listEndRegex) {
+				jsonData = `{"questions":${jsonData.substring(listIndex)}}`
+			} else if (listNoEndRegex) {
+				jsonData = `{"questions":${jsonData.substring(
+					listIndex,
+					listLastIndex + 1
+				)}}`
+			} else {
+				return await recallGPT(jsonData, quizType)
+			}
 		} else {
-			return await recallGPT(jsonData)
+			return await recallGPT(jsonData, quizType)
 		}
 	}
 }
 
 const generateQuiz = async (content, quizType) => {
 	/// Call to ChatGPT
+	const startRegex = /[{\[]/
+	const objEndRegex = /}\n}/
+	const listEndRegex = /}\n]/
 	let tries = 0
 	let maxTries = 3
 	let response = null
@@ -144,43 +169,37 @@ const generateQuiz = async (content, quizType) => {
 	let jsonData = response.data.choices[0].message.content
 	let resultObject = {}
 
+	console.log(jsonData)
+	console.log(`--------------- 1st trial ---------------`)
+
 	// Data Refining
 	let trials = 0
-	const pattern = /[^{}\[\]]+/
+	const pattern = /[{}\[\]]+/
 	while (trials < 5 && Object.keys(resultObject).length === 0) {
 		try {
-			console.log(jsonData)
-			console.log(`--------------- ${trials + 1}th trial ---------------`)
 			resultObject = await parseJson(jsonData)
 		} catch (error) {
 			console.log(`The ${trials + 1} get request failed: `, error)
-			const reJsonData = await exceptionHandling(jsonData)
-
-			let objIndex = reJsonData.indexOf('{')
-			let objLastIndex = reJsonData.lastIndexOf('}')
-			let listIndex = reJsonData.indexOf('[')
-			let listLastIndex = reJsonData.lastIndexOf(']')
-			if (pattern.test(reJsonData[0])) {
-				if (listIndex < objIndex) {
-					console.log(listLastIndex)
-					jsonData = `{"questions":${reJsonData.substring(
-						listIndex,
-						listIndex < listLastIndex && listLastIndex
-					)}}`
-				} else if (listIndex > objIndex) {
-					console.log(objLastIndex)
-					jsonData = reJsonData.substring(
-						objIndex,
-						objIndex < objLastIndex && objLastIndex
-					)
-				} else {
-					jsonData = jsonData + reJsonData
-					if (jsonData[0] === '[' && jsonData[jsonData.length - 1] === ']') {
-						jsonData = '{"questions":' + jsonData + '}'
-					}
+			let count = 0
+			for (let i = 0; i < jsonData.length; i++) {
+				if (jsonData[i] === '{') {
+					count++
+				} else if (jsonData[i] === '}') {
+					count--
 				}
+			}
+			if (count === 0) {
+				const jsonArray = jsonData.trim().split('\n\n')
+				jsonData = `{"questions":[${jsonArray}]}`
+				console.log(jsonData)
+				console.log(`--------------- ${trials + 2}th trial ---------------`)
 			} else {
-				jsonData = reJsonData
+				const reJsonData = await exceptionHandling(jsonData, quizType)
+
+				console.log(reJsonData)
+				console.log(`--------------- ${trials + 2}th trial ---------------`)
+
+				jsonData = jsonData + reJsonData
 			}
 		}
 		trials++
@@ -330,8 +349,15 @@ app.post('/', async (req, res) => {
 			for (let i = 0; i < contentList.length; i++) {
 				const partialResult = await generateQuiz(contentList[i], quizType)
 				if (quizType === 3) {
-					quizTitle.push(partialResult.title)
-					pairSum = [...pairSum, ...partialResult.pairs]
+					if (partialResult.pairs === undefined) {
+						partialResult.questions.map(({ title, pairs }) => {
+							quizTitle.push(title)
+							pairSum = [...pairSum, ...pairs]
+						})
+					} else {
+						quizTitle.push(partialResult.title)
+						pairSum = [...pairSum, ...partialResult.pairs]
+					}
 				} else {
 					questionSum = [...questionSum, ...partialResult.questions]
 				}

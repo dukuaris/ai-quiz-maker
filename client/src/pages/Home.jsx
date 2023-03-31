@@ -32,7 +32,7 @@ const Home = () => {
 	const [wordCount, setWordCount] = useState(0)
 	const [ready, setReady] = useState(false)
 	const [activeColor, setActiveColor] = useState('')
-	const serverAddress = 'http://localhost:5001'
+	const serverAddress = 'https://quiz-maker.onrender.com'
 	// https://quiz-maker.onrender.com
 	// http://localhost:5001
 
@@ -140,7 +140,7 @@ const Home = () => {
 						className="input-box"
 						style={{ marginBottom: 25 }}
 						name="name"
-						label="Enter Your Name"
+						label="Enter Your Subject"
 						variant="outlined"
 						onChange={(e) => dispatch(setName(e.target.value))}
 					/>

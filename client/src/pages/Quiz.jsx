@@ -43,7 +43,7 @@ const Quiz = () => {
 	return (
 		<div className="quiz">
 			<br />
-			<span className="subtitle">Go! {name}</span>
+			<span className="subtitle">{name}</span>
 			{questions ? (
 				<>
 					<div className="quizInfo">

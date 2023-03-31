@@ -1,5 +1,4 @@
 import { Button } from '@mui/material'
-import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -38,7 +37,7 @@ const Result = () => {
 	return (
 		<div className="result">
 			<p className="title">
-				{name}'s Score
+				{name}: Score
 				<br />
 				{score} / {questions.length}
 			</p>
