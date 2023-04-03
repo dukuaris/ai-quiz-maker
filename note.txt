@@ -1,2 +1,5 @@
-Crawling lecture: https://youtu.be/S67gyqnYHmI
+1. Crawling lecture: https://youtu.be/S67gyqnYHmI
     puppeteer codes sample: https://github.com/bradtraversy/courses-scrape 
+
+2. Puppeteer on Render issue
+    youtube: https://youtu.be/6cm6G78ZDmM?t=721 

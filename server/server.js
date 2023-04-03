@@ -3,6 +3,7 @@ const puppeteer = require('puppeteer')
 require('dotenv').config()
 const cors = require('cors')
 const { Configuration, OpenAIApi } = require('openai')
+const { scrapeText } = require('./scrapeText')
 
 const configuration = new Configuration({
 	apiKey: process.env.OPENAI_API_KEY,
@@ -277,25 +278,7 @@ app.get('/', async (req, res) => {
 })
 
 app.post('/crawl', async (req, res) => {
-	try {
-		const url = req.body.url
-		const browser = await puppeteer.launch()
-		const page = await browser.newPage()
-		await page.goto(url)
-
-		const title = await page.evaluate(() => document.title)
-		const text = await page.evaluate(() => document.body.innerText)
-
-		await browser.close()
-
-		res.status(200).send({
-			title: title,
-			results: text,
-		})
-	} catch (error) {
-		console.error(error)
-		res.status(500).send(error || 'Crawling failed!')
-	}
+	scrapeText(req, res)
 })
 
 app.post('/', async (req, res) => {
