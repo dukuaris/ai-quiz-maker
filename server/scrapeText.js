@@ -17,6 +17,7 @@ const scrapeText = async (req, res) => {
 	})
 	try {
 		const page = await browser.newPage()
+		await page.setDefaultNavigationTimeout(0)
 		await page.goto(url)
 
 		const title = await page.evaluate(() => document.title)
