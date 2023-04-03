@@ -3,6 +3,10 @@ require('dotenv').config()
 
 const scrapeText = async (req, res) => {
 	const url = req.body.url
+	//Not On Docker
+	// const browser = await puppeteer.launch()
+
+	//On Docker
 	const browser = await puppeteer.launch({
 		args: [
 			'--disable-setuid-sandbox',
