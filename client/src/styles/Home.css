@@ -25,18 +25,21 @@
 	background-color: white;
 }
 
-.url {
+.url,
+.pdf {
 	display: flex;
 	width: auto;
 	margin-bottom: 20px;
 	justify-content: space-between;
 }
 
-.url-box {
+.url-box,
+.pdf-box {
 	width: 78%;
 }
 
-.url-button {
+.url-button,
+.pdf-button {
 	width: 20%;
 }
 

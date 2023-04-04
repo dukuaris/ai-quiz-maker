@@ -1,4 +1,4 @@
-import { read, utils, writeFileXLSX } from 'xlsx'
+import { utils, writeFileXLSX } from 'xlsx'
 
 const createSheet = (questions, name) => {
 	let quizzes = []

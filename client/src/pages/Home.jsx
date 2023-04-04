@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import { Button, TextField, MenuItem } from '@mui/material'
+import { Button, TextField, MenuItem, Input } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
+import pdfjsLib from 'pdfjs-dist'
 
 import {
 	setQuestions,
@@ -15,6 +16,7 @@ import ErrorMessages from '../components/ErrorMessages'
 import types from '../data/types.js'
 import '../styles/Home.css'
 import createSheet from '../utils/createSheet.js'
+import getPdfContent from '../utils/readPDF'
 
 const Home = () => {
 	const { questions, name, unit } = useSelector((state) => state.quiz)
@@ -26,6 +28,7 @@ const Home = () => {
 		content: '',
 		url: '',
 	})
+
 	const [error, setError] = useState(false)
 	const [loading, setLoading] = useState(false)
 	const [crawling, setCrawling] = useState(false)
@@ -33,7 +36,7 @@ const Home = () => {
 	const [ready, setReady] = useState(false)
 	const [activeColor, setActiveColor] = useState('')
 	const serverAddress = 'https://ai-quiz-maker.onrender.com'
-	// https://quiz-maker.onrender.com
+	// https://ai-quiz-maker.onrender.com
 	// http://localhost:5001
 
 	useEffect(() => {
@@ -117,6 +120,16 @@ const Home = () => {
 			alert('Please provide URL')
 		}
 	}
+
+	// const handlePdf = async (e) => {
+	// 	const file = e.target.files[0]
+	// 	const reader = new FileReader()
+	// 	reader.readAsArrayBuffer(file)
+	// 	reader.onloadend = function (e) {
+	// 		const data = new Uint8Array(e.target.result)
+	// 		getPdfContent(data)
+	// 	}
+	// }
 
 	const handleChange = (e) => {
 		if (e.target.name === 'content') {
@@ -204,6 +217,11 @@ const Home = () => {
 							Get Text
 						</LoadingButton>
 					</div>
+					{/* <div className="pdf">
+						<div>
+							<input type="file" onChange={handlePdf} accept=".pdf" />
+						</div>
+					</div> */}
 					<div className="home-controls">
 						<LoadingButton
 							className="control-button"

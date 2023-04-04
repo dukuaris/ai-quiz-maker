@@ -79,7 +79,7 @@ const recallGPT = async (jsonData, quizType) => {
 			response = await openai.createChatCompletion({
 				model: 'gpt-3.5-turbo',
 				messages: [{ role: 'user', content: content }],
-				temperature: 0.1,
+				temperature: 0.5,
 			})
 		} catch (error) {
 			console.log(`Error on attempt ${tries + 1}: ${error}`)
@@ -92,9 +92,9 @@ const recallGPT = async (jsonData, quizType) => {
 
 const exceptionHandling = async (data, quizType) => {
 	let jsonData = data
-	const objEndRegex = /}\n}$/.test(jsonData)
+	const objEndRegex = /]\n}$/.test(jsonData)
 	const listEndRegex = /}\n]$/.test(jsonData)
-	const objNoEndRegex = /}\n}/.test(jsonData)
+	const objNoEndRegex = /]\n}/.test(jsonData)
 	const listNoEndRegex = /}\n]/.test(jsonData)
 	const objIndex = jsonData.indexOf('{')
 	const listIndex = jsonData.indexOf('[')
@@ -148,7 +148,7 @@ const exceptionHandling = async (data, quizType) => {
 const generateQuiz = async (content, quizType) => {
 	/// Call to ChatGPT
 	const startRegex = /[{\[]/
-	const objEndRegex = /}\n}/
+	const objEndRegex = /]\n}/
 	const listEndRegex = /}\n]/
 	const flawedJsonRegex = /,\s*]/g
 	let tries = 0
