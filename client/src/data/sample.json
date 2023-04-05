@@ -1,54 +1,102 @@
+1. Meditation can help sharpen _________.
+Sentence: One of the benefits of meditation is its ability to ______ attention.
+Answer: attention
+Incorrect answers: stress, compassion, mental health
+Difficulty: low
+
+2. What is one of the biggest challenges for meditators?
+Sentence: ________ is maintaining a regular practice.
+Answer: Maintaining a regular practice
+Incorrect answers: Finding a good space, Choosing the right cushion, Setting a timer
+Difficulty: low
+
+3. What is a cue that some meditators use to prompt meditation?
+Sentence: Some meditators set an alarm or a reminder on their ________.
+Answer: phone
+Incorrect answers: meditation cushion, incense, candle
+Difficulty: medium
+
+4. What is a doable amount of time for beginners to dedicate to meditation?
+Sentence: Beginners can dedicate themselves to a very doable ________ minutes.
+Answer: five
+Incorrect answers: ten, twenty, thirty
+Difficulty: low
+
+5. What is a benefit of having a regular meditation practice with someone else?
+Sentence: Having a regular meditation practice with someone else can be ________.
+Answer: beneficial
+Incorrect answers: distracting, frustrating, boring
+Difficulty: medium
+
+6. What should you keep your expectations of meditation at?
+Sentence: Keep your expectations ________.
+Answer: low
+Incorrect answers: high, moderate, non-existent
+Difficulty: low
+
+7. What can make meditation more enjoyable?
+Sentence: Making meditation _________.
+Answer: enjoyable
+Incorrect answers: longer, harder, quieter
+Difficulty: low
+
+8. What is a benefit of repeating the same small rituals when meditating?
+Sentence: Repeating the same small rituals can render a habit ________.
+Answer: automatic
+Incorrect answers: difficult, boring, unnecessary
+Difficulty: medium
+
+JSON format:
+
 {
-	"questions": [
-		{
-			"question": "What is the benefit of installing a dim nightlight in the hall or bathroom?",
-			"answer": "It makes it easier for you to fall back to sleep",
-			"incorrect_answers": [
-				"It helps you see better in the dark",
-				"It prevents you from tripping over things",
-				"It wakes you up more"
-			],
-			"difficulty": "low"
-		},
-		{
-			"question": "How does regular exercise improve sleep?",
-			"answer": "It improves the symptoms of insomnia and sleep apnea and increases the amount of time you spend in the deep, restorative stages of sleep",
-			"incorrect_answers": [
-				"It makes you more tired during the day",
-				"It makes it harder to fall asleep at night",
-				"It has no effect on sleep"
-			],
-			"difficulty": "medium"
-		},
-		{
-			"question": "When is the best time to finish moderate to vigorous workouts?",
-			"answer": "At least three hours before bedtime",
-			"incorrect_answers": [
-				"Right before bedtime",
-				"Right after waking up",
-				"During the middle of the night"
-			],
-			"difficulty": "medium"
-		},
-		{
-			"question": "What type of diet may help you to fall asleep faster and stay asleep for longer?",
-			"answer": "A Mediterranean-type diet rich in vegetables, fruit, and healthy fats—and limited amounts of red meat",
-			"incorrect_answers": [
-				"A diet high in sugar and refined carbs",
-				"A diet high in red meat",
-				"A diet high in caffeine and nicotine"
-			],
-			"difficulty": "high"
-		},
-		{
-			"question": "What should you avoid within two hours of bedtime?",
-			"answer": "Heavy, rich foods",
-			"incorrect_answers": [
-				"Relaxing, low-impact exercises",
-				"Spicy or acidic foods",
-				"Caffeine and nicotine"
-			],
-			"difficulty": "low"
-		}
-	]
+  "questions": [
+    {
+      "sentence": "One of the benefits of meditation is its ability to ______ attention.",
+      "answer": "attention",
+      "incorrect_answers": ["stress", "compassion", "mental health"],
+      "difficulty": "low"
+    },
+    {
+      "sentence": "_______ is maintaining a regular practice.",
+      "answer": "Maintaining a regular practice",
+      "incorrect_answers": ["Finding a good space", "Choosing the right cushion", "Setting a timer"],
+      "difficulty": "low"
+    },
+    {
+      "sentence": "Some meditators set an alarm or a reminder on their ________.",
+      "answer": "phone",
+      "incorrect_answers": ["meditation cushion", "incense", "candle"],
+      "difficulty": "medium"
+    },
+    {
+      "sentence": "Beginners can dedicate themselves to a very doable ________ minutes.",
+      "answer": "five",
+      "incorrect_answers": ["ten", "twenty", "thirty"],
+      "difficulty": "low"
+    },
+    {
+      "sentence": "Having a regular meditation practice with someone else can be ________.",
+      "answer": "beneficial",
+      "incorrect_answers": ["distracting", "frustrating", "boring"],
+      "difficulty": "medium"
+    },
+    {
+      "sentence": "Keep your expectations ________.",
+      "answer": "low",
+      "incorrect_answers": ["high", "moderate", "non-existent"],
+      "difficulty": "low"
+    },
+    {
+      "sentence": "Making meditation ________.",
+      "answer": "enjoyable",
+      "incorrect_answers": ["longer", "harder", "quieter"],
+      "difficulty": "low"
+    },
+    {
+      "sentence": "Repeating the same small rituals can render a habit ________.",
+      "answer": "automatic",
+      "incorrect_answers": ["difficult", "boring", "unnecessary"],
+      "difficulty": "medium"
+    }
+  ]
 }

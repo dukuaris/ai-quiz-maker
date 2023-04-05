@@ -4,6 +4,8 @@ require('dotenv').config()
 const cors = require('cors')
 const { Configuration, OpenAIApi } = require('openai')
 const { scrapeText } = require('./scrapeText')
+const { exceptionHandling } = require('./exceptionHandling')
+const { tryJSON } = require('./tryJson')
 
 const configuration = new Configuration({
 	apiKey: process.env.OPENAI_API_KEY,
@@ -20,12 +22,14 @@ const typeList = ['multiple', 'true-false', 'fill-in-the-blank', 'matching']
 const requestList = [
 	'multiple-choice questions with following text, and provide a question, an answer, a list of incorrect answers, and the difficulty from high to medium to low for each question in a JSON format:',
 	'true/false questions with following text, and provide the questions, the answers, and the difficulties from high to medium to low in a JSON format:',
-	'fill-in-the-blank questions to be filled with no more than 3 words, with following information, and provide a sentence with one blank space, an answer, a list of incorrect answers, and the difficulty from high to medium to low for each question, all in a JSON format:',
+	'fill-in-the-blank questions to be filled with no more than 3 words, with following information, and provide a sentence with one blank space, an answer, a list of incorrect answers, and the difficulty from high to medium to low for each question, all in a JSON format with keys of "sentence","answer","incorrect_answers" and "difficulty":',
 	[
 		'matching questions with following information and provide a title of the information and a list with',
 		'pairs of a term and a description consisting of less than 10 words, both the title and the pairs in a JSON format:',
 	],
 ]
+const objectRegex =
+	/({\s*\n*"sentence": "(.*?)",\s*\n*"answer": "(.*?)",\s*\n*"incorrect_answers": \[(.*?)\],\s*\n*"difficulty": "(.*?)"\s*\n*})|({\s*\n*"question": "(.*?)",\s*\n*"answer": "(.*?)",\s*\n*"incorrect_answers": \[(.*?)\],\s*\n*"difficulty": "(.*?)"\s*\n*})/g
 
 class QuizQuestion {
 	constructor(
@@ -47,19 +51,19 @@ class QuizQuestion {
 	}
 }
 
-const parseJson = (jsonData) => {
-	let dataKeys = []
-	let questionList = []
-	let resultObject = JSON.parse(jsonData)
-	dataKeys = Object.keys(resultObject)
+const parseJson = (jsonData, quizType) => {
+	let resultObject = { questions: [] }
+	let result = JSON.parse(jsonData)
+	const dataKeys = Object.keys(result)
 	if (dataKeys?.length > 1 && quizType !== 3) {
+		console.log(dataKeys)
 		dataKeys.map((key) => {
-			questionList.push(JSON.stringify(resultObject[key]))
+			resultObject.questions.push(result[key])
 		})
-		jsonData = `{"questions":[${questionList}]}`
-		resultObject = JSON.parse(jsonData)
+		return resultObject
+	} else {
+		return result
 	}
-	return resultObject
 }
 
 const recallGPT = async (jsonData, quizType) => {
@@ -90,67 +94,10 @@ const recallGPT = async (jsonData, quizType) => {
 	return reJsonData
 }
 
-const exceptionHandling = async (data, quizType) => {
-	let jsonData = data
-	const objEndRegex = /]\n}$/.test(jsonData)
-	const listEndRegex = /}\n]$/.test(jsonData)
-	const objNoEndRegex = /]\n}/.test(jsonData)
-	const listNoEndRegex = /}\n]/.test(jsonData)
-	const objIndex = jsonData.indexOf('{')
-	const listIndex = jsonData.indexOf('[')
-	const objLastIndex = jsonData.lastIndexOf('}')
-	const listLastIndex = jsonData.lastIndexOf(']')
-	if (objIndex === 0) {
-		return await recallGPT(jsonData, quizType)
-	} else if (listIndex === 0) {
-		if (jsonData[jsonData.length - 1] === ']') {
-			let count = 0
-			for (let i = 0; i < jsonData.length; i++) {
-				if (jsonData[i] === '[') {
-					count++
-				} else if (jsonData[i] === ']') {
-					count--
-				}
-			}
-			if (count === 0) {
-				jsonData = `{"questions":[${jsonData}]}`
-				return jsonData
-			}
-			return await recallGPT(jsonData, quizType)
-		}
-		return await recallGPT(jsonData, quizType)
-	} else {
-		if (objIndex < listIndex) {
-			if (objEndRegex) {
-				jsonData = jsonData.substring(objIndex)
-			} else if (objNoEndRegex) {
-				jsonData = jsonData.substring(objIndex, objLastIndex + 1)
-			} else {
-				return await recallGPT(jsonData, quizType)
-			}
-		} else if (listIndex < objIndex) {
-			if (listEndRegex) {
-				jsonData = `{"questions":${jsonData.substring(listIndex)}}`
-			} else if (listNoEndRegex) {
-				jsonData = `{"questions":${jsonData.substring(
-					listIndex,
-					listLastIndex + 1
-				)}}`
-			} else {
-				return await recallGPT(jsonData, quizType)
-			}
-		} else {
-			return await recallGPT(jsonData, quizType)
-		}
-	}
-}
+// tryJSON()
 
 const generateQuiz = async (content, quizType) => {
 	/// Call to ChatGPT
-	const startRegex = /[{\[]/
-	const objEndRegex = /]\n}/
-	const listEndRegex = /}\n]/
-	const flawedJsonRegex = /,\s*]/g
 	let tries = 0
 	let maxTries = 3
 	let response = null
@@ -176,36 +123,17 @@ const generateQuiz = async (content, quizType) => {
 
 	// Data Refining
 	let trials = 0
-	const pattern = /[{}\[\]]+/
+	const flawedJsonRegex = /,\s*]/g
 	while (trials < 5 && Object.keys(resultObject).length === 0) {
 		try {
 			if (flawedJsonRegex.test(jsonData)) {
 				jsonData = jsonData.replace(flawedJsonRegex, ']')
 			}
-			resultObject = await parseJson(jsonData)
+			resultObject = await parseJson(jsonData, quizType)
 		} catch (error) {
 			console.log(`The ${trials + 1} get request failed: `, error)
-			let count = 0
-			for (let i = 0; i < jsonData.length; i++) {
-				if (jsonData[i] === '{') {
-					count++
-				} else if (jsonData[i] === '}') {
-					count--
-				}
-			}
-			if (count === 0) {
-				const jsonArray = jsonData.trim().split('\n\n')
-				jsonData = `{"questions":[${jsonArray}]}`
-				console.log(jsonData)
-				console.log(`--------------- ${trials + 2}th trial ---------------`)
-			} else {
-				const reJsonData = await exceptionHandling(jsonData, quizType)
 
-				console.log(reJsonData)
-				console.log(`--------------- ${trials + 2}th trial ---------------`)
-
-				jsonData = jsonData + reJsonData
-			}
+			jsonData = await exceptionHandling(jsonData, quizType, recallGPT)
 		}
 		trials++
 	}
