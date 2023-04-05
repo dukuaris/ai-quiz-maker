@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { Button, TextField, MenuItem, Input } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
-import pdfjsLib from 'pdfjs-dist'
 
 import {
 	setQuestions,
@@ -16,7 +15,7 @@ import ErrorMessages from '../components/ErrorMessages'
 import types from '../data/types.js'
 import '../styles/Home.css'
 import createSheet from '../utils/createSheet.js'
-import getPdfContent from '../utils/readPDF'
+import convertPdf from '../utils/readPdf.js'
 
 const Home = () => {
 	const { questions, name, unit } = useSelector((state) => state.quiz)
@@ -121,15 +120,10 @@ const Home = () => {
 		}
 	}
 
-	// const handlePdf = async (e) => {
-	// 	const file = e.target.files[0]
-	// 	const reader = new FileReader()
-	// 	reader.readAsArrayBuffer(file)
-	// 	reader.onloadend = function (e) {
-	// 		const data = new Uint8Array(e.target.result)
-	// 		getPdfContent(data)
-	// 	}
-	// }
+	const handlePdf = (e) => {
+		const file = e.target.files[0]
+		convertPdf(file)
+	}
 
 	const handleChange = (e) => {
 		if (e.target.name === 'content') {
@@ -217,11 +211,11 @@ const Home = () => {
 							Get Text
 						</LoadingButton>
 					</div>
-					{/* <div className="pdf">
+					<div className="pdf">
 						<div>
 							<input type="file" onChange={handlePdf} accept=".pdf" />
 						</div>
-					</div> */}
+					</div>
 					<div className="home-controls">
 						<LoadingButton
 							className="control-button"
