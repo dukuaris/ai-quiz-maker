@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { Button, TextField, MenuItem } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
+import 'https://npmcdn.com/pdfjs-dist/build/pdf.js'
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+	'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.5.141/build/pdf.worker.min.js'
 
 import {
 	setQuestions,
@@ -14,8 +18,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import ErrorMessages from '../components/ErrorMessages'
 import types from '../data/types.js'
 import '../styles/Home.css'
-import createSheet, { readSheet } from '../utils/handleSheet.js'
-import Pdf2TextClass from '../utils/readPdf.js'
+import createSheet, { readSheet } from '../utils/handleSheet'
+import Pdf2TextClass from '../utils/readPdf'
 
 const Home = () => {
 	const { questions, name, unit } = useSelector((state) => state.quiz)
