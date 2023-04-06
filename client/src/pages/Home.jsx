@@ -14,14 +14,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import ErrorMessages from '../components/ErrorMessages'
 import types from '../data/types.js'
 import '../styles/Home.css'
-import createSheet from '../utils/createSheet.js'
+import createSheet, { readSheet } from '../utils/handleSheet.js'
 import Pdf2TextClass from '../utils/readPdf.js'
 
 const Home = () => {
 	const { questions, name, unit } = useSelector((state) => state.quiz)
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
+	const [subject, setSubject] = useState('')
 	const [type, setType] = useState('')
+	const [number, setNumber] = useState(0)
 	const [userInput, setUserInput] = useState('')
 	const [form, setForm] = useState({
 		content: '',
@@ -34,6 +36,8 @@ const Home = () => {
 	const [wordCount, setWordCount] = useState(0)
 	const [ready, setReady] = useState(false)
 	const [activeColor, setActiveColor] = useState('')
+
+	const typeList = ['multiple', 'true-false', 'fill-in-the-blank', 'matching']
 	const serverAddress = 'https://ai-quiz-maker.onrender.com'
 	// https://ai-quiz-maker.onrender.com
 	// http://localhost:5001
@@ -74,7 +78,8 @@ const Home = () => {
 					})
 
 					const data = await response.json()
-					if (data.results != undefined) {
+					console.log(data.results)
+					if (data.results !== undefined) {
 						dispatch(setQuestions(data.results))
 						setReady(true)
 					} else {
@@ -117,6 +122,28 @@ const Home = () => {
 			}
 		} else {
 			alert('Please provide URL')
+		}
+	}
+
+	const handleXlsx = (e) => {
+		const file = e.target.files[0]
+		let fileReader = new FileReader()
+		fileReader.onload = () => {
+			setLoading(true)
+			readSheet(fileReader.result, null, (data) => {
+				setSubject(file.name.split('_')[0])
+				setType(typeList.indexOf(data[0].type))
+				setNumber(data.length)
+				dispatch(setQuestions(data))
+				setReady(true)
+				setLoading(false)
+			})
+		}
+
+		try {
+			fileReader.readAsArrayBuffer(file)
+		} catch (error) {
+			alert('Please provide proper pdf document.')
 		}
 	}
 
@@ -163,7 +190,11 @@ const Home = () => {
 						name="name"
 						label="Enter Your Subject"
 						variant="outlined"
-						onChange={(e) => dispatch(setName(e.target.value))}
+						onChange={(e) => {
+							dispatch(setName(e.target.value))
+							setSubject(e.target.value)
+						}}
+						value={subject}
 					/>
 					<TextField
 						className="input-box"
@@ -186,12 +217,16 @@ const Home = () => {
 						name="unit"
 						label="Enter Number of Questions (1-20)"
 						variant="outlined"
-						onChange={(e) => dispatch(setUnit(Number(e.target.value)))}
+						onChange={(e) => {
+							dispatch(setUnit(Number(e.target.value)))
+							setNumber(e.target.value)
+						}}
+						value={number}
 					/>
 					<div className="counting">
 						<p className="count">
-							text count&nbsp;:&nbsp;{'2500 >'}&nbsp;
-							<span style={{ color: wordCount > 2500 ? 'red' : 'black' }}>
+							text count&nbsp;:&nbsp;{'25000 >'}&nbsp;
+							<span style={{ color: wordCount > 25000 ? 'red' : 'black' }}>
 								{wordCount}
 							</span>{' '}
 						</p>
@@ -220,6 +255,7 @@ const Home = () => {
 							style={{
 								backgroundColor: '#0097B3',
 								fontSize: 15,
+								height: 54,
 							}}
 							sx={{
 								border: activeColor,
@@ -230,13 +266,14 @@ const Home = () => {
 							loading={crawling}
 							onClick={handleCrawl}
 						>
-							FROM URL
+							URL
 						</LoadingButton>
 						<LoadingButton
 							className="url-button"
 							style={{
 								backgroundColor: '#0097B3',
 								fontSize: 15,
+								height: 54,
 							}}
 							sx={{
 								border: activeColor,
@@ -247,7 +284,7 @@ const Home = () => {
 							size="small"
 							loading={crawling}
 						>
-							FROM PDF
+							PDF
 							<input
 								hidden
 								type="file"
@@ -266,6 +303,22 @@ const Home = () => {
 							onClick={handleSubmit}
 						>
 							{ready ? 'Clear' : 'Submit'}
+						</LoadingButton>
+						<LoadingButton
+							className="control-button"
+							variant="contained"
+							component="label"
+							color="primary"
+							size="large"
+							loading={loading}
+						>
+							UPLOAD
+							<input
+								hidden
+								type="file"
+								onChange={handleXlsx}
+								accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+							></input>
 						</LoadingButton>
 						<Button
 							className="control-button"

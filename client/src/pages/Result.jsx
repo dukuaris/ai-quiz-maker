@@ -7,7 +7,7 @@ import {
 	setUnit,
 	resetScore,
 } from '../features/quiz/quizSlice'
-import createSheet from '../utils/createSheet.js'
+import createSheet from '../utils/handleSheet.js'
 import '../styles/Result.css'
 
 const Result = () => {
