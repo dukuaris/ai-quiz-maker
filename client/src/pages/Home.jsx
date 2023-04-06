@@ -153,7 +153,7 @@ const Home = () => {
 		let pdf2Text = new Pdf2TextClass()
 		fileReader.onload = () => {
 			setCrawling(true)
-			pdf2Text.pdfToText(fileReader.result, null, (text) => {
+			pdf2Text.pdfToText(fileReader.result, (text) => {
 				setUserInput(text)
 				setForm({ ...form, content: text })
 				setWordCount(text.length)

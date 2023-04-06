@@ -8,7 +8,7 @@ class Pdf2TextClass {
 		this.complete = 0
 	}
 
-	pdfToText(data, callbackPageDone, callbackAllDone) {
+	pdfToText(data, callbackAllDone) {
 		console.assert(data instanceof ArrayBuffer || typeof data == 'string')
 		let loadingTask = pdfjsLib.getDocument(data)
 		loadingTask.promise.then((pdf) => {
