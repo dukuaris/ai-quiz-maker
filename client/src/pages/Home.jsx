@@ -15,7 +15,7 @@ import ErrorMessages from '../components/ErrorMessages'
 import types from '../data/types.js'
 import '../styles/Home.css'
 import createSheet from '../utils/createSheet.js'
-import convertPdf from '../utils/readPdf.js'
+import Pdf2TextClass from '../utils/readPdf.js'
 
 const Home = () => {
 	const { questions, name, unit } = useSelector((state) => state.quiz)
@@ -122,7 +122,22 @@ const Home = () => {
 
 	const handlePdf = (e) => {
 		const file = e.target.files[0]
-		convertPdf(file)
+		let fileReader = new FileReader()
+		let pdf2Text = new Pdf2TextClass()
+		fileReader.onload = () => {
+			setCrawling(true)
+			pdf2Text.pdfToText(fileReader.result, null, (text) => {
+				setUserInput(text)
+				setForm({ ...form, content: text })
+				setWordCount(text.length)
+				setCrawling(false)
+			})
+		}
+		try {
+			fileReader.readAsDataURL(file)
+		} catch (error) {
+			alert('Please provide proper pdf document.')
+		}
 	}
 
 	const handleChange = (e) => {
@@ -183,7 +198,7 @@ const Home = () => {
 					</div>
 					<TextField
 						className="input-box"
-						style={{ marginBottom: 25 }}
+						style={{ marginBottom: 10 }}
 						name="content"
 						label="Enter Your Content"
 						multiline
@@ -202,25 +217,50 @@ const Home = () => {
 						/>
 						<LoadingButton
 							className="url-button"
+							style={{
+								backgroundColor: '#0097B3',
+								fontSize: 15,
+							}}
+							sx={{
+								border: activeColor,
+								background: 'light' + activeColor,
+							}}
 							variant="contained"
-							color="primary"
 							size="small"
 							loading={crawling}
 							onClick={handleCrawl}
 						>
-							Get Text
+							FROM URL
 						</LoadingButton>
-					</div>
-					<div className="pdf">
-						<div>
-							<input type="file" onChange={handlePdf} accept=".pdf" />
-						</div>
+						<LoadingButton
+							className="url-button"
+							style={{
+								backgroundColor: '#0097B3',
+								fontSize: 15,
+							}}
+							sx={{
+								border: activeColor,
+								background: 'light' + activeColor,
+							}}
+							variant="contained"
+							component="label"
+							size="small"
+							loading={crawling}
+						>
+							FROM PDF
+							<input
+								hidden
+								type="file"
+								onChange={handlePdf}
+								accept=".pdf"
+							></input>
+						</LoadingButton>
 					</div>
 					<div className="home-controls">
 						<LoadingButton
 							className="control-button"
 							variant="contained"
-							color={`${ready ? 'error' : 'primary'}`}
+							color={`${ready ? 'secondary' : 'primary'}`}
 							size="large"
 							loading={loading}
 							onClick={handleSubmit}
@@ -230,7 +270,7 @@ const Home = () => {
 						<Button
 							className="control-button"
 							variant="contained"
-							color="secondary"
+							color="primary"
 							sx={{
 								color: activeColor,
 								border: activeColor,
@@ -244,7 +284,7 @@ const Home = () => {
 						<Button
 							className="control-button"
 							variant="contained"
-							color="success"
+							color="primary"
 							sx={{
 								color: activeColor,
 								border: activeColor,

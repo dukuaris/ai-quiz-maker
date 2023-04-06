@@ -29,18 +29,20 @@
 .pdf {
 	display: flex;
 	width: auto;
-	margin-bottom: 20px;
+	margin-bottom: 25px;
 	justify-content: space-between;
+	align-items: center;
 }
 
 .url-box,
 .pdf-box {
-	width: 78%;
+	width: 62%;
 }
 
 .url-button,
 .pdf-button {
-	width: 20%;
+	width: 18%;
+	height: 96%;
 }
 
 .counting {
@@ -56,6 +58,7 @@
 
 .home-controls {
 	display: flex;
+	height: 50px;
 	justify-content: space-between;
 }
 

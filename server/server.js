@@ -264,17 +264,20 @@ app.post('/', async (req, res) => {
 			for (let i = 0; i < contentList.length; i++) {
 				const partialResult = await generateQuiz(contentList[i], quizType)
 				if (quizType === 3) {
-					if (partialResult.pairs === undefined) {
-						partialResult.questions.map(({ title, pairs }) => {
-							quizTitle.push(title)
-							pairSum = [...pairSum, ...pairs]
-						})
-					} else {
+					if (
+						partialResult.pairs !== undefined &&
+						partialResult.pairs[0] !== null
+					) {
 						quizTitle.push(partialResult.title)
 						pairSum = [...pairSum, ...partialResult.pairs]
 					}
 				} else {
-					questionSum = [...questionSum, ...partialResult.questions]
+					if (
+						partialResult.questions !== undefined &&
+						partialResult.questions[0] !== null
+					) {
+						questionSum = [...questionSum, ...partialResult.questions]
+					}
 				}
 			}
 			if (quizType === 3) {
