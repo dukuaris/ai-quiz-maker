@@ -15,7 +15,7 @@ import ErrorMessages from '../components/ErrorMessages'
 import types from '../data/types.js'
 import '../styles/Home.css'
 import createSheet, { readSheet } from '../utils/handleSheet'
-// import Pdf2TextClass from '../utils/readPdf'
+import getContent from '../utils/readPdf'
 
 const Home = () => {
 	const { questions, name, unit } = useSelector((state) => state.quiz)
@@ -136,6 +136,7 @@ const Home = () => {
 				setNumber(data.length)
 				dispatch(setQuestions(data))
 				setReady(true)
+				setError(false)
 				setLoading(false)
 			})
 		}
@@ -149,22 +150,21 @@ const Home = () => {
 
 	const handlePdf = (e) => {
 		const file = e.target.files[0]
-		// let fileReader = new FileReader()
-		// let pdf2Text = new Pdf2TextClass()
-		// fileReader.onload = () => {
-		// 	setCrawling(true)
-		// 	pdf2Text.pdfToText(fileReader.result, null, (text) => {
-		// 		setUserInput(text)
-		// 		setForm({ ...form, content: text })
-		// 		setWordCount(text.length)
-		// 		setCrawling(false)
-		// 	})
-		// }
-		// try {
-		// 	fileReader.readAsDataURL(file)
-		// } catch (error) {
-		// 	alert('Please provide proper pdf document.')
-		// }
+		let fileReader = new FileReader()
+		fileReader.onload = () => {
+			setCrawling(true)
+			getContent(fileReader.result, (text) => {
+				setUserInput(text)
+				setForm({ ...form, content: text })
+				setWordCount(text.length)
+				setCrawling(false)
+			})
+		}
+		try {
+			fileReader.readAsDataURL(file)
+		} catch (error) {
+			alert('Please provide proper pdf document.')
+		}
 	}
 
 	const handleChange = (e) => {
