@@ -7,7 +7,7 @@
 		"dev": "vite",
 		"build": "vite build",
 		"preview": "vite preview",
-		"now-build": "node build.js"
+		"now-build": "vite build"
 	},
 	"dependencies": {
 		"@emotion/react": "^11.10.6",
