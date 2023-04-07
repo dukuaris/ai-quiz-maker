@@ -1,6 +1,9 @@
 import * as pdfjsLib from 'pdfjs-dist'
 pdfjsLib.GlobalWorkerOptions.workerSrc =
 	'../../node_modules/pdfjs-dist/build/pdf.worker.js'
+// import 'https://npmcdn.com/pdfjs-dist/build/pdf.js'
+// pdfjsLib.GlobalWorkerOptions.workerSrc =
+// 	'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.5.141/build/pdf.worker.min.js'
 
 const getContent = async (file, callbackAllDone) => {
 	let complete = 0

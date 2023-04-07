@@ -15,9 +15,9 @@ import ErrorMessages from '../components/ErrorMessages'
 import types from '../data/types.js'
 import '../styles/Home.css'
 import createSheet, { readSheet } from '../utils/handleSheet'
-import * as pdfjsLib from 'pdfjs-dist'
+import 'https://npmcdn.com/pdfjs-dist/build/pdf.js'
 pdfjsLib.GlobalWorkerOptions.workerSrc =
-	'../../node_modules/pdfjs-dist/build/pdf.worker.js'
+	'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.5.141/build/pdf.worker.min.js'
 
 const Home = () => {
 	const { questions, name, unit } = useSelector((state) => state.quiz)
