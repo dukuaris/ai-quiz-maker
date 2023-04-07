@@ -2,10 +2,6 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { Button, TextField, MenuItem } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
-import 'https://npmcdn.com/pdfjs-dist/build/pdf.js'
-
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-	'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.5.141/build/pdf.worker.min.js'
 
 import {
 	setQuestions,
