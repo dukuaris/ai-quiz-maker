@@ -7,3 +7,8 @@
 
 3. Puppeteer Navigation Timeout Issue 
     URL: https://ourcodeworld.com/articles/read/1106/how-to-solve-puppeteer-timeouterror-navigation-timeout-of-30000-ms-exceeded 
+
+
+4. pdfjs-dist 이슈: 분리된 모듈이 아닌 본모듈(Home.jsx)에서 처리해야 Vercel과 같은 serverless 서비스에서 CORS에러가 발생하지 않음 
+    다른 해법: https://shivampandey.hashnode.dev/resolve-cors-with-vercel-serverless-functions 
+    https://vercel.com/guides/how-to-enable-cors 

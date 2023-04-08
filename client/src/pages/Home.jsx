@@ -40,7 +40,7 @@ const Home = () => {
 	const [activeColor, setActiveColor] = useState('')
 
 	const typeList = ['multiple', 'true-false', 'fill-in-the-blank', 'matching']
-	const serverAddress = 'https://ai-quiz-maker.onrender.com'
+	const serverAddress = 'http://localhost:5001'
 	// https://ai-quiz-maker.onrender.com
 	// http://localhost:5001
 
@@ -305,7 +305,6 @@ const Home = () => {
 							className="url-button"
 							style={{
 								backgroundColor: '#0097B3',
-								fontSize: 15,
 								height: 54,
 							}}
 							sx={{
@@ -313,7 +312,6 @@ const Home = () => {
 								background: 'light' + activeColor,
 							}}
 							variant="contained"
-							size="small"
 							loading={crawling}
 							onClick={handleCrawl}
 						>
@@ -323,7 +321,6 @@ const Home = () => {
 							className="url-button"
 							style={{
 								backgroundColor: '#0097B3',
-								fontSize: 15,
 								height: 54,
 							}}
 							sx={{
@@ -332,7 +329,6 @@ const Home = () => {
 							}}
 							variant="contained"
 							component="label"
-							size="small"
 							loading={crawling}
 						>
 							PDF
@@ -349,9 +345,9 @@ const Home = () => {
 							className="control-button"
 							variant="contained"
 							color={`${ready ? 'secondary' : 'primary'}`}
-							size="large"
 							loading={loading}
 							onClick={handleSubmit}
+							size="small"
 						>
 							{ready ? 'Clear' : 'Submit'}
 						</LoadingButton>
@@ -360,8 +356,8 @@ const Home = () => {
 							variant="contained"
 							component="label"
 							color="primary"
-							size="large"
 							loading={loading}
+							size="small"
 						>
 							UPLOAD
 							<input
@@ -380,8 +376,8 @@ const Home = () => {
 								border: activeColor,
 								background: 'light' + activeColor,
 							}}
-							size="large"
 							onClick={ready ? () => navigate('/quiz') : () => {}}
+							size="small"
 						>
 							Practice
 						</Button>
@@ -394,8 +390,8 @@ const Home = () => {
 								border: activeColor,
 								background: 'light' + activeColor,
 							}}
-							size="large"
 							onClick={ready ? () => createSheet(questions, name) : () => {}}
+							size="small"
 						>
 							Download
 						</Button>
