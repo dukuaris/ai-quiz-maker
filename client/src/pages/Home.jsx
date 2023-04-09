@@ -233,6 +233,9 @@ const Home = () => {
 		<div className="content">
 			<div className="settings">
 				<p style={{ fontSize: 30 }}>Create Your Quiz</p>
+				<div className="warning-message">
+					* 2000글자 10문제 기준 평균 50초 소요. 모바일사용시 자동잠금 해제 요망
+				</div>
 				<div className="settings__select">
 					{error && <ErrorMessages>Please Fill all the fields</ErrorMessages>}
 					<TextField
@@ -266,7 +269,7 @@ const Home = () => {
 						className="input-box"
 						style={{ marginBottom: 25 }}
 						name="unit"
-						label="Enter Number of Questions (1-20)"
+						label="Enter Number of Questions (< 50)"
 						variant="outlined"
 						onChange={(e) => {
 							dispatch(setUnit(Number(e.target.value)))
