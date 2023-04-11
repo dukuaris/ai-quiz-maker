@@ -40,7 +40,7 @@ const Home = () => {
 	const [activeColor, setActiveColor] = useState('')
 
 	const typeList = ['multiple', 'true-false', 'fill-in-the-blank', 'matching']
-	const serverAddress = 'https://ai-quiz-maker.onrender.com'
+	const serverAddress = 'http://localhost:5001'
 	// https://ai-quiz-maker.onrender.com
 	// http://localhost:5001
 

@@ -1,5 +1,7 @@
 const matchingRegex =
 	/{\s*\n*"title": "(.*?)",\s*\n*"pairs": \[(\s*\n*{\s*\n*"term": "(.*?)",\s*\n*"description": "(.*?)"\s*\n*},*)*\s*\n*\]\s*\n*}/g
+const oxRegex =
+	/{\s*\n*"question": "(.*?)",\s*\n*"answer": (true|false|"true"|"false"),\s*\n*"difficulty": "(.*?)"\s*\n*}/g
 const objectRegex =
 	/({\s*\n*"sentence": "(.*?)",\s*\n*"answer": "(.*?)",\s*\n*"incorrect_answers": \[(.*?)\],\s*\n*"difficulty": "(.*?)"\s*\n*})|({\s*\n*"question": "(.*?)",\s*\n*"answer": "(.*?)",\s*\n*"incorrect_answers": \[(.*?)\],\s*\n*"difficulty": "(.*?)"\s*\n*})/g
 
@@ -41,6 +43,9 @@ const reArrangeQuiz = (jsonData, quizType) => {
 		} else {
 			jsonData = questions[0]
 		}
+	} else if ((quizType = 1)) {
+		questions = jsonData.match(oxRegex)
+		jsonData = `{"questions":[${questions}]\n}`
 	} else {
 		questions = jsonData.match(objectRegex)
 		jsonData = `{"questions":[${questions}]\n}`
