@@ -3,7 +3,7 @@ import { Button, MenuItem, TextField } from '@mui/material'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 
-import { setQuestions, setName, setUnit } from '../features/quiz/quizSlice'
+import { setQuestions, setSubject, setUnit } from '../features/quiz/quizSlice'
 import { useDispatch, useSelector } from 'react-redux'
 
 import ErrorMessages from '../components/ErrorMessages'
@@ -12,7 +12,7 @@ import categories from '../data/categories.js'
 import '../styles/Home.css'
 
 const Trivia = () => {
-	const { name, unit } = useSelector((state) => state.quiz)
+	const { subject, unit } = useSelector((state) => state.quiz)
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const [category, setCategory] = useState('')
@@ -33,7 +33,7 @@ const Trivia = () => {
 	}
 
 	const handleSubmit = async () => {
-		if (!category || !difficulty || !name || !unit) {
+		if (!category || !difficulty || !subject || !unit) {
 			setError(true)
 			return
 		} else {
@@ -53,7 +53,7 @@ const Trivia = () => {
 						style={{ marginBottom: 25 }}
 						label="Enter Your Name"
 						variant="outlined"
-						onChange={(e) => dispatch(setName(e.target.value))}
+						onChange={(e) => dispatch(setSubject(e.target.value))}
 					/>
 					<TextField
 						select

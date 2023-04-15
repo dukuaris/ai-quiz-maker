@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
 	questions: [],
-	name: '',
+	userId: null,
+	subject: '',
 	unit: 0,
 	score: 0,
 }
@@ -11,11 +12,14 @@ export const quizSlice = createSlice({
 	name: 'quiz',
 	initialState,
 	reducers: {
+		setUserId: (state, action) => {
+			state.userId = action.payload
+		},
 		setQuestions: (state, action) => {
 			state.questions = action.payload
 		},
-		setName: (state, action) => {
-			state.name = action.payload
+		setSubject: (state, action) => {
+			state.subject = action.payload
 		},
 		setUnit: (state, action) => {
 			state.unit = action.payload
@@ -29,7 +33,7 @@ export const quizSlice = createSlice({
 	},
 })
 
-export const { setQuestions, setName, setUnit, addScore, resetScore } =
+export const { setQuestions, setSubject, setUnit, addScore, resetScore } =
 	quizSlice.actions
 
 export default quizSlice.reducer

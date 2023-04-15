@@ -5,7 +5,7 @@ import { LoadingButton } from '@mui/lab'
 
 import {
 	setQuestions,
-	setName,
+	setSubject,
 	setUnit,
 	resetScore,
 } from '../features/quiz/quizSlice'
@@ -20,10 +20,11 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 	'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.5.141/build/pdf.worker.min.js'
 
 const Home = () => {
-	const { questions, name, unit } = useSelector((state) => state.quiz)
+	const { questions, subject, unit } = useSelector((state) => state.quiz)
+	const { userId, email } = useSelector((state) => state.user)
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
-	const [subject, setSubject] = useState('')
+	const [title, setTitle] = useState('')
 	const [type, setType] = useState('')
 	const [number, setNumber] = useState(0)
 	const [userInput, setUserInput] = useState('')
@@ -36,13 +37,27 @@ const Home = () => {
 	const [loading, setLoading] = useState(false)
 	const [crawling, setCrawling] = useState(false)
 	const [wordCount, setWordCount] = useState(0)
-	const [ready, setReady] = useState(false)
+	const [ready, setReady] = useState(null)
 	const [activeColor, setActiveColor] = useState('')
 
 	const typeList = ['multiple', 'true-false', 'fill-in-the-blank', 'matching']
-	const serverAddress = 'https://ai-quiz-maker.onrender.com'
+	const serverAddress = 'http://localhost:5001'
 	// https://ai-quiz-maker.onrender.com
 	// http://localhost:5001
+
+	useEffect(() => {
+		const data = JSON.parse(window.localStorage.getItem('QUESTABLE_QUIZ'))
+		if (data?.questions?.length > 0) {
+			setReady(true)
+			dispatch(setSubject(data.subject))
+			dispatch(setQuestions(data.questions))
+			setTitle(data.subject)
+			setType(typeList.indexOf(data.questions[0].type))
+			setNumber(data.unit)
+		} else {
+			setReady(false)
+		}
+	}, [])
 
 	useEffect(() => {
 		if (!ready) {
@@ -52,6 +67,7 @@ const Home = () => {
 		}
 	}, [ready])
 
+	// console.log(userId, email)
 	const getContent = async (file, callbackAllDone) => {
 		let complete = 0
 		const loadingTask = pdfjsLib.getDocument(file)
@@ -103,12 +119,15 @@ const Home = () => {
 
 	const handleSubmit = async () => {
 		if (ready) {
-			dispatch(resetScore())
+			dispatch(resetScore(0))
 			dispatch(setUnit(0))
 			dispatch(setQuestions([]))
+			dispatch(setSubject(''))
+			window.localStorage.setItem('QUESTABLE_QUIZ', JSON.stringify([]))
+			setReady(false)
 			window.location.reload(false)
 		} else {
-			if (!name || unit < 1) {
+			if (!title || number < 1) {
 				setError(true)
 				return
 			}
@@ -116,6 +135,7 @@ const Home = () => {
 			if (form.content) {
 				setLoading(true)
 				try {
+					console.log(number)
 					const response = await fetch(serverAddress, {
 						method: 'POST',
 						headers: {
@@ -123,7 +143,7 @@ const Home = () => {
 						},
 						body: JSON.stringify({
 							content: form.content,
-							unit: unit,
+							unit: number,
 							type: type,
 						}),
 					})
@@ -132,6 +152,16 @@ const Home = () => {
 					console.log(data.results)
 					if (data.results !== undefined) {
 						dispatch(setQuestions(data.results))
+						dispatch(setSubject(title))
+						setNumber(data.results.length)
+						const exam = {
+							questions: data.results,
+							userId: userId,
+							subject: title,
+							unit: data.results.length,
+							score: 0,
+						}
+						window.localStorage.setItem('QUESTABLE_QUIZ', JSON.stringify(exam))
 						setReady(true)
 					} else {
 						throw new Error()
@@ -178,15 +208,24 @@ const Home = () => {
 
 	const handleXlsx = (e) => {
 		const file = e.target.files[0]
+		const fileName = file.name.split('_')[0]
+		setTitle(fileName)
 		let fileReader = new FileReader()
 		fileReader.onload = () => {
 			setLoading(true)
+			setReady(true)
 			readSheet(fileReader.result, null, (data) => {
-				setSubject(file.name.split('_')[0])
 				setType(typeList.indexOf(data[0].type))
 				setNumber(data.length)
+				const exam = {
+					questions: data,
+					userId: userId,
+					subject: fileName,
+					unit: data.length,
+					score: 0,
+				}
+				window.localStorage.setItem('QUESTABLE_QUIZ', JSON.stringify(exam))
 				dispatch(setQuestions(data))
-				setReady(true)
 				setError(false)
 				setLoading(false)
 			})
@@ -233,22 +272,21 @@ const Home = () => {
 		<div className="content">
 			<div className="settings">
 				<p style={{ fontSize: 30 }}>Create Your Quiz</p>
-				<div className="warning-message">
+				{/* <div className="warning-message">
 					* 2000글자 10문제 기준 평균 50초 소요. 모바일사용시 자동잠금 해제 요망
-				</div>
+				</div> */}
 				<div className="settings__select">
 					{error && <ErrorMessages>Please Fill all the fields</ErrorMessages>}
 					<TextField
 						className="input-box"
 						style={{ marginBottom: 25 }}
-						name="name"
+						name="subject"
 						label="Enter Your Subject"
 						variant="outlined"
 						onChange={(e) => {
-							dispatch(setName(e.target.value))
-							setSubject(e.target.value)
+							setTitle(e.target.value)
 						}}
-						value={subject}
+						value={title}
 					/>
 					<TextField
 						className="input-box"
@@ -272,7 +310,6 @@ const Home = () => {
 						label="Enter Number of Questions (< 50)"
 						variant="outlined"
 						onChange={(e) => {
-							dispatch(setUnit(Number(e.target.value)))
 							setNumber(e.target.value)
 						}}
 						value={number}
@@ -379,7 +416,14 @@ const Home = () => {
 								border: activeColor,
 								background: 'light' + activeColor,
 							}}
-							onClick={ready ? () => navigate('/quiz') : () => {}}
+							onClick={
+								ready
+									? () => {
+											dispatch(setSubject(title))
+											navigate('/quiz')
+									  }
+									: () => {}
+							}
 							size="small"
 						>
 							Practice
@@ -393,7 +437,7 @@ const Home = () => {
 								border: activeColor,
 								background: 'light' + activeColor,
 							}}
-							onClick={ready ? () => createSheet(questions, name) : () => {}}
+							onClick={ready ? () => createSheet(questions, subject) : () => {}}
 							size="small"
 						>
 							Download

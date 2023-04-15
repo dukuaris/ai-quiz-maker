@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import {
 	setQuestions,
-	setName,
+	setSubject,
 	setUnit,
 	resetScore,
 } from '../features/quiz/quizSlice'
@@ -13,7 +13,7 @@ import '../styles/Result.css'
 const Result = () => {
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
-	const { questions, name, score } = useSelector((state) => state.quiz)
+	const { questions, subject, score } = useSelector((state) => state.quiz)
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
@@ -23,7 +23,7 @@ const Result = () => {
 			navigate('/quiz')
 		} else {
 			dispatch(resetScore())
-			dispatch(setName(''))
+			dispatch(setSubject(''))
 			dispatch(setUnit(0))
 			dispatch(setQuestions([]))
 			if (questions.source == 'trivia') {
@@ -37,7 +37,7 @@ const Result = () => {
 	return (
 		<div className="result">
 			<p className="title">
-				{name}: Score
+				{subject}: Score
 				<br />
 				{score} / {questions.length}
 			</p>
@@ -63,7 +63,7 @@ const Result = () => {
 					color="secondary"
 					size="large"
 					style={{ width: 185 }}
-					onClick={() => createSheet(questions, name)}
+					onClick={() => createSheet(questions, subject)}
 				>
 					Download
 				</Button>

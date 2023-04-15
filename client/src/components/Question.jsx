@@ -38,7 +38,7 @@ const Question = ({ currQues, setCurrQues, options, correct }) => {
 	const handleQuit = () => {
 		setCurrQues(0)
 		dispatch(resetScore())
-		dispatch(setQuestions([]))
+		// dispatch(setQuestions([]))
 		navigate('/')
 	}
 

@@ -1,0 +1,15 @@
+.input-box {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background-color: rgb(228, 226, 226);
+	/* background-color: #dbe4c6; */
+}
+
+.input-data {
+	width: 400px;
+	height: 40px;
+	margin-bottom: 5px;
+	padding: 0 5px 0 5px;
+}

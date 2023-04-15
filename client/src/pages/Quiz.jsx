@@ -7,7 +7,7 @@ import Question from '../components/Question'
 import '../styles/Quiz.css'
 
 const Quiz = () => {
-	const { questions, name, score } = useSelector((state) => state.quiz)
+	const { questions, subject, score } = useSelector((state) => state.quiz)
 	const [options, setOptions] = useState()
 	const [currQues, setCurrQues] = useState(0)
 	const dispatch = useDispatch()
@@ -43,7 +43,7 @@ const Quiz = () => {
 	return (
 		<div className="quiz">
 			<br />
-			<span className="subtitle">{name}</span>
+			<span className="subtitle">{subject}</span>
 			{questions ? (
 				<>
 					<div className="quizInfo">

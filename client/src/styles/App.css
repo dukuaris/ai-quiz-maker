@@ -42,10 +42,23 @@ a {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	justify-content: center;
+	justify-content: space-between;
 	background-color: rgb(190, 190, 190);
 	/* background-color: #bbd6b8; */
 	/* background-color: rgb(189, 233, 218); */
+}
+
+.logo-box {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-left: 10px;
+}
+
+.user-box {
+	margin-right: 10px;
+	display: flex;
+	flex-direction: row;
 }
 
 .divider {
@@ -55,7 +68,7 @@ a {
 }
 
 .logo {
-	margin: 10px 0 5px 0;
+	margin-top: 10px;
 	width: 400px;
 }
 
@@ -115,11 +128,21 @@ a {
 	.title {
 		font-size: 5vw;
 	}
+	.logo-box {
+		margin-left: 5px;
+	}
+	.user-box {
+		margin-right: 5px;
+	}
 	.logo {
-		width: 300px;
+		width: 250px;
 	}
 	.beta {
-		width: 50px;
+		width: 40px;
+		height: 30px;
+	}
+	.logout-button {
+		visibility: hidden;
 	}
 }
 

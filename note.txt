@@ -12,3 +12,12 @@
 4. pdfjs-dist 이슈: 분리된 모듈이 아닌 본모듈(Home.jsx)에서 처리해야 Vercel과 같은 serverless 서비스에서 CORS에러가 발생하지 않음 
     다른 해법: https://shivampandey.hashnode.dev/resolve-cors-with-vercel-serverless-functions 
     https://vercel.com/guides/how-to-enable-cors 
+
+5. Firebase Auth & Firestore
+   youtube: https://youtu.be/2hR-uWjBAgw 
+
+6. vite 에서 .env 사용하기
+    URL: https://velog.io/@riley_dev/React-vite%EC%97%90%EC%84%9C-%ED%99%98%EA%B2%BD%EB%B3%80%EC%88%98-.env-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0
+
+7. Redux Persist
+    https://blog.logrocket.com/persist-state-redux-persist-redux-toolkit-react/ 
