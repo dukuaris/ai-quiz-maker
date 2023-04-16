@@ -100,3 +100,147 @@ JSON format:
     }
   ]
 }
+
+
+
+{
+  "question1": {
+      "sentence": "What verbal cue can you use to remind yourself to return your thoughts to the body during walking meditation? (lifting, moving, ______)",
+      "answer": "placing",
+      "incorrect_answers": ["standing", "breathing", "thinking"],
+      "difficulty": "medium"
+  },
+  "question2": {
+      "sentence": "What technique does Zen master Thich Nhat Hanh use to assist in walking meditation?",
+      "answer": "a simple verse",
+      "incorrect_answers": ["a complex chant", "deep breathing", "complete silence"],
+      "difficulty": "low"
+  },
+  "question3": {
+      "sentence": "How long should you begin with for a walking meditation?",
+      "answer": "ten minutes",
+      "incorrect_answers": ["one hour", "five minutes", "thirty minutes"],
+      "difficulty": "low"
+  },
+  "question4": {
+      "sentence": "What recommendation is given when there is difficulty focusing on the vocal cues during walking meditation? Try to focus on your ______ before returning to the cues.",
+      "answer": "body",
+      "incorrect_answers": ["breath", "environment", "thoughts"],
+      "difficulty": "medium"
+  },
+  "question5": {
+      "sentence": "Why might people find it difficult to direct loving-kindness to themselves during meditation?",
+      "answer": "feel unworthy",
+      "incorrect_answers": ["lack of time", "fear of others' judgment", "too much noise"],
+      "difficulty": "high"
+  },
+  "question6": {
+      "sentence": "Where is a good starting point for directing loving-kindness in meditation?",
+      "answer": "those we most naturally love and care about",
+      "incorrect_answers": ["strangers", "enemies", "ourselves"],
+      "difficulty": "medium"
+  },
+  "question7": {
+      "sentence": "What is the first step in the practice of loving-kindness meditation?",
+      "answer": "sit comfortably and at ease with eyes closed",
+      "incorrect_answers": ["stand uncomfortably with eyes open", "listen to distracting music", "think negative thoughts"],
+      "difficulty": "low"
+  },
+  "question8": {
+      "sentence": "What is the traditional phrase you can use for directing loving-kindness towards someone you care about? \"May you be safe and protected. May you be healthy and strong. May you be truly ______,\"",
+      "answer": "happy",
+      "incorrect_answers": ["sad", "angry", "jealous"],
+      "difficulty": "low"
+  }
+}
+
+1. What is the name of the hand position used in Zen meditation?
+- Cosmic mudra.
+- Zen position, Cosmic Zen, Mudra Zen.
+- Difficulty: Low.
+
+2. How should you sit when meditating on a chair?
+- Your spine should be straight and your feet flat on the ground.
+- Bend your spine, raise your feet, relax your back.
+- Difficulty: Low.
+
+3. How long should you meditate for?
+- You can meditate for as long, or as short, as you’d like.
+- 1 hour, 30 minutes, 10 minutes.
+- Difficulty: Low.
+
+4. What should you do if you can’t find a quiet place to meditate?
+- Sit with the noise.
+- Complain about the noise, leave the place.
+- Difficulty: Medium.
+
+5. Can meditation be painful?
+- Yes, sometimes.
+- No, never.
+- Difficulty: Low.
+
+6. Is meditation a replacement for therapy or medication?
+- No, it's not.
+- Yes, it is.
+- Difficulty: Low.
+
+7. How can you react if pain is too much to endure during meditation?
+- Adjust your posture or hold your position and meditate on the pain.
+- Leave the place or distract yourself.
+- Difficulty: Medium.
+
+8. Can meditation benefit mental health?
+- Yes, sometimes.
+- No, never.
+- Difficulty: Low.
+
+{
+  "1": {
+    "sentence": "What is the name of the hand position used in Zen meditation?",
+    "answer": "Cosmic mudra",
+    "incorrect_answers": ["Zen position", "Cosmic Zen", "Mudra Zen"],
+    "difficulty": "low"
+  },
+  "2": {
+    "sentence": "How should you sit when meditating on a chair?",
+    "answer": "Your spine should be straight and your feet flat on the ground.",
+    "incorrect_answers": ["Bend your spine, raise your feet, relax your back.", "Sit sideways and cross your legs.", "Lean back and rest your head."],
+    "difficulty": "low"
+  },
+  "3": {
+    "sentence": "How long should you meditate for?",
+    "answer": "You can meditate for as long, or as short, as you’d like.",
+    "incorrect_answers": ["1 hour", "30 minutes", "10 minutes"],
+    "difficulty": "low"
+  },
+  "4": {
+    "sentence": "What should you do if you can’t find a quiet place to meditate?",
+    "answer": "Sit with the noise.",
+    "incorrect_answers": ["Complain about the noise, leave the place.", "Sing to cover the noise, wait for it to end.", "Wear noise-cancelling headphones."],
+    "difficulty": "medium"
+  },
+  "5": {
+    "sentence": "Can meditation be painful?",
+    "answer": "Yes, sometimes.",
+    "incorrect_answers": ["No, never.", "Only if you meditate for too long.", "Pain depends on whether you're new to meditation."],
+    "difficulty": "low"
+  },
+  "6": {
+    "sentence": "Is meditation a replacement for therapy or medication?",
+    "answer": "No, it's not.",
+    "incorrect_answers": ["Yes, it is.", "It depends on your condition.", "It works better than therapy or medication."],
+    "difficulty": "low"
+  },
+  "7": {
+    "sentence": "How can you react if pain is too much to endure during meditation?",
+    "answer": "Adjust your posture or hold your position and meditate on the pain.",
+    "incorrect_answers": ["Leave the place or distract yourself.", "Ignore the pain and keep sitting still.", "Sleep and hope you feel better later."],
+    "difficulty": "medium"
+  },
+  "8": {
+    "sentence": "Can meditation benefit mental health?",
+    "answer": "Yes, sometimes.",
+    "incorrect_answers": ["No, never.", "It depends on the person.", "Meditation is only for physical health."],
+    "difficulty": "low"
+  }
+}

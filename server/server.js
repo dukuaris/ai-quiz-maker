@@ -5,7 +5,7 @@ const cors = require('cors')
 const { Configuration, OpenAIApi } = require('openai')
 const { scrapeText } = require('./scrapeText')
 const { exceptionHandling } = require('./exceptionHandling')
-const { tryJSON } = require('./tryJson')
+const { tryException } = require('./tryException')
 
 const configuration = new Configuration({
 	apiKey: process.env.OPENAI_API_KEY,
@@ -83,7 +83,7 @@ const recallGPT = async (jsonData, quizType) => {
 			response = await openai.createChatCompletion({
 				model: 'gpt-3.5-turbo',
 				messages: [{ role: 'user', content: content }],
-				temperature: 0.5,
+				temperature: 0.2,
 			})
 		} catch (error) {
 			console.log(`Error on attempt ${tries + 1}: ${error}`)
@@ -94,7 +94,7 @@ const recallGPT = async (jsonData, quizType) => {
 	return reJsonData
 }
 
-// tryJSON()
+// tryException()
 
 const generateQuiz = async (content, quizType) => {
 	/// Call to ChatGPT
@@ -107,7 +107,7 @@ const generateQuiz = async (content, quizType) => {
 			response = await openai.createChatCompletion({
 				model: 'gpt-3.5-turbo',
 				messages: [{ role: 'user', content: content }],
-				temperature: 0.2,
+				temperature: 0.5,
 			})
 		} catch (error) {
 			console.log(`Error on attempt ${tries + 1}: ${error}`)

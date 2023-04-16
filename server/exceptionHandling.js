@@ -3,7 +3,7 @@ const matchingRegex =
 const oxRegex =
 	/{\s*\n*"question": "(.*?)",\s*\n*"answer": (true|false|"true"|"false"),\s*\n*"difficulty": "(.*?)"\s*\n*}/g
 const objectRegex =
-	/({\s*\n*"sentence": "(.*?)",\s*\n*"answer": "(.*?)",\s*\n*"incorrect_answers": \[(.*?)\],\s*\n*"difficulty": "(.*?)"\s*\n*})|({\s*\n*"question": "(.*?)",\s*\n*"answer": "(.*?)",\s*\n*"incorrect_answers": \[(.*?)\],\s*\n*"difficulty": "(.*?)"\s*\n*})/g
+	/({\s*\n*"sentence": "(?!(?=.*?\".*?\")).*?",\s*\n*"answer": "(.*?)",\s*\n*"incorrect_answers": \[(.*?)\],\s*\n*"difficulty": "(.*?)"\s*\n*})|({\s*\n*"question": "(.*?)",\s*\n*"answer": "(.*?)",\s*\n*"incorrect_answers": \[(.*?)\],\s*\n*"difficulty": "(.*?)"\s*\n*})/g
 
 const hasObjects = (jsonData) => {
 	const objectSignalRegex = /{|}/g
@@ -43,7 +43,7 @@ const reArrangeQuiz = (jsonData, quizType) => {
 		} else {
 			jsonData = questions[0]
 		}
-	} else if ((quizType = 1)) {
+	} else if (quizType === 1) {
 		questions = jsonData.match(oxRegex)
 		jsonData = `{"questions":[${questions}]\n}`
 	} else {
