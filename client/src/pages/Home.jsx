@@ -6,6 +6,7 @@ import { LoadingButton } from '@mui/lab'
 import {
 	setQuestions,
 	setSubject,
+	setSource,
 	setUnit,
 	resetScore,
 } from '../features/quiz/quizSlice'
@@ -20,8 +21,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 	'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.5.141/build/pdf.worker.min.js'
 
 const Home = () => {
-	const { questions, subject, unit } = useSelector((state) => state.quiz)
-	const { userId, email } = useSelector((state) => state.user)
+	const { questions, subject, source } = useSelector((state) => state.quiz)
+	const { userId } = useSelector((state) => state.user)
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const [title, setTitle] = useState('')
@@ -40,7 +41,12 @@ const Home = () => {
 	const [ready, setReady] = useState(null)
 	const [activeColor, setActiveColor] = useState('')
 
-	const typeList = ['multiple', 'true-false', 'fill-in-the-blank', 'matching']
+	const typeList = [
+		'multiple-choice',
+		'true-false',
+		'fill-in-the-blank',
+		'matching',
+	]
 	const serverAddress = 'https://ai-quiz-maker.onrender.com'
 	// https://ai-quiz-maker.onrender.com
 	// http://localhost:5001
@@ -50,10 +56,14 @@ const Home = () => {
 		if (data?.questions?.length > 0) {
 			setReady(true)
 			dispatch(setSubject(data.subject))
+			dispatch(setSource(data.source))
 			dispatch(setQuestions(data.questions))
 			setTitle(data.subject)
 			setType(typeList.indexOf(data.questions[0].type))
 			setNumber(data.unit)
+			setUserInput(data.source)
+			setForm({ ...form, content: data.source })
+			setWordCount(data.source.length)
 		} else {
 			setReady(false)
 		}
@@ -123,6 +133,7 @@ const Home = () => {
 			dispatch(setUnit(0))
 			dispatch(setQuestions([]))
 			dispatch(setSubject(''))
+			dispatch(setSource(''))
 			window.localStorage.setItem('QUESTABLE_QUIZ', JSON.stringify([]))
 			setReady(false)
 			window.location.reload(false)
@@ -149,15 +160,17 @@ const Home = () => {
 					})
 
 					const data = await response.json()
-					console.log(data.results)
+					console.log(form.content)
 					if (data.results !== undefined) {
 						dispatch(setQuestions(data.results))
 						dispatch(setSubject(title))
+						dispatch(setSource(form.content))
 						setNumber(data.results.length)
 						const exam = {
 							questions: data.results,
 							userId: userId,
 							subject: title,
+							source: form.content,
 							unit: data.results.length,
 							score: 0,
 						}
@@ -221,6 +234,7 @@ const Home = () => {
 					questions: data,
 					userId: userId,
 					subject: fileName,
+					source: '',
 					unit: data.length,
 					score: 0,
 				}

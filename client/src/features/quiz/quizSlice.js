@@ -4,6 +4,7 @@ const initialState = {
 	questions: [],
 	userId: null,
 	subject: '',
+	source: '',
 	unit: 0,
 	score: 0,
 }
@@ -21,6 +22,9 @@ export const quizSlice = createSlice({
 		setSubject: (state, action) => {
 			state.subject = action.payload
 		},
+		setSource: (state, action) => {
+			state.source = action.payload
+		},
 		setUnit: (state, action) => {
 			state.unit = action.payload
 		},
@@ -33,7 +37,13 @@ export const quizSlice = createSlice({
 	},
 })
 
-export const { setQuestions, setSubject, setUnit, addScore, resetScore } =
-	quizSlice.actions
+export const {
+	setQuestions,
+	setSubject,
+	setSource,
+	setUnit,
+	addScore,
+	resetScore,
+} = quizSlice.actions
 
 export default quizSlice.reducer

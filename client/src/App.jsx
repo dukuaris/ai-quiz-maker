@@ -13,6 +13,7 @@ import Result from './pages/Result'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 import MyQuiz from './pages/MyQuiz'
+import QuizTable from './components/QuizTable'
 
 function App() {
 	const dispatch = useDispatch()
@@ -41,6 +42,7 @@ function App() {
 				<Route path="/signin" element={<SignIn />} />
 				<Route path="/signup" element={<SignUp />} />
 				<Route path="/myquiz" element={<MyQuiz />} />
+				<Route path="/quiztable" element={<QuizTable />} />
 			</Routes>
 			{/* <br />
 			<Footer /> */}

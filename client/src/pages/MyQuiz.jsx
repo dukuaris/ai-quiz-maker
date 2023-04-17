@@ -43,9 +43,10 @@ const MyQuiz = () => {
 	const [newAnswer, setNewAnswer] = useState('')
 	const [updatedTitle, setUpdatedTitle] = useState('')
 	const { userId } = useSelector((state) => state.user)
-	const { questions, subject } = useSelector((state) => state.quiz)
+	const { questions, subject, source } = useSelector((state) => state.quiz)
 
-	const multipleChoiceCollectionRef = collection(db, 'multiple_choice')
+	const multipleChoiceCollectionRef = collection(db, 'multipleChoice')
+	const questionGroupCollectionRef = collection(db, 'questionGroup')
 	const getQuestionList = async () => {
 		try {
 			const data = await getDocs(multipleChoiceCollectionRef)
@@ -68,16 +69,33 @@ const MyQuiz = () => {
 		// console.log(subject)
 		// console.log(userId)
 		try {
-			questions.map(async (question) => {
+			const createdAt = new Date()
+			await addDoc(questionGroupCollectionRef, {
+				category: questions[0].category,
+				createdAt: createdAt,
+				source: source,
+				subject: subject,
+				type: questions[0].type,
+				userId: userId,
+			})
+
+			const questionGroupData = await getDocs(questionGroupCollectionRef)
+			const aboveGroupId =
+				questionGroupData.docs[questionGroupData.docs.length - 1].id
+
+			await questions.map(async (question) => {
 				await addDoc(multipleChoiceCollectionRef, {
-					subject: subject,
 					category: question.category,
-					question: question.question,
 					correct_answer: question.correct_answer,
+					createdAt: createdAt,
 					incorrect_answers: question.incorrect_answers,
+					play: 5,
+					question: question.question,
+					questionGroup: aboveGroupId,
+					score: 3,
+					subject: subject,
 					type: question.type,
-					difficulty: question.difficulty,
-					source: question.source,
+					updatedAt: createdAt,
 					userId: userId,
 				})
 			})
@@ -124,50 +142,6 @@ const MyQuiz = () => {
 	return (
 		<div className="content">
 			<div className="settings">
-				<div className="input-box">
-					<input
-						className="input-data"
-						placeholder="title"
-						onChange={(e) => setNewTitle(e.target.value)}
-					/>
-					<input
-						className="input-data"
-						placeholder="question"
-						onChange={(e) => setNewQuestion(e.target.value)}
-					/>
-					<input
-						className="input-data"
-						placeholder="answer"
-						onChange={(e) => setNewAnswer(e.target.value)}
-					/>
-					{/* <input className="input-data" placeholder="category" />
-				<input className="input-data" placeholder="type" />
-				<input className="input-data" placeholder="difficulty" />
-				<input className="input-data" placeholder="source" /> */}
-					<button onClick={() => putQuestionList()}>Submit</button>
-				</div>
-				<div>
-					{questionList.map((question, i) => (
-						<div key={i}>
-							<h1>title:&nbsp;&nbsp; {question.title}</h1>
-							<div>category:&nbsp;&nbsp; {question.category}</div>
-							<div>type:&nbsp;&nbsp; {question.type}</div>
-							<div>question:&nbsp;&nbsp; {question.question}</div>
-							<br />
-							<input
-								placeholder="new title..."
-								onChange={(e) => setUpdatedTitle(e.target.value)}
-							/>
-							<button onClick={() => updateTitle(question.id)}>
-								Update Title
-							</button>
-							<button onClick={() => deleteQuestion(question.id)}>
-								Delete Question
-							</button>
-							<br />
-						</div>
-					))}
-				</div>
 				<button onClick={() => putQuestionList(questions, subject)}>
 					Save to DB
 				</button>
