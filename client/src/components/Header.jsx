@@ -111,6 +111,10 @@ const Header = () => {
 											<MenuItem
 												onClick={() => {
 													logout()
+													window.localStorage.setItem(
+														'QUESTABLE_QUIZ',
+														JSON.stringify([])
+													)
 													navigate('/')
 												}}
 											>

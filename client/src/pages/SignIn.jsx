@@ -33,7 +33,7 @@ export default function SignIn() {
 		const loginPassword = data.get('password')
 		try {
 			await signInWithEmailAndPassword(auth, loginEmail, loginPassword)
-			navigate('/myquiz')
+			navigate('/')
 		} catch (error) {
 			alert(error.message)
 		}
@@ -42,7 +42,7 @@ export default function SignIn() {
 	const signInWithGoogle = async () => {
 		try {
 			await signInWithPopup(auth, googleProvider)
-			navigate('/myquiz')
+			navigate('/')
 		} catch (error) {
 			alert(error.message)
 		}
@@ -62,7 +62,7 @@ export default function SignIn() {
 				.then((blob) => {
 					dispatch(setImage(URL.createObjectURL(blob)))
 				})
-			navigate('/myquiz')
+			navigate('/')
 		} catch (error) {
 			alert(error.message)
 		}

@@ -31,7 +31,7 @@ export default function SignUp() {
 				registerEmail,
 				registerPassword
 			)
-			navigate('/myquiz')
+			navigate('/')
 		} catch (error) {
 			console.log(error.message)
 		}
@@ -40,7 +40,7 @@ export default function SignUp() {
 	const signInWithGoogle = async () => {
 		try {
 			await signInWithPopup(auth, googleProvider)
-			navigate('/myquiz')
+			navigate('/')
 		} catch (error) {
 			alert(error.message)
 		}
@@ -49,7 +49,7 @@ export default function SignUp() {
 	const signInWithFacebook = async () => {
 		try {
 			await signInWithPopup(auth, facebookProvider)
-			navigate('/myquiz')
+			navigate('/')
 		} catch (error) {
 			alert(error.message)
 		}
