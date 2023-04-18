@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useSelector } from 'react-redux'
 import {
 	alpha,
 	Box,
@@ -23,33 +24,6 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { visuallyHidden } from '@mui/utils'
 import PropTypes from 'prop-types'
-
-const headCells = [
-	{
-		id: 'question',
-		numeric: false,
-		disablePadding: true,
-		label: 'Question',
-	},
-	{
-		id: 'subject',
-		numeric: false,
-		disablePadding: true,
-		label: 'Subject',
-	},
-	{
-		id: 'type',
-		numeric: false,
-		disablePadding: true,
-		label: 'Type',
-	},
-	{
-		id: 'difficulty',
-		numeric: false,
-		disablePadding: true,
-		label: 'Difficulty',
-	},
-]
 
 function descendingComparator(a, b, orderBy) {
 	if (b[orderBy] < a[orderBy]) {
@@ -83,8 +57,35 @@ function stableSort(array, comparator) {
 	return stabilizedThis.map((el) => el[0])
 }
 
+const headCells = [
+	{
+		id: 'question',
+		numeric: false,
+		disablePadding: true,
+		label: 'Question',
+	},
+	{
+		id: 'subject',
+		numeric: false,
+		disablePadding: true,
+		label: 'Subject',
+	},
+	{
+		id: 'type',
+		numeric: false,
+		disablePadding: true,
+		label: 'Type',
+	},
+	{
+		id: 'difficulty',
+		numeric: false,
+		disablePadding: true,
+		label: 'Difficulty',
+	},
+]
+
 const DEFAULT_ORDER = 'asc'
-const DEFAULT_ORDER_BY = 'question'
+const DEFAULT_ORDER_BY = 'calories'
 const DEFAULT_ROWS_PER_PAGE = 5
 
 function EnhancedTableHead(props) {
@@ -207,7 +208,9 @@ EnhancedTableToolbar.propTypes = {
 	numSelected: PropTypes.number.isRequired,
 }
 
-export default function EnhancedTable({ rows }) {
+export default function EnhancedTable() {
+	let rows = []
+	const [data, setData] = useState([])
 	const [order, setOrder] = useState(DEFAULT_ORDER)
 	const [orderBy, setOrderBy] = useState(DEFAULT_ORDER_BY)
 	const [selected, setSelected] = useState([])
@@ -217,7 +220,24 @@ export default function EnhancedTable({ rows }) {
 	const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_ROWS_PER_PAGE)
 	const [paddingHeight, setPaddingHeight] = useState(0)
 
+	const getQuestions = () => {
+		const result = JSON.parse(window.localStorage.getItem('QUESTABLE_QUIZ'))
+		const questionList = result.questions.map((question) => ({
+			question: question.question,
+			subject: result.subject,
+			difficulty: question.difficulty,
+			type: question.type,
+			category: question.category,
+			correct_answer: question.correct_answer,
+			incorrect_answers: question.incorrect_answers,
+			source: question.source,
+		}))
+		return questionList
+	}
+
 	useEffect(() => {
+		rows = getQuestions()
+		setData(rows)
 		let rowsOnMount = stableSort(
 			rows,
 			getComparator(DEFAULT_ORDER, DEFAULT_ORDER_BY)
@@ -237,11 +257,11 @@ export default function EnhancedTable({ rows }) {
 			const toggledOrder = isAsc ? 'desc' : 'asc'
 			setOrder(toggledOrder)
 			setOrderBy(newOrderBy)
-
 			const sortedRows = stableSort(
-				rows,
+				data,
 				getComparator(toggledOrder, newOrderBy)
 			)
+			console.log(sortedRows)
 			const updatedRows = sortedRows.slice(
 				page * rowsPerPage,
 				page * rowsPerPage + rowsPerPage
@@ -254,7 +274,8 @@ export default function EnhancedTable({ rows }) {
 
 	const handleSelectAllClick = (event) => {
 		if (event.target.checked) {
-			const newSelected = rows.map((n) => n.question)
+			const newSelected = data.map((n) => n.question)
+			console.log(newSelected)
 			setSelected(newSelected)
 			return
 		}
@@ -284,7 +305,6 @@ export default function EnhancedTable({ rows }) {
 	const handleChangePage = useCallback(
 		(event, newPage) => {
 			setPage(newPage)
-
 			const sortedRows = stableSort(rows, getComparator(order, orderBy))
 			const updatedRows = sortedRows.slice(
 				newPage * rowsPerPage,
@@ -295,7 +315,7 @@ export default function EnhancedTable({ rows }) {
 
 			// Avoid a layout jump when reaching the last page with empty rows.
 			const numEmptyRows =
-				newPage > 0 ? Math.max(0, (1 + newPage) * rowsPerPage - rows.length) : 0
+				newPage > 0 ? Math.max(0, (1 + newPage) * rowsPerPage - data.length) : 0
 
 			const newPaddingHeight = (dense ? 33 : 53) * numEmptyRows
 			setPaddingHeight(newPaddingHeight)
@@ -346,7 +366,7 @@ export default function EnhancedTable({ rows }) {
 							orderBy={orderBy}
 							onSelectAllClick={handleSelectAllClick}
 							onRequestSort={handleRequestSort}
-							rowCount={rows.length}
+							rowCount={data.length}
 						/>
 						<TableBody>
 							{visibleRows
@@ -404,7 +424,7 @@ export default function EnhancedTable({ rows }) {
 				<TablePagination
 					rowsPerPageOptions={[5, 10, 25]}
 					component="div"
-					count={rows.length}
+					count={data.length}
 					rowsPerPage={rowsPerPage}
 					page={page}
 					onPageChange={handleChangePage}

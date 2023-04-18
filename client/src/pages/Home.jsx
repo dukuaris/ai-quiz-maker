@@ -160,18 +160,21 @@ const Home = () => {
 					})
 
 					const data = await response.json()
-					console.log(form.content)
 					if (data.results !== undefined) {
-						dispatch(setQuestions(data.results))
+						const dataResults = data.results.map((result) => ({
+							...result,
+							subject: title,
+						}))
+						dispatch(setQuestions(dataResults))
 						dispatch(setSubject(title))
 						dispatch(setSource(form.content))
-						setNumber(data.results.length)
+						setNumber(dataResults.length)
 						const exam = {
-							questions: data.results,
+							questions: dataResults,
 							userId: userId,
 							subject: title,
 							source: form.content,
-							unit: data.results.length,
+							unit: dataResults.length,
 							score: 0,
 						}
 						window.localStorage.setItem('QUESTABLE_QUIZ', JSON.stringify(exam))
@@ -285,7 +288,7 @@ const Home = () => {
 	return (
 		<div className="content">
 			<div className="settings">
-				<p style={{ fontSize: 30 }}>Create Your Quiz</p>
+				<p style={{ fontSize: 24 }}>Create Your Quiz</p>
 				{/* <div className="warning-message">
 					* 2000글자 10문제 기준 평균 50초 소요. 모바일사용시 자동잠금 해제 요망
 				</div> */}

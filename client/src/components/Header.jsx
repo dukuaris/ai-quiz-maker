@@ -102,8 +102,8 @@ const Header = () => {
 											onKeyDown={handleListKeyDown}
 										>
 											<MenuItem onClick={handleClose}>Profile</MenuItem>
-											<MenuItem onClick={() => navigate('/myquiz')}>
-												My Quiz
+											<MenuItem onClick={() => navigate('/currentquiz')}>
+												Current Quiz
 											</MenuItem>
 											<MenuItem onClick={() => navigate('/')}>
 												Create Quiz

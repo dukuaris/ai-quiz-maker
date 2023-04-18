@@ -1,30 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
-
-import '../styles/Home.css'
-import {
-	alpha,
-	Box,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TablePagination,
-	TableRow,
-	TableSortLabel,
-	Toolbar,
-	Typography,
-	Paper,
-	Checkbox,
-	IconButton,
-	Tooltip,
-	FormControlLabel,
-	Switch,
-} from '@mui/material'
-import DeleteIcon from '@mui/icons-material/Delete'
-import FilterListIcon from '@mui/icons-material/FilterList'
-import { visuallyHidden } from '@mui/utils'
 
 import { db } from '../utils/firebaseConfig'
 import {
