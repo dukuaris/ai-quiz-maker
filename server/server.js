@@ -33,8 +33,6 @@ const requestList = [
 		'pairs of a term and a description consisting of less than 10 words, both the title and the pairs in a JSON format:',
 	],
 ]
-const objectRegex =
-	/({\s*\n*"sentence": "(.*?)",\s*\n*"answer": "(.*?)",\s*\n*"incorrect_answers": \[(.*?)\],\s*\n*"difficulty": "(.*?)"\s*\n*})|({\s*\n*"question": "(.*?)",\s*\n*"answer": "(.*?)",\s*\n*"incorrect_answers": \[(.*?)\],\s*\n*"difficulty": "(.*?)"\s*\n*})/g
 
 class QuizQuestion {
 	constructor(
@@ -99,7 +97,7 @@ const recallGPT = async (jsonData, quizType) => {
 	return reJsonData
 }
 
-tryException()
+// tryException()
 
 const generateQuiz = async (content, quizType) => {
 	/// Call to ChatGPT

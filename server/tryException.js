@@ -56,8 +56,6 @@ const tryException = () => {
 		jsonData = `{"questions":[${questions}]\n}`
 	}
 
-	console.log(jsonData)
-
 	const jsonized = JSON.parse(jsonData)
 	console.log(jsonized)
 }
