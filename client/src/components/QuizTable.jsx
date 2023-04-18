@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import {
 	alpha,
 	Box,
@@ -23,6 +24,13 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { visuallyHidden } from '@mui/utils'
 import PropTypes from 'prop-types'
+import {
+	setQuestions,
+	setSubject,
+	setSource,
+	setUnit,
+	resetScore,
+} from '../features/quiz/quizSlice'
 
 const headCells = [
 	{
@@ -150,7 +158,7 @@ EnhancedTableHead.propTypes = {
 }
 
 function EnhancedTableToolbar(props) {
-	const { numSelected } = props
+	const { numSelected, deleteSelectedItems } = props
 
 	return (
 		<Toolbar
@@ -188,7 +196,7 @@ function EnhancedTableToolbar(props) {
 
 			{numSelected > 0 ? (
 				<Tooltip title="Delete">
-					<IconButton>
+					<IconButton onClick={deleteSelectedItems}>
 						<DeleteIcon />
 					</IconButton>
 				</Tooltip>
@@ -205,9 +213,12 @@ function EnhancedTableToolbar(props) {
 
 EnhancedTableToolbar.propTypes = {
 	numSelected: PropTypes.number.isRequired,
+	deleteSelectedItems: PropTypes.func.isRequired,
 }
 
 export default function EnhancedTable({ rows }) {
+	const { questions, subject, source } = useSelector((state) => state.quiz)
+	const dispatch = useDispatch()
 	const [order, setOrder] = useState(DEFAULT_ORDER)
 	const [orderBy, setOrderBy] = useState(DEFAULT_ORDER_BY)
 	const [selected, setSelected] = useState([])
@@ -229,7 +240,7 @@ export default function EnhancedTable({ rows }) {
 		)
 
 		setVisibleRows(rowsOnMount)
-	}, [])
+	}, [questions])
 
 	const handleRequestSort = useCallback(
 		(event, newOrderBy) => {
@@ -261,12 +272,12 @@ export default function EnhancedTable({ rows }) {
 		setSelected([])
 	}
 
-	const handleClick = (event, name) => {
-		const selectedIndex = selected.indexOf(name)
+	const handleClick = (event, question) => {
+		const selectedIndex = selected.indexOf(question)
 		let newSelected = []
 
 		if (selectedIndex === -1) {
-			newSelected = newSelected.concat(selected, name)
+			newSelected = newSelected.concat(selected, question)
 		} else if (selectedIndex === 0) {
 			newSelected = newSelected.concat(selected.slice(1))
 		} else if (selectedIndex === selected.length - 1) {
@@ -328,12 +339,23 @@ export default function EnhancedTable({ rows }) {
 		setDense(event.target.checked)
 	}
 
-	const isSelected = (name) => selected.indexOf(name) !== -1
+	const isSelected = (question) => selected.indexOf(question) !== -1
+
+	const deleteSelectedItems = () => {
+		const unselected = rows.filter((row) => !selected.includes(row.question))
+		dispatch(setQuestions(unselected))
+		const data = JSON.parse(window.localStorage.getItem('QUESTABLE_QUIZ'))
+		const exam = { ...data, questions: unselected, unit: unselected.length }
+		window.localStorage.setItem('QUESTABLE_QUIZ', JSON.stringify(exam))
+	}
 
 	return (
 		<Box sx={{ width: '100%' }}>
 			<Paper sx={{ width: '100%', mb: 2 }}>
-				<EnhancedTableToolbar numSelected={selected.length} />
+				<EnhancedTableToolbar
+					numSelected={selected.length}
+					deleteSelectedItems={deleteSelectedItems}
+				/>
 				<TableContainer>
 					<Table
 						sx={{ minWidth: 750 }}

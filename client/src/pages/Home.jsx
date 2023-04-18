@@ -21,7 +21,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 	'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.5.141/build/pdf.worker.min.js'
 
 const Home = () => {
-	const { questions, subject, source } = useSelector((state) => state.quiz)
+	const { questions, subject } = useSelector((state) => state.quiz)
 	const { userId } = useSelector((state) => state.user)
 	const dispatch = useDispatch()
 	const navigate = useNavigate()

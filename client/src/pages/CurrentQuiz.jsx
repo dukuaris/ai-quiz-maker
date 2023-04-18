@@ -8,7 +8,6 @@ import '../styles/Home.css'
 const CurrentQuiz = () => {
 	const { userId } = useSelector((state) => state.user)
 	const { questions, subject, source } = useSelector((state) => state.quiz)
-	const [rows, setRows] = useState([])
 
 	const multipleChoiceCollectionRef = collection(db, 'multipleChoice')
 	const questionGroupCollectionRef = collection(db, 'questionGroup')
