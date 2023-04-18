@@ -99,7 +99,7 @@ const recallGPT = async (jsonData, quizType) => {
 	return reJsonData
 }
 
-// tryException()
+tryException()
 
 const generateQuiz = async (content, quizType) => {
 	/// Call to ChatGPT
