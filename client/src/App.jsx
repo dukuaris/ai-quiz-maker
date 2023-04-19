@@ -13,6 +13,7 @@ import Result from './pages/Result'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 import CurrentQuiz from './pages/CurrentQuiz'
+import QuizStore from './pages/QuizStore'
 import SampleTable from './pages/SampleTable'
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
 				<Route path="/signin" element={<SignIn />} />
 				<Route path="/signup" element={<SignUp />} />
 				<Route path="/currentquiz" element={<CurrentQuiz />} />
+				<Route path="/quizstore" element={<QuizStore />} />
 				<Route path="/sampletable" element={<SampleTable />} />
 			</Routes>
 			{/* <br />

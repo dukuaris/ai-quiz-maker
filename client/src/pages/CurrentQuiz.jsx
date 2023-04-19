@@ -25,13 +25,7 @@ import SaveIcon from '@mui/icons-material/Save'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { visuallyHidden } from '@mui/utils'
 import PropTypes from 'prop-types'
-import {
-	setQuestions,
-	setSubject,
-	setSource,
-	setUnit,
-	resetScore,
-} from '../features/quiz/quizSlice'
+import { setQuestions } from '../features/quiz/quizSlice'
 import { db } from '../utils/firebaseConfig'
 import { getDocs, collection, addDoc } from 'firebase/firestore'
 
@@ -45,19 +39,19 @@ const headCells = [
 	{
 		id: 'subject',
 		numeric: false,
-		disablePadding: true,
+		disablePadding: false,
 		label: 'Subject',
 	},
 	{
 		id: 'type',
 		numeric: false,
-		disablePadding: true,
+		disablePadding: false,
 		label: 'Type',
 	},
 	{
 		id: 'difficulty',
 		numeric: false,
-		disablePadding: true,
+		disablePadding: false,
 		label: 'Difficulty',
 	},
 ]
