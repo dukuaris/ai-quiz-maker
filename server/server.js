@@ -148,12 +148,17 @@ const generateQuiz = async (content, quizType) => {
 function jsonToObject(resultObject, unit, quizType) {
 	let results = []
 	let data = []
-	const resultKeys = Object.keys(resultObject)
+	// const resultKeys = Object.keys(resultObject)
 
-	if (resultKeys.length === unit) {
-		resultKeys.map((key) => {
-			results.push(resultObject[key])
-		})
+	// if (resultKeys.length === unit) {
+	// 	resultKeys.map((key) => {
+	// 		results.push(resultObject[key])
+	// 	})
+	// } else {
+	// 	results = resultObject.questions
+	// }
+	if (quizType === 3) {
+		results = resultObject.pairs
 	} else {
 		results = resultObject.questions
 	}

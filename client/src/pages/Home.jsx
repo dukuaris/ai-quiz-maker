@@ -144,6 +144,7 @@ const Home = () => {
 			}
 
 			if (form.content) {
+				setError(false)
 				setLoading(true)
 				try {
 					console.log(number)
