@@ -1,10 +1,11 @@
 import { utils, writeFileXLSX, read } from 'xlsx'
 
-const createSheet = (questions, name) => {
+const createSheet = (questions, subject, source) => {
 	let quizzes = []
 
 	const object_list = [
 		'category',
+		'subject',
 		'type',
 		'difficulty',
 		'question',
@@ -28,23 +29,31 @@ const createSheet = (questions, name) => {
 		quizzes.push(quiz)
 	})
 
-	const worksheet = utils.json_to_sheet(quizzes)
+	let src = [{ source: source }]
+	console.log(src)
+
+	const questionSheet = utils.json_to_sheet(quizzes)
+	const sourceSheet = utils.json_to_sheet(src)
 	const workbook = utils.book_new()
-	utils.book_append_sheet(workbook, worksheet, 'Questions')
-	writeFileXLSX(workbook, `${name}_quiz.xlsx`)
+	utils.book_append_sheet(workbook, questionSheet, 'Questions')
+	utils.book_append_sheet(workbook, sourceSheet, 'Source')
+	writeFileXLSX(workbook, `${subject}.xlsx`)
 }
 
 export const readSheet = (fileBuffer, callbackPageDone, callbackAllDone) => {
 	const workbook = read(fileBuffer, { type: 'buffer' })
-	const worksheet = workbook.Sheets[workbook.SheetNames[0]]
-	const results = utils.sheet_to_json(worksheet)
+	const questionSheet = workbook.Sheets[workbook.SheetNames[0]]
+	const sourceSheet = workbook.Sheets[workbook.SheetNames[1]]
+	const questions = utils.sheet_to_json(questionSheet)
+	const source = utils.sheet_to_json(sourceSheet)[0].source
 
 	let data = []
-	results.forEach((unit) => {
+	questions.forEach((unit) => {
 		let item = {}
 		item['category'] = unit.category
 		item['type'] = unit.type
 		item['difficulty'] = unit.difficulty
+		item['subject'] = unit.subject
 		item['question'] = unit.question
 		item['correct_answer'] = unit.correct_answer
 		item['incorrect_answers'] = [
@@ -55,7 +64,8 @@ export const readSheet = (fileBuffer, callbackPageDone, callbackAllDone) => {
 		item['source'] = unit.source
 		data.push(item)
 	})
-	callbackAllDone(data)
+	let results = { questions: data, source: source }
+	callbackAllDone(results)
 }
 
 export default createSheet

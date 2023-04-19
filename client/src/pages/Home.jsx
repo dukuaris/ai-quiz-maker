@@ -15,13 +15,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import ErrorMessages from '../components/ErrorMessages'
 import types from '../data/types.js'
 import '../styles/Home.css'
-import createSheet, { readSheet } from '../utils/handleSheet'
+import createSheet, { readSheet } from '../utils/createSheet'
 import 'https://npmcdn.com/pdfjs-dist/build/pdf.js'
 pdfjsLib.GlobalWorkerOptions.workerSrc =
 	'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.5.141/build/pdf.worker.min.js'
 
 const Home = () => {
-	const { questions, subject } = useSelector((state) => state.quiz)
+	const { questions, subject, source } = useSelector((state) => state.quiz)
 	const { userId } = useSelector((state) => state.user)
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
@@ -225,25 +225,29 @@ const Home = () => {
 
 	const handleXlsx = (e) => {
 		const file = e.target.files[0]
-		const fileName = file.name.split('_')[0]
+		const fileName = file.name.split('.')[0]
 		setTitle(fileName)
 		let fileReader = new FileReader()
 		fileReader.onload = () => {
 			setLoading(true)
 			setReady(true)
 			readSheet(fileReader.result, null, (data) => {
-				setType(typeList.indexOf(data[0].type))
-				setNumber(data.length)
+				setType(typeList.indexOf(data.questions[0].type))
+				setNumber(data.questions.length)
+				setUserInput(data.source)
+				dispatch(setQuestions(data.questions))
+				dispatch(setSubject(fileName))
+				dispatch(setSource(data.source))
+				dispatch(setUnit(data.questions.length))
 				const exam = {
-					questions: data,
+					questions: data.questions,
 					userId: userId,
 					subject: fileName,
-					source: '',
-					unit: data.length,
+					source: data.source,
+					unit: data.questions.length,
 					score: 0,
 				}
 				window.localStorage.setItem('QUESTABLE_QUIZ', JSON.stringify(exam))
-				dispatch(setQuestions(data))
 				setError(false)
 				setLoading(false)
 			})
@@ -455,7 +459,9 @@ const Home = () => {
 								border: activeColor,
 								background: 'light' + activeColor,
 							}}
-							onClick={ready ? () => createSheet(questions, subject) : () => {}}
+							onClick={
+								ready ? () => createSheet(questions, subject, source) : () => {}
+							}
 							size="small"
 						>
 							Download
