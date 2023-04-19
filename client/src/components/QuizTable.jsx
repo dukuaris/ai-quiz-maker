@@ -217,7 +217,7 @@ EnhancedTableToolbar.propTypes = {
 }
 
 export default function EnhancedTable({ rows }) {
-	const { questions, subject, source } = useSelector((state) => state.quiz)
+	const { questions } = useSelector((state) => state.quiz)
 	const dispatch = useDispatch()
 	const [order, setOrder] = useState(DEFAULT_ORDER)
 	const [orderBy, setOrderBy] = useState(DEFAULT_ORDER_BY)

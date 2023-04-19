@@ -14,14 +14,30 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
 import { signOut } from 'firebase/auth'
 import { auth } from '../utils/firebaseConfig'
+import { useDispatch } from 'react-redux'
+import {
+	setQuestions,
+	setSubject,
+	setSource,
+	setUnit,
+	resetScore,
+} from '../features/quiz/quizSlice'
 
 const Header = () => {
 	const [open, setOpen] = useState(false)
 	const { userId, image } = useSelector((state) => state.user)
 	const anchorRef = useRef(null)
 	const navigate = useNavigate()
+	const dispatch = useDispatch()
+
 	const logout = async () => {
 		await signOut(auth)
+		dispatch(resetScore(0))
+		dispatch(setUnit(0))
+		dispatch(setQuestions([]))
+		dispatch(setSubject(''))
+		dispatch(setSource(''))
+		window.localStorage.setItem('QUESTABLE_QUIZ', JSON.stringify([]))
 	}
 
 	const handleToggle = () => {
@@ -111,10 +127,6 @@ const Header = () => {
 											<MenuItem
 												onClick={() => {
 													logout()
-													window.localStorage.setItem(
-														'QUESTABLE_QUIZ',
-														JSON.stringify([])
-													)
 													navigate('/')
 												}}
 											>

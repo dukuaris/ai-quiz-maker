@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { db } from '../utils/firebaseConfig'
 import { getDocs, collection, addDoc } from 'firebase/firestore'
@@ -11,33 +10,6 @@ const CurrentQuiz = () => {
 
 	const multipleChoiceCollectionRef = collection(db, 'multipleChoice')
 	const questionGroupCollectionRef = collection(db, 'questionGroup')
-
-	const headCells = [
-		{
-			id: 'question',
-			numeric: false,
-			disablePadding: true,
-			label: 'Question',
-		},
-		{
-			id: 'subject',
-			numeric: false,
-			disablePadding: true,
-			label: 'Subject',
-		},
-		{
-			id: 'type',
-			numeric: false,
-			disablePadding: true,
-			label: 'Type',
-		},
-		{
-			id: 'difficulty',
-			numeric: false,
-			disablePadding: true,
-			label: 'Difficulty',
-		},
-	]
 
 	const putQuestionList = async () => {
 		try {
