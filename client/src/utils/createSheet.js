@@ -30,8 +30,6 @@ const createSheet = (questions, subject, source) => {
 	})
 
 	let src = [{ source: source }]
-	console.log(src)
-
 	const questionSheet = utils.json_to_sheet(quizzes)
 	const sourceSheet = utils.json_to_sheet(src)
 	const workbook = utils.book_new()

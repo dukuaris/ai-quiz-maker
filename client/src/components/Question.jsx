@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { setQuestions, addScore, resetScore } from '../features/quiz/quizSlice'
+import { addScore, resetScore } from '../features/quiz/quizSlice'
 import ErrorMessage from './ErrorMessages'
 
 const Question = ({ currQues, setCurrQues, options, correct }) => {

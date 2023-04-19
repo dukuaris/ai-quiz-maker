@@ -59,7 +59,6 @@ const parseJson = (jsonData, quizType) => {
 	let result = JSON.parse(jsonData)
 	const dataKeys = Object.keys(result)
 	if (dataKeys?.length > 1 && quizType !== 3) {
-		console.log(dataKeys)
 		dataKeys.map((key) => {
 			resultObject.questions.push(result[key])
 		})
