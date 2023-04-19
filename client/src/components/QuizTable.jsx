@@ -21,6 +21,7 @@ import {
 	Switch,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
+import SaveIcon from '@mui/icons-material/Save'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { visuallyHidden } from '@mui/utils'
 import PropTypes from 'prop-types'
@@ -31,6 +32,8 @@ import {
 	setUnit,
 	resetScore,
 } from '../features/quiz/quizSlice'
+import { db } from '../utils/firebaseConfig'
+import { getDocs, collection, addDoc } from 'firebase/firestore'
 
 const headCells = [
 	{
@@ -93,7 +96,7 @@ function stableSort(array, comparator) {
 
 const DEFAULT_ORDER = 'asc'
 const DEFAULT_ORDER_BY = 'question'
-const DEFAULT_ROWS_PER_PAGE = 5
+const DEFAULT_ROWS_PER_PAGE = 10
 
 function EnhancedTableHead(props) {
 	const {
@@ -158,7 +161,7 @@ EnhancedTableHead.propTypes = {
 }
 
 function EnhancedTableToolbar(props) {
-	const { numSelected, deleteSelectedItems } = props
+	const { numSelected, deleteSelectedItems, saveSelectedItems } = props
 
 	return (
 		<Toolbar
@@ -195,11 +198,18 @@ function EnhancedTableToolbar(props) {
 			)}
 
 			{numSelected > 0 ? (
-				<Tooltip title="Delete">
-					<IconButton onClick={deleteSelectedItems}>
-						<DeleteIcon />
-					</IconButton>
-				</Tooltip>
+				<>
+					<Tooltip title="Save">
+						<IconButton onClick={saveSelectedItems}>
+							<SaveIcon />
+						</IconButton>
+					</Tooltip>
+					<Tooltip title="Delete">
+						<IconButton onClick={deleteSelectedItems}>
+							<DeleteIcon />
+						</IconButton>
+					</Tooltip>
+				</>
 			) : (
 				<Tooltip title="Filter list">
 					<IconButton>
@@ -214,10 +224,12 @@ function EnhancedTableToolbar(props) {
 EnhancedTableToolbar.propTypes = {
 	numSelected: PropTypes.number.isRequired,
 	deleteSelectedItems: PropTypes.func.isRequired,
+	saveSelectedItems: PropTypes.func.isRequired,
 }
 
 export default function EnhancedTable({ rows }) {
-	const { questions } = useSelector((state) => state.quiz)
+	const { userId } = useSelector((state) => state.user)
+	const { questions, subject, source } = useSelector((state) => state.quiz)
 	const dispatch = useDispatch()
 	const [order, setOrder] = useState(DEFAULT_ORDER)
 	const [orderBy, setOrderBy] = useState(DEFAULT_ORDER_BY)
@@ -227,6 +239,8 @@ export default function EnhancedTable({ rows }) {
 	const [visibleRows, setVisibleRows] = useState(null)
 	const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_ROWS_PER_PAGE)
 	const [paddingHeight, setPaddingHeight] = useState(0)
+	const multipleChoiceCollectionRef = collection(db, 'multipleChoice')
+	const questionGroupCollectionRef = collection(db, 'questionGroup')
 
 	useEffect(() => {
 		let rowsOnMount = stableSort(
@@ -341,6 +355,45 @@ export default function EnhancedTable({ rows }) {
 
 	const isSelected = (question) => selected.indexOf(question) !== -1
 
+	const saveSelectedItems = async () => {
+		const selectedItems = rows.filter((row) => selected.includes(row.question))
+		try {
+			const createdAt = new Date()
+			await addDoc(questionGroupCollectionRef, {
+				category: selectedItems[0].category,
+				createdAt: createdAt,
+				source: source,
+				subject: subject,
+				type: selectedItems[0].type,
+				userId: userId,
+			})
+
+			const questionGroupData = await getDocs(questionGroupCollectionRef)
+			const aboveGroupId =
+				questionGroupData.docs[questionGroupData.docs.length - 1].id
+
+			await selectedItems.map(async (question) => {
+				await addDoc(multipleChoiceCollectionRef, {
+					category: question.category,
+					correct_answer: question.correct_answer,
+					createdAt: createdAt,
+					incorrect_answers: question.incorrect_answers,
+					play: 5,
+					question: question.question,
+					questionGroup: aboveGroupId,
+					score: 3,
+					subject: subject,
+					type: question.type,
+					difficulty: question.difficulty,
+					updatedAt: createdAt,
+					userId: userId,
+				})
+			})
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
 	const deleteSelectedItems = () => {
 		const unselected = rows.filter((row) => !selected.includes(row.question))
 		dispatch(setQuestions(unselected))
@@ -355,6 +408,7 @@ export default function EnhancedTable({ rows }) {
 				<EnhancedTableToolbar
 					numSelected={selected.length}
 					deleteSelectedItems={deleteSelectedItems}
+					saveSelectedItems={saveSelectedItems}
 				/>
 				<TableContainer>
 					<Table

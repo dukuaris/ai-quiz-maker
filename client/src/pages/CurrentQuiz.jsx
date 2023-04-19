@@ -52,9 +52,9 @@ const CurrentQuiz = () => {
 	return (
 		<div className="content">
 			<QuizTable rows={questions} />
-			<button onClick={() => putQuestionList(questions, subject)}>
+			{/* <button onClick={() => putQuestionList(questions, subject)}>
 				Save to DB
-			</button>
+			</button> */}
 		</div>
 	)
 }

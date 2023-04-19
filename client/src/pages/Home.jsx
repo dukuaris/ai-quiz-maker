@@ -441,7 +441,6 @@ const Home = () => {
 							onClick={
 								ready
 									? () => {
-											dispatch(setSubject(title))
 											navigate('/quiz')
 									  }
 									: () => {}
