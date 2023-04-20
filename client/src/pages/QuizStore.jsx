@@ -34,7 +34,13 @@ import {
 	resetScore,
 } from '../features/quiz/quizSlice'
 import { db } from '../utils/firebaseConfig'
-import { getDocs, collection, addDoc } from 'firebase/firestore'
+import {
+	getDocs,
+	collection,
+	where,
+	query,
+	orderBy as orderingBy,
+} from 'firebase/firestore'
 
 const headCells = [
 	{
@@ -56,10 +62,10 @@ const headCells = [
 		label: 'Category',
 	},
 	{
-		id: 'createAt',
+		id: 'createdAt',
 		numeric: false,
 		disablePadding: false,
-		label: 'CreateAt',
+		label: 'CreatedAt',
 	},
 ]
 
@@ -96,7 +102,7 @@ function stableSort(array, comparator) {
 }
 
 const DEFAULT_ORDER = 'asc'
-const DEFAULT_ORDER_BY = 'question'
+const DEFAULT_ORDER_BY = 'subject'
 const DEFAULT_ROWS_PER_PAGE = 10
 
 function EnhancedTableHead(props) {
@@ -237,14 +243,23 @@ export default function EnhancedTable() {
 	const [rows, setRows] = useState([])
 	const multipleChoiceCollectionRef = collection(db, 'multipleChoice')
 	const questionGroupCollectionRef = collection(db, 'questionGroup')
+	const queryGroup = query(
+		questionGroupCollectionRef,
+		where('userId', '==', userId),
+		orderingBy('createdAt', 'desc')
+	)
 
 	useEffect(() => {
 		async function getQuestionGroup() {
 			try {
-				const data = await getDocs(questionGroupCollectionRef)
-				const filteredData = data.docs.map((doc) => ({
+				const data = await getDocs(queryGroup)
+				const retrievedData = data.docs.map((doc) => ({
 					...doc.data(),
 					id: doc.id,
+				}))
+				const filteredData = retrievedData.map((doc) => ({
+					...doc,
+					createdAt: doc.createdAt.toDate(),
 				}))
 				setRows(filteredData)
 				let rowsOnMount = stableSort(
@@ -261,7 +276,7 @@ export default function EnhancedTable() {
 			}
 		}
 		getQuestionGroup()
-	}, [])
+	}, [userId])
 
 	const handleRequestSort = useCallback(
 		(event, newOrderBy) => {
@@ -285,8 +300,6 @@ export default function EnhancedTable() {
 	)
 
 	const handleSelectAllClick = (event) => {
-		console.log('CLICK!!!')
-		console.log(rows)
 		if (event.target.checked) {
 			const newSelected = rows.map((n) => n.id)
 			setSelected(newSelected)
@@ -364,7 +377,19 @@ export default function EnhancedTable() {
 
 	const isSelected = (id) => selected.indexOf(id) !== -1
 
-	const uploadSelectedItems = () => {}
+	const uploadSelectedItems = async () => {
+		let questionList = []
+		const selectedItems = rows.filter((row) => selected.includes(row.id))
+		selectedItems.map(async (item) => {
+			const q = query(
+				multipleChoiceCollectionRef,
+				where('questionGroup', '==', item.id)
+			)
+			const querySnapshot = await getDocs(q)
+			querySnapshot.forEach((doc) => questionList.push(doc.data()))
+			console.log(questionList)
+		})
+	}
 
 	return (
 		<Box sx={{ width: '100%' }}>
@@ -424,7 +449,7 @@ export default function EnhancedTable() {
 												<TableCell align="left">{row.type}</TableCell>
 												<TableCell align="left">{row.category}</TableCell>
 												<TableCell align="left">
-													{Date(row.createdAt)}
+													{row.createdAt.toDateString()}
 												</TableCell>
 											</TableRow>
 										)

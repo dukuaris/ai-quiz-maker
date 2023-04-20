@@ -25,9 +25,18 @@ import SaveIcon from '@mui/icons-material/Save'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { visuallyHidden } from '@mui/utils'
 import PropTypes from 'prop-types'
-import { setQuestions } from '../features/quiz/quizSlice'
+import { setQuestions, setSubject, setSource } from '../features/quiz/quizSlice'
 import { db } from '../utils/firebaseConfig'
-import { getDocs, collection, addDoc } from 'firebase/firestore'
+import {
+	getDocs,
+	collection,
+	addDoc,
+	query,
+	orderBy as orderingBy,
+	limit,
+	where,
+} from 'firebase/firestore'
+import { Timestamp } from 'firebase/firestore'
 
 const headCells = [
 	{
@@ -178,7 +187,7 @@ function EnhancedTableToolbar(props) {
 					variant="subtitle1"
 					component="div"
 				>
-					{numSelected} selected
+					{numSelected}
 				</Typography>
 			) : (
 				<Typography
@@ -223,7 +232,7 @@ EnhancedTableToolbar.propTypes = {
 
 export default function EnhancedTable() {
 	const { userId } = useSelector((state) => state.user)
-	const { questions, subject, source } = useSelector((state) => state.quiz)
+	const { questions } = useSelector((state) => state.quiz)
 	const dispatch = useDispatch()
 	const [order, setOrder] = useState(DEFAULT_ORDER)
 	const [orderBy, setOrderBy] = useState(DEFAULT_ORDER_BY)
@@ -235,9 +244,10 @@ export default function EnhancedTable() {
 	const [paddingHeight, setPaddingHeight] = useState(0)
 	const multipleChoiceCollectionRef = collection(db, 'multipleChoice')
 	const questionGroupCollectionRef = collection(db, 'questionGroup')
-	const rows = JSON.parse(
-		window.localStorage.getItem('QUESTABLE_QUIZ')
-	).questions
+	const questionData = JSON.parse(window.localStorage.getItem('QUESTABLE_QUIZ'))
+	const rows = questionData.questions
+	const subject = questionData.subject
+	const source = questionData.source
 
 	useEffect(() => {
 		let rowsOnMount = stableSort(
@@ -353,6 +363,7 @@ export default function EnhancedTable() {
 	const isSelected = (question) => selected.indexOf(question) !== -1
 
 	const saveSelectedItems = async () => {
+		let questionList = []
 		const selectedItems = rows.filter((row) => selected.includes(row.question))
 		try {
 			const createdAt = new Date()
@@ -365,9 +376,14 @@ export default function EnhancedTable() {
 				userId: userId,
 			})
 
-			const questionGroupData = await getDocs(questionGroupCollectionRef)
-			const aboveGroupId =
-				questionGroupData.docs[questionGroupData.docs.length - 1].id
+			const q = query(
+				questionGroupCollectionRef,
+				where('userId', '==', userId),
+				orderingBy('createdAt', 'desc'),
+				limit(1)
+			)
+			const querySnapshot = await getDocs(q)
+			const questionGroupId = querySnapshot.docs[0].id
 
 			await selectedItems.map(async (question) => {
 				await addDoc(multipleChoiceCollectionRef, {
@@ -377,7 +393,7 @@ export default function EnhancedTable() {
 					incorrect_answers: question.incorrect_answers,
 					play: 5,
 					question: question.question,
-					questionGroup: aboveGroupId,
+					questionGroup: questionGroupId,
 					score: 3,
 					subject: subject,
 					type: question.type,
