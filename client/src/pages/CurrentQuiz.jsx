@@ -25,7 +25,13 @@ import SaveIcon from '@mui/icons-material/Save'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { visuallyHidden } from '@mui/utils'
 import PropTypes from 'prop-types'
-import { setQuestions, setSubject, setSource } from '../features/quiz/quizSlice'
+import {
+	setQuestions,
+	setSubject,
+	setSource,
+	setUnit,
+	resetScore,
+} from '../features/quiz/quizSlice'
 import { db } from '../utils/firebaseConfig'
 import {
 	getDocs,
@@ -121,7 +127,9 @@ function EnhancedTableHead(props) {
 					<Checkbox
 						color="primary"
 						indeterminate={numSelected > 0 && numSelected < rowCount}
-						checked={rowCount > 0 && numSelected === rowCount}
+						checked={
+							rowCount > 0 && numSelected === rowCount && numSelected !== 0
+						}
 						onChange={onSelectAllClick}
 						inputProps={{
 							'aria-label': 'select all desserts',
@@ -164,7 +172,7 @@ EnhancedTableHead.propTypes = {
 }
 
 function EnhancedTableToolbar(props) {
-	const { numSelected, deleteSelectedItems, saveSelectedItems } = props
+	const { numSelected, deleteSelectedItems, saveSelectedItems, subject } = props
 
 	return (
 		<Toolbar
@@ -187,7 +195,7 @@ function EnhancedTableToolbar(props) {
 					variant="subtitle1"
 					component="div"
 				>
-					{numSelected}
+					{numSelected} selected
 				</Typography>
 			) : (
 				<Typography
@@ -196,7 +204,7 @@ function EnhancedTableToolbar(props) {
 					id="tableTitle"
 					component="div"
 				>
-					Current Content
+					{subject == '' ? 'Quiz Empty' : subject}
 				</Typography>
 			)}
 
@@ -228,6 +236,7 @@ EnhancedTableToolbar.propTypes = {
 	numSelected: PropTypes.number.isRequired,
 	deleteSelectedItems: PropTypes.func.isRequired,
 	saveSelectedItems: PropTypes.func.isRequired,
+	subject: PropTypes.string.isRequired,
 }
 
 export default function EnhancedTable() {
@@ -286,19 +295,19 @@ export default function EnhancedTable() {
 
 	const handleSelectAllClick = (event) => {
 		if (event.target.checked) {
-			const newSelected = rows.map((n) => n.question)
+			const newSelected = rows.map((n) => n.id)
 			setSelected(newSelected)
 			return
 		}
 		setSelected([])
 	}
 
-	const handleClick = (event, question) => {
-		const selectedIndex = selected.indexOf(question)
+	const handleClick = (event, id) => {
+		const selectedIndex = selected.indexOf(id)
 		let newSelected = []
 
 		if (selectedIndex === -1) {
-			newSelected = newSelected.concat(selected, question)
+			newSelected = newSelected.concat(selected, id)
 		} else if (selectedIndex === 0) {
 			newSelected = newSelected.concat(selected.slice(1))
 		} else if (selectedIndex === selected.length - 1) {
@@ -364,7 +373,7 @@ export default function EnhancedTable() {
 
 	const saveSelectedItems = async () => {
 		let questionList = []
-		const selectedItems = rows.filter((row) => selected.includes(row.question))
+		const selectedItems = rows.filter((row) => selected.includes(row.id))
 		try {
 			const createdAt = new Date()
 			await addDoc(questionGroupCollectionRef, {
@@ -402,16 +411,37 @@ export default function EnhancedTable() {
 					userId: userId,
 				})
 			})
+
+			setSelected([])
 		} catch (error) {
 			console.log(error)
 		}
 	}
 
 	const deleteSelectedItems = () => {
-		const unselected = rows.filter((row) => !selected.includes(row.question))
+		const unselected = rows.filter((row) => !selected.includes(row.id))
+		if (unselected.length < 1) {
+			dispatch(setSubject(''))
+			dispatch(setSource(''))
+			dispatch(setUnit(0))
+			dispatch(resetScore())
+			setSelected([])
+		}
 		dispatch(setQuestions(unselected))
 		const data = JSON.parse(window.localStorage.getItem('QUESTABLE_QUIZ'))
-		const exam = { ...data, questions: unselected, unit: unselected.length }
+		let exam = {}
+		if (unselected.length < 1) {
+			exam = {
+				questions: [],
+				userId: null,
+				subject: '',
+				source: '',
+				unit: 0,
+				score: 0,
+			}
+		} else {
+			exam = { ...data, questions: unselected, unit: unselected.length }
+		}
 		window.localStorage.setItem('QUESTABLE_QUIZ', JSON.stringify(exam))
 	}
 
@@ -422,6 +452,7 @@ export default function EnhancedTable() {
 					numSelected={selected.length}
 					deleteSelectedItems={deleteSelectedItems}
 					saveSelectedItems={saveSelectedItems}
+					subject={subject}
 				/>
 				<TableContainer>
 					<Table
@@ -440,17 +471,17 @@ export default function EnhancedTable() {
 						<TableBody>
 							{visibleRows
 								? visibleRows.map((row, index) => {
-										const isItemSelected = isSelected(row.question)
+										const isItemSelected = isSelected(row.id)
 										const labelId = `enhanced-table-checkbox-${index}`
 
 										return (
 											<TableRow
 												hover
-												onClick={(event) => handleClick(event, row.question)}
+												onClick={(event) => handleClick(event, row.id)}
 												role="checkbox"
 												aria-checked={isItemSelected}
 												tabIndex={-1}
-												key={row.question}
+												key={row.id}
 												selected={isItemSelected}
 												sx={{ cursor: 'pointer' }}
 											>
@@ -495,7 +526,7 @@ export default function EnhancedTable() {
 					component="div"
 					count={rows.length}
 					rowsPerPage={rowsPerPage}
-					page={page}
+					page={!rows || rows.length <= 0 ? 0 : page}
 					onPageChange={handleChangePage}
 					onRowsPerPageChange={handleChangeRowsPerPage}
 				/>

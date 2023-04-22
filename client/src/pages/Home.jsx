@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { Button, TextField, MenuItem } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
+import { v4 as uuidv4 } from 'uuid'
 
 import {
 	setQuestions,
@@ -65,6 +66,18 @@ const Home = () => {
 			setForm({ ...form, content: data.source })
 			setWordCount(data.source.length)
 		} else {
+			const initialState = {
+				questions: [],
+				userId: null,
+				subject: '',
+				source: '',
+				unit: 0,
+				score: 0,
+			}
+			window.localStorage.setItem(
+				'QUESTABLE_QUIZ',
+				JSON.stringify(initialState)
+			)
 			setReady(false)
 		}
 	}, [])
@@ -129,7 +142,7 @@ const Home = () => {
 
 	const handleSubmit = async () => {
 		if (ready) {
-			dispatch(resetScore(0))
+			dispatch(resetScore())
 			dispatch(setUnit(0))
 			dispatch(setQuestions([]))
 			dispatch(setSubject(''))
@@ -147,7 +160,6 @@ const Home = () => {
 				setError(false)
 				setLoading(true)
 				try {
-					console.log(number)
 					const response = await fetch(serverAddress, {
 						method: 'POST',
 						headers: {
@@ -165,6 +177,7 @@ const Home = () => {
 						const dataResults = data.results.map((result) => ({
 							...result,
 							subject: title,
+							id: uuidv4(),
 						}))
 						dispatch(setQuestions(dataResults))
 						dispatch(setSubject(title))

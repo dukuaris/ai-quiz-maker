@@ -39,6 +39,7 @@ export const quizSlice = createSlice({
 
 export const {
 	setQuestions,
+	setUserId,
 	setSubject,
 	setSource,
 	setUnit,

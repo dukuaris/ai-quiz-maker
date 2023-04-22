@@ -85,14 +85,18 @@ const Header = () => {
 			{userId ? (
 				<div className="user-box">
 					<Button
-						ref={anchorRef}
 						id="composition-button"
 						aria-controls={open ? 'composition-menu' : undefined}
 						aria-expanded={open ? 'true' : undefined}
 						aria-haspopup="true"
 						onClick={handleToggle}
 					>
-						<Avatar className="avatar" alt="Remy Sharp" src={image} />
+						<Avatar
+							ref={anchorRef}
+							className="avatar"
+							alt="Remy Sharp"
+							src={image}
+						/>
 					</Button>
 					<Popper
 						open={open}

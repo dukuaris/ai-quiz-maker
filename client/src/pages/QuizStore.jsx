@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import {
 	alpha,
@@ -31,6 +32,7 @@ import {
 	setSubject,
 	setSource,
 	setUnit,
+	setUserId,
 	resetScore,
 } from '../features/quiz/quizSlice'
 import { db } from '../utils/firebaseConfig'
@@ -230,7 +232,9 @@ EnhancedTableToolbar.propTypes = {
 
 export default function EnhancedTable() {
 	const { userId } = useSelector((state) => state.user)
-	const { questions, subject, source } = useSelector((state) => state.quiz)
+	const { questions, subject, source, unit } = useSelector(
+		(state) => state.quiz
+	)
 	const dispatch = useDispatch()
 	const [order, setOrder] = useState(DEFAULT_ORDER)
 	const [orderBy, setOrderBy] = useState(DEFAULT_ORDER_BY)
@@ -241,6 +245,7 @@ export default function EnhancedTable() {
 	const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_ROWS_PER_PAGE)
 	const [paddingHeight, setPaddingHeight] = useState(0)
 	const [rows, setRows] = useState([])
+	const navigate = useNavigate()
 	const multipleChoiceCollectionRef = collection(db, 'multipleChoice')
 	const questionGroupCollectionRef = collection(db, 'questionGroup')
 	const queryGroup = query(
@@ -250,6 +255,12 @@ export default function EnhancedTable() {
 	)
 
 	useEffect(() => {
+		const data = JSON.parse(window.localStorage.getItem('QUESTABLE_QUIZ'))
+		dispatch(setQuestions(data.questions))
+		dispatch(setUserId(data.userId))
+		dispatch(setSubject(data.subject))
+		dispatch(setSource(data.source))
+		dispatch(setUnit(data.unit))
 		async function getQuestionGroup() {
 			try {
 				const data = await getDocs(queryGroup)
@@ -378,16 +389,69 @@ export default function EnhancedTable() {
 	const isSelected = (id) => selected.indexOf(id) !== -1
 
 	const uploadSelectedItems = async () => {
-		let questionList = []
 		const selectedItems = rows.filter((row) => selected.includes(row.id))
-		selectedItems.map(async (item) => {
+		const promises = selectedItems.map(async (item) => {
+			let questionList = []
 			const q = query(
 				multipleChoiceCollectionRef,
 				where('questionGroup', '==', item.id)
 			)
 			const querySnapshot = await getDocs(q)
-			querySnapshot.forEach((doc) => questionList.push(doc.data()))
-			console.log(questionList)
+			querySnapshot.forEach((doc) =>
+				questionList.push({ ...doc.data(), id: doc.id })
+			)
+			questionList = questionList.map((question) => ({
+				...question,
+				createdAt: question.createdAt.toDate().toDateString(),
+				updatedAt: question.updatedAt.toDate().toDateString(),
+			}))
+
+			const addQuiz = {
+				questions: questionList,
+				userId: userId,
+				subject: item.subject,
+				source: item.source,
+				unit: questionList.length,
+				score: 0,
+			}
+			return addQuiz
+		})
+
+		let quizPool = {
+			questions: questions,
+			userId: userId,
+			subject: subject,
+			source: source,
+			unit: unit,
+			score: 0,
+		}
+
+		Promise.all(promises).then((promises) => {
+			promises.map((promise) => {
+				quizPool = {
+					questions: [...quizPool.questions, ...promise.questions],
+					userId: quizPool.userId,
+					subject:
+						quizPool.subject?.length > 0
+							? quizPool.subject + ' + ' + promise.subject
+							: promise.subject,
+					source:
+						quizPool.source?.length > 0
+							? quizPool.source + '\n\n\n' + promise.source
+							: promise.source,
+					unit: quizPool.unit + promise.unit,
+					score: 0,
+				}
+			})
+
+			dispatch(setQuestions(quizPool.questions))
+			dispatch(setUserId(quizPool.userId))
+			dispatch(setSubject(quizPool.subject))
+			dispatch(setSource(quizPool.source))
+			dispatch(setUnit(quizPool.unit))
+			dispatch(resetScore())
+			window.localStorage.setItem('QUESTABLE_QUIZ', JSON.stringify(quizPool))
+			navigate('/currentquiz')
 		})
 	}
 
@@ -472,7 +536,7 @@ export default function EnhancedTable() {
 					component="div"
 					count={rows.length}
 					rowsPerPage={rowsPerPage}
-					page={page}
+					page={!rows || rows.length <= 0 ? 0 : page}
 					onPageChange={handleChangePage}
 					onRowsPerPageChange={handleChangeRowsPerPage}
 				/>
