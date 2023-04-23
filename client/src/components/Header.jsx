@@ -20,6 +20,7 @@ import {
 	setSubject,
 	setSource,
 	setUnit,
+	setUserId,
 	resetScore,
 } from '../features/quiz/quizSlice'
 
@@ -37,6 +38,7 @@ const Header = () => {
 		dispatch(setQuestions([]))
 		dispatch(setSubject(''))
 		dispatch(setSource(''))
+		dispatch(setUserId(null))
 		window.localStorage.setItem('QUESTABLE_QUIZ', JSON.stringify([]))
 	}
 

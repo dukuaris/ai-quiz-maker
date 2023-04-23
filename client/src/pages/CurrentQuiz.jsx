@@ -19,10 +19,12 @@ import {
 	Tooltip,
 	FormControlLabel,
 	Switch,
+	TextField,
+	InputAdornment,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import SaveIcon from '@mui/icons-material/Save'
-import FilterListIcon from '@mui/icons-material/FilterList'
+import ChangeCircleOutlinedIcon from '@mui/icons-material/ChangeCircleOutlined'
 import { visuallyHidden } from '@mui/utils'
 import PropTypes from 'prop-types'
 import {
@@ -42,7 +44,6 @@ import {
 	limit,
 	where,
 } from 'firebase/firestore'
-import { Timestamp } from 'firebase/firestore'
 
 const headCells = [
 	{
@@ -172,7 +173,39 @@ EnhancedTableHead.propTypes = {
 }
 
 function EnhancedTableToolbar(props) {
-	const { numSelected, deleteSelectedItems, saveSelectedItems, subject } = props
+	const {
+		numSelected,
+		deleteSelectedItems,
+		saveSelectedItems,
+		subject,
+		source,
+	} = props
+	const { userId } = useSelector((state) => state.user)
+	const [title, setTitle] = useState('')
+	const dispatch = useDispatch()
+
+	useEffect(() => {
+		setTitle(subject)
+	}, [subject])
+
+	const resetSubject = () => {
+		let questionData = JSON.parse(window.localStorage.getItem('QUESTABLE_QUIZ'))
+		const questionsWithNewSubject = questionData.questions.map((question) => ({
+			...question,
+			subject: title,
+		}))
+		questionData = {
+			questions: questionsWithNewSubject,
+			userId: userId,
+			subject: title,
+			source: source,
+			unit: questionsWithNewSubject.length,
+			score: 0,
+		}
+		window.localStorage.setItem('QUESTABLE_QUIZ', JSON.stringify(questionData))
+		dispatch(setQuestions(questionsWithNewSubject))
+		dispatch(setSubject(title))
+	}
 
 	return (
 		<Toolbar
@@ -198,17 +231,45 @@ function EnhancedTableToolbar(props) {
 					{numSelected} selected
 				</Typography>
 			) : (
-				<Typography
-					sx={{ flex: '1 1 100%' }}
-					variant="h6"
-					id="tableTitle"
-					component="div"
-				>
-					{subject == '' ? 'Quiz Empty' : subject}
-				</Typography>
+				<>
+					{/* <Typography
+						sx={{ flex: '1 1 100%' }}
+						variant="h6"
+						id="tableTitle"
+						component="div"
+					>
+						{subject == '' ? 'Quiz Empty' : subject}
+					</Typography> */}
+					<TextField
+						id="tableTitle"
+						name="subject"
+						variant="standard"
+						fullWidth
+						sx={{
+							'& #tableTitle': {
+								fontSize: '1.5rem',
+								fontWeight: 'bold',
+							},
+						}}
+						InputProps={{
+							endAdornment: (
+								<InputAdornment position="end">
+									<ChangeCircleOutlinedIcon
+										sx={{ marginRight: 1, cursor: 'pointer' }}
+										onClick={resetSubject}
+									/>
+								</InputAdornment>
+							),
+						}}
+						onChange={(e) => {
+							setTitle(e.target.value)
+						}}
+						value={title}
+					/>
+				</>
 			)}
 
-			{numSelected > 0 ? (
+			{numSelected > 0 && (
 				<>
 					<Tooltip title="Save">
 						<IconButton onClick={saveSelectedItems}>
@@ -221,12 +282,6 @@ function EnhancedTableToolbar(props) {
 						</IconButton>
 					</Tooltip>
 				</>
-			) : (
-				<Tooltip title="Filter list">
-					<IconButton>
-						<FilterListIcon />
-					</IconButton>
-				</Tooltip>
 			)}
 		</Toolbar>
 	)
@@ -237,6 +292,7 @@ EnhancedTableToolbar.propTypes = {
 	deleteSelectedItems: PropTypes.func.isRequired,
 	saveSelectedItems: PropTypes.func.isRequired,
 	subject: PropTypes.string.isRequired,
+	source: PropTypes.string.isRequired,
 }
 
 export default function EnhancedTable() {
@@ -270,7 +326,7 @@ export default function EnhancedTable() {
 		)
 
 		setVisibleRows(rowsOnMount)
-	}, [questions])
+	}, [questions, subject])
 
 	const handleRequestSort = useCallback(
 		(event, newOrderBy) => {
@@ -433,7 +489,7 @@ export default function EnhancedTable() {
 		if (unselected.length < 1) {
 			exam = {
 				questions: [],
-				userId: null,
+				userId: userId,
 				subject: '',
 				source: '',
 				unit: 0,
@@ -453,6 +509,7 @@ export default function EnhancedTable() {
 					deleteSelectedItems={deleteSelectedItems}
 					saveSelectedItems={saveSelectedItems}
 					subject={subject}
+					source={source}
 				/>
 				<TableContainer>
 					<Table
