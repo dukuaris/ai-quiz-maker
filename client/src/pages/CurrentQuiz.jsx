@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import '../styles/ListPage.css'
 import {
 	alpha,
 	Box,
@@ -502,96 +503,98 @@ export default function EnhancedTable() {
 	}
 
 	return (
-		<Box sx={{ width: '100%' }}>
-			<Paper sx={{ width: '100%', mb: 2 }}>
-				<EnhancedTableToolbar
-					numSelected={selected.length}
-					deleteSelectedItems={deleteSelectedItems}
-					saveSelectedItems={saveSelectedItems}
-					subject={subject}
-					source={source}
-				/>
-				<TableContainer>
-					<Table
-						sx={{ minWidth: 750 }}
-						aria-labelledby="tableTitle"
-						size={dense ? 'small' : 'medium'}
-					>
-						<EnhancedTableHead
-							numSelected={selected.length}
-							order={order}
-							orderBy={orderBy}
-							onSelectAllClick={handleSelectAllClick}
-							onRequestSort={handleRequestSort}
-							rowCount={rows.length}
-						/>
-						<TableBody>
-							{visibleRows
-								? visibleRows.map((row, index) => {
-										const isItemSelected = isSelected(row.id)
-										const labelId = `enhanced-table-checkbox-${index}`
+		<div className="list-page">
+			<Box sx={{ width: '100%' }}>
+				<Paper sx={{ width: '100%', mb: 2 }}>
+					<EnhancedTableToolbar
+						numSelected={selected.length}
+						deleteSelectedItems={deleteSelectedItems}
+						saveSelectedItems={saveSelectedItems}
+						subject={subject}
+						source={source}
+					/>
+					<TableContainer>
+						<Table
+							sx={{ minWidth: 750 }}
+							aria-labelledby="tableTitle"
+							size={dense ? 'small' : 'medium'}
+						>
+							<EnhancedTableHead
+								numSelected={selected.length}
+								order={order}
+								orderBy={orderBy}
+								onSelectAllClick={handleSelectAllClick}
+								onRequestSort={handleRequestSort}
+								rowCount={rows.length}
+							/>
+							<TableBody>
+								{visibleRows
+									? visibleRows.map((row, index) => {
+											const isItemSelected = isSelected(row.id)
+											const labelId = `enhanced-table-checkbox-${index}`
 
-										return (
-											<TableRow
-												hover
-												onClick={(event) => handleClick(event, row.id)}
-												role="checkbox"
-												aria-checked={isItemSelected}
-												tabIndex={-1}
-												key={row.id}
-												selected={isItemSelected}
-												sx={{ cursor: 'pointer' }}
-											>
-												<TableCell padding="checkbox">
-													<Checkbox
-														color="primary"
-														checked={isItemSelected}
-														inputProps={{
-															'aria-labelledby': labelId,
-														}}
-													/>
-												</TableCell>
-												<TableCell
-													component="th"
-													id={labelId}
-													scope="row"
-													padding="none"
+											return (
+												<TableRow
+													hover
+													onClick={(event) => handleClick(event, row.id)}
+													role="checkbox"
+													aria-checked={isItemSelected}
+													tabIndex={-1}
+													key={row.id}
+													selected={isItemSelected}
+													sx={{ cursor: 'pointer' }}
 												>
-													{row.question}
-												</TableCell>
-												<TableCell align="left">{row.subject}</TableCell>
-												<TableCell align="left">{row.type}</TableCell>
-												<TableCell align="left">{row.difficulty}</TableCell>
-											</TableRow>
-										)
-								  })
-								: null}
-							{paddingHeight > 0 && (
-								<TableRow
-									style={{
-										height: paddingHeight,
-									}}
-								>
-									<TableCell colSpan={6} />
-								</TableRow>
-							)}
-						</TableBody>
-					</Table>
-				</TableContainer>
-				<TablePagination
-					rowsPerPageOptions={[5, 10, 25]}
-					component="div"
-					count={rows.length}
-					rowsPerPage={rowsPerPage}
-					page={!rows || rows.length <= 0 ? 0 : page}
-					onPageChange={handleChangePage}
-					onRowsPerPageChange={handleChangeRowsPerPage}
+													<TableCell padding="checkbox">
+														<Checkbox
+															color="primary"
+															checked={isItemSelected}
+															inputProps={{
+																'aria-labelledby': labelId,
+															}}
+														/>
+													</TableCell>
+													<TableCell
+														component="th"
+														id={labelId}
+														scope="row"
+														padding="none"
+													>
+														{row.question}
+													</TableCell>
+													<TableCell align="left">{row.subject}</TableCell>
+													<TableCell align="left">{row.type}</TableCell>
+													<TableCell align="left">{row.difficulty}</TableCell>
+												</TableRow>
+											)
+									  })
+									: null}
+								{paddingHeight > 0 && (
+									<TableRow
+										style={{
+											height: paddingHeight,
+										}}
+									>
+										<TableCell colSpan={6} />
+									</TableRow>
+								)}
+							</TableBody>
+						</Table>
+					</TableContainer>
+					<TablePagination
+						rowsPerPageOptions={[5, 10, 25]}
+						component="div"
+						count={rows.length}
+						rowsPerPage={rowsPerPage}
+						page={!rows || rows.length <= 0 ? 0 : page}
+						onPageChange={handleChangePage}
+						onRowsPerPageChange={handleChangeRowsPerPage}
+					/>
+				</Paper>
+				<FormControlLabel
+					control={<Switch checked={dense} onChange={handleChangeDense} />}
+					label="Dense padding"
 				/>
-			</Paper>
-			<FormControlLabel
-				control={<Switch checked={dense} onChange={handleChangeDense} />}
-				label="Dense padding"
-			/>
-		</Box>
+			</Box>
+		</div>
 	)
 }

@@ -1,0 +1,10 @@
+.list-page {
+	display: flex;
+	flex-direction: column;
+	padding-top: 60px;
+	align-items: center;
+	z-index: -1;
+	/* justify-content: space-around; */
+	background-color: rgb(228, 226, 226);
+	/* background-color: #dbe4c6; */
+}
