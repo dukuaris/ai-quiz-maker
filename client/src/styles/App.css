@@ -38,6 +38,10 @@ a {
 	cursor: pointer;
 }
 
+.header-buffer {
+	visibility: collapse;
+}
+
 .header {
 	position: fixed;
 	top: 0;
@@ -73,7 +77,7 @@ a {
 }
 
 .logo {
-	margin: 10px 0 5px 0;
+	margin: 10px 0 5px 10px;
 	width: 320px;
 }
 
@@ -126,6 +130,16 @@ a {
 }
 
 @media (max-width: 614px) {
+	.header-buffer {
+		position: sticky;
+		top: 0;
+		visibility: visible;
+		height: 40px;
+		background-color: black;
+	}
+	.header {
+		top: 40px;
+	}
 	.singleOption {
 		width: 100%;
 		font-size: medium;

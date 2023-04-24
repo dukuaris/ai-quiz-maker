@@ -74,99 +74,102 @@ const Header = () => {
 	}, [open])
 
 	return (
-		<div className="header">
-			<div className="logo-box">
-				<Link to="/" className="title">
-					<img className="logo" src="questable_logo.png" alt="logo" />
+		<>
+			<div className="header-buffer"></div>
+			<div className="header">
+				<div className="logo-box">
+					<Link to="/" className="title">
+						<img className="logo" src="questable_logo.png" alt="logo" />
 
-					{/* <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Quiz Generator</span> */}
-				</Link>
-				<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-				{/* <img className="beta" src="beta3.png" alt="beta-logo" /> */}
-			</div>
-			{userId ? (
-				<div className="user-box">
-					<Button
-						id="composition-button"
-						aria-controls={open ? 'composition-menu' : undefined}
-						aria-expanded={open ? 'true' : undefined}
-						aria-haspopup="true"
-						onClick={handleToggle}
-					>
-						<Avatar
-							ref={anchorRef}
-							className="avatar"
-							alt="Remy Sharp"
-							src={image}
-						/>
-					</Button>
-					<Popper
-						open={open}
-						anchorEl={anchorRef.current || null}
-						role={undefined}
-						placement="bottom-start"
-						transition
-					>
-						{({ TransitionProps, placement }) => (
-							<Grow
-								{...TransitionProps}
-								style={{
-									transformOrigin:
-										placement === 'bottom-start' ? 'left top' : 'left bottom',
-								}}
-							>
-								<Paper>
-									<ClickAwayListener onClickAway={handleClose}>
-										<MenuList
-											autoFocusItem={open}
-											id="composition-menu"
-											aria-labelledby="composition-button"
-											onKeyDown={handleListKeyDown}
-										>
-											<MenuItem onClick={handleClose}>Profile</MenuItem>
-											<MenuItem onClick={() => navigate('/')}>
-												Create Quiz
-											</MenuItem>
-											<MenuItem onClick={() => navigate('/currentquiz')}>
-												Current Quiz
-											</MenuItem>
-											<MenuItem onClick={() => navigate('/quizstore')}>
-												Quiz Store
-											</MenuItem>
-											<MenuItem
-												onClick={() => {
-													logout()
-													navigate('/')
-												}}
+						{/* <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Quiz Generator</span> */}
+					</Link>
+					<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+					{/* <img className="beta" src="beta3.png" alt="beta-logo" /> */}
+				</div>
+				{userId ? (
+					<div className="user-box">
+						<Button
+							id="composition-button"
+							aria-controls={open ? 'composition-menu' : undefined}
+							aria-expanded={open ? 'true' : undefined}
+							aria-haspopup="true"
+							onClick={handleToggle}
+						>
+							<Avatar
+								ref={anchorRef}
+								className="avatar"
+								alt="Remy Sharp"
+								src={image}
+							/>
+						</Button>
+						<Popper
+							open={open}
+							anchorEl={anchorRef.current || null}
+							role={undefined}
+							placement="bottom-start"
+							transition
+						>
+							{({ TransitionProps, placement }) => (
+								<Grow
+									{...TransitionProps}
+									style={{
+										transformOrigin:
+											placement === 'bottom-start' ? 'left top' : 'left bottom',
+									}}
+								>
+									<Paper>
+										<ClickAwayListener onClickAway={handleClose}>
+											<MenuList
+												autoFocusItem={open}
+												id="composition-menu"
+												aria-labelledby="composition-button"
+												onKeyDown={handleListKeyDown}
 											>
-												Logout
-											</MenuItem>
-										</MenuList>
-									</ClickAwayListener>
-								</Paper>
-							</Grow>
-						)}
-					</Popper>
-				</div>
-			) : (
-				<div className="user-box">
-					<Button
-						className="control-button"
-						variant="contained"
-						color="grey"
-						onClick={() => navigate('/signin')}
-						sx={{
-							color: 'black',
-							border: 'none',
-							background: 'none',
-						}}
-						size="small"
-					>
-						Sign In
-					</Button>
-				</div>
-			)}
-		</div>
+												<MenuItem onClick={handleClose}>Profile</MenuItem>
+												<MenuItem onClick={() => navigate('/')}>
+													Create Quiz
+												</MenuItem>
+												<MenuItem onClick={() => navigate('/currentquiz')}>
+													Current Quiz
+												</MenuItem>
+												<MenuItem onClick={() => navigate('/quizstore')}>
+													Quiz Store
+												</MenuItem>
+												<MenuItem
+													onClick={() => {
+														logout()
+														navigate('/')
+													}}
+												>
+													Logout
+												</MenuItem>
+											</MenuList>
+										</ClickAwayListener>
+									</Paper>
+								</Grow>
+							)}
+						</Popper>
+					</div>
+				) : (
+					<div className="user-box">
+						<Button
+							className="control-button"
+							variant="contained"
+							color="grey"
+							onClick={() => navigate('/signin')}
+							sx={{
+								color: 'black',
+								border: 'none',
+								background: 'none',
+							}}
+							size="small"
+						>
+							Sign In
+						</Button>
+					</div>
+				)}
+			</div>
+		</>
 	)
 }
 
