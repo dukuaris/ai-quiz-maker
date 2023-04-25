@@ -290,7 +290,7 @@ EnhancedTableToolbar.propTypes = {
 
 export default function EnhancedTable() {
 	const { userId } = useSelector((state) => state.user)
-	const { questions, subject, source } = useSelector((state) => state.quiz)
+	const { questions } = useSelector((state) => state.quiz)
 	const dispatch = useDispatch()
 	const [order, setOrder] = useState(DEFAULT_ORDER)
 	const [orderBy, setOrderBy] = useState(DEFAULT_ORDER_BY)
@@ -302,15 +302,12 @@ export default function EnhancedTable() {
 	const [paddingHeight, setPaddingHeight] = useState(0)
 	const multipleChoiceCollectionRef = collection(db, 'multipleChoice')
 	const questionGroupCollectionRef = collection(db, 'questionGroup')
-	let rows = []
+	const questionData = JSON.parse(window.localStorage.getItem('QUESTABLE_QUIZ'))
+	const rows = questionData.questions
+	const subject = questionData.subject
+	const source = questionData.source
 
 	useEffect(() => {
-		const questionData = JSON.parse(
-			window.localStorage.getItem('QUESTABLE_QUIZ')
-		)
-		rows = questionData.questions
-		dispatch(setSubject(questionData.subject))
-		dispatch(setSource(questionData.source))
 		let rowsOnMount = stableSort(
 			rows,
 			getComparator(DEFAULT_ORDER, DEFAULT_ORDER_BY)
