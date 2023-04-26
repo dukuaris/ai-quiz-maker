@@ -21,3 +21,6 @@
 
 7. Redux Persist
     https://blog.logrocket.com/persist-state-redux-persist-redux-toolkit-react/ 
+
+8. "Page Not Found" after page refresh in Vercel: 
+    https://dev.to/devvsakib/how-to-solve-vercel-and-netlify-page-not-found-after-page-refresh-solved-2ol7 

@@ -8,3 +8,15 @@
 	background-color: rgb(228, 226, 226);
 	/* background-color: #dbe4c6; */
 }
+
+.form-control {
+	display: flex;
+	flex-direction: row;
+	margin-bottom: 10px;
+	width: auto;
+	justify-content: space-between;
+}
+
+.button-box {
+	margin-right: 15px;
+}

@@ -1,7 +1,12 @@
 import { CircularProgress } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { resetScore } from '../features/quiz/quizSlice'
+import {
+	setQuestions,
+	setSubject,
+	setSource,
+	resetScore,
+} from '../features/quiz/quizSlice'
 
 import Question from '../components/Question'
 import '../styles/Quiz.css'
@@ -13,6 +18,10 @@ const Quiz = () => {
 	const dispatch = useDispatch()
 
 	useEffect(() => {
+		const data = JSON.parse(window.localStorage.getItem('QUESTABLE_QUIZ'))
+		dispatch(setSubject(data.subject))
+		dispatch(setSource(data.source))
+		dispatch(setQuestions(data.questions))
 		dispatch(resetScore())
 	}, [])
 

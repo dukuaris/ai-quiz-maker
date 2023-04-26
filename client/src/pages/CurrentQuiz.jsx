@@ -1,9 +1,13 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router'
+import { v4 as uuidv4 } from 'uuid'
+import createSheet, { readSheet } from '../utils/createSheet'
 import '../styles/ListPage.css'
 import {
 	alpha,
 	Box,
+	Button,
 	Table,
 	TableBody,
 	TableCell,
@@ -292,6 +296,7 @@ export default function EnhancedTable() {
 	const { userId } = useSelector((state) => state.user)
 	const { questions } = useSelector((state) => state.quiz)
 	const dispatch = useDispatch()
+	const navigate = useNavigate()
 	const [order, setOrder] = useState(DEFAULT_ORDER)
 	const [orderBy, setOrderBy] = useState(DEFAULT_ORDER_BY)
 	const [selected, setSelected] = useState([])
@@ -300,6 +305,8 @@ export default function EnhancedTable() {
 	const [visibleRows, setVisibleRows] = useState(null)
 	const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_ROWS_PER_PAGE)
 	const [paddingHeight, setPaddingHeight] = useState(0)
+	const [ready, setReady] = useState(null)
+	const [activeColor, setActiveColor] = useState('')
 	const multipleChoiceCollectionRef = collection(db, 'multipleChoice')
 	const questionGroupCollectionRef = collection(db, 'questionGroup')
 	const questionData = JSON.parse(window.localStorage.getItem('QUESTABLE_QUIZ'))
@@ -308,6 +315,9 @@ export default function EnhancedTable() {
 	const source = questionData.source
 
 	useEffect(() => {
+		if (rows.length > 0) {
+			setReady(true)
+		}
 		let rowsOnMount = stableSort(
 			rows,
 			getComparator(DEFAULT_ORDER, DEFAULT_ORDER_BY)
@@ -320,6 +330,14 @@ export default function EnhancedTable() {
 
 		setVisibleRows(rowsOnMount)
 	}, [questions, subject])
+
+	useEffect(() => {
+		if (!ready) {
+			setActiveColor('grey')
+		} else {
+			setActiveColor('')
+		}
+	}, [ready])
 
 	const handleRequestSort = useCallback(
 		(event, newOrderBy) => {
@@ -431,7 +449,7 @@ export default function EnhancedTable() {
 				source: source,
 				subject: subject,
 				type: selectedItems[0].type,
-				userId: userId,
+				userId: uuidv4(),
 			})
 
 			const q = query(
@@ -488,6 +506,7 @@ export default function EnhancedTable() {
 				unit: 0,
 				score: 0,
 			}
+			setReady(false)
 		} else {
 			exam = { ...data, questions: unselected, unit: unselected.length }
 		}
@@ -582,11 +601,52 @@ export default function EnhancedTable() {
 						onRowsPerPageChange={handleChangeRowsPerPage}
 					/>
 				</Paper>
-				<FormControlLabel
-					sx={{ marginLeft: 0.5 }}
-					control={<Switch checked={dense} onChange={handleChangeDense} />}
-					label="Dense padding"
-				/>
+				<div className="form-control">
+					<FormControlLabel
+						sx={{ marginLeft: 0.5 }}
+						control={<Switch checked={dense} onChange={handleChangeDense} />}
+						label="Dense padding"
+					/>
+					<div className="button-box">
+						<Button
+							className="control-button"
+							variant="contained"
+							color="primary"
+							sx={{
+								color: activeColor,
+								border: activeColor,
+								background: 'light' + activeColor,
+							}}
+							onClick={
+								ready
+									? () => {
+											navigate('/quiz')
+									  }
+									: () => {}
+							}
+							size="small"
+						>
+							Practice
+						</Button>
+						&nbsp;&nbsp;
+						<Button
+							className="control-button"
+							variant="contained"
+							color="primary"
+							sx={{
+								color: activeColor,
+								border: activeColor,
+								background: 'light' + activeColor,
+							}}
+							onClick={
+								ready ? () => createSheet(questions, subject, source) : () => {}
+							}
+							size="small"
+						>
+							Download
+						</Button>
+					</div>
+				</div>
 			</Box>
 		</div>
 	)

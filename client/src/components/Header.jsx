@@ -108,6 +108,7 @@ const Header = () => {
 							role={undefined}
 							placement="bottom-start"
 							transition
+							sx={{ zIndex: 11 }}
 						>
 							{({ TransitionProps, placement }) => (
 								<Grow
@@ -125,7 +126,7 @@ const Header = () => {
 												aria-labelledby="composition-button"
 												onKeyDown={handleListKeyDown}
 											>
-												<MenuItem onClick={handleClose}>Profile</MenuItem>
+												{/* <MenuItem onClick={handleClose}>Profile</MenuItem> */}
 												<MenuItem onClick={() => navigate('/')}>
 													Create Quiz
 												</MenuItem>

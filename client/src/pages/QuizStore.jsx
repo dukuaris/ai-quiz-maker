@@ -541,11 +541,13 @@ export default function EnhancedTable() {
 						onRowsPerPageChange={handleChangeRowsPerPage}
 					/>
 				</Paper>
-				<FormControlLabel
-					sx={{ marginLeft: 0.5 }}
-					control={<Switch checked={dense} onChange={handleChangeDense} />}
-					label="Dense padding"
-				/>
+				<div className="form-control">
+					<FormControlLabel
+						sx={{ marginLeft: 0.5 }}
+						control={<Switch checked={dense} onChange={handleChangeDense} />}
+						label="Dense padding"
+					/>
+				</div>
 			</Box>
 		</div>
 	)
