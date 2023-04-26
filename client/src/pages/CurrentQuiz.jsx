@@ -612,6 +612,8 @@ export default function EnhancedTable() {
 							variant="contained"
 							color="primary"
 							sx={{
+								fontSize: 12,
+								height: 34,
 								color: activeColor,
 								border: activeColor,
 								background: 'light' + activeColor,
@@ -633,6 +635,8 @@ export default function EnhancedTable() {
 							variant="contained"
 							color="primary"
 							sx={{
+								fontSize: 12,
+								height: 34,
 								color: activeColor,
 								border: activeColor,
 								background: 'light' + activeColor,
