@@ -1,0 +1,109 @@
+{
+	"questions": [
+		{
+			"play": 5,
+			"userId": "cg5F62hvFKNhOthELHIRGuUkNxL2",
+			"question": "What is the first step in stress management?",
+			"score": 3,
+			"difficulty": "medium",
+			"questionGroup": "5Jhy12EBzrXNAoOym2nR",
+			"incorrect_answers": [
+				"Ignoring your problems.",
+				"Pretending everything is fine.",
+				"Drinking alcohol."
+			],
+			"createdAt": "Sat Apr 22 2023",
+			"subject": "Sleep well",
+			"type": "multiple-choice",
+			"updatedAt": "Sat Apr 22 2023",
+			"correct_answer": "Getting organized.",
+			"category": "custom",
+			"id": "EpwrQMn3z2YTlem8n50d"
+		},
+		{
+			"question": "What is the recommended amount of sleep for a healthy adult?",
+			"incorrect_answers": [
+				"At least six hours",
+				"At least eight hours",
+				"At least nine hours"
+			],
+			"correct_answer": "At least seven hours",
+			"category": "custom",
+			"type": "multiple-choice",
+			"subject": "Sleep well",
+			"createdAt": "Sat Apr 22 2023",
+			"userId": "cg5F62hvFKNhOthELHIRGuUkNxL2",
+			"difficulty": "medium",
+			"play": 5,
+			"score": 3,
+			"updatedAt": "Sat Apr 22 2023",
+			"questionGroup": "5Jhy12EBzrXNAoOym2nR",
+			"id": "I3qef3W69lDF9T0fpOC8"
+		},
+		{
+			"updatedAt": "Sat Apr 22 2023",
+			"play": 5,
+			"subject": "Sleep well",
+			"createdAt": "Sat Apr 22 2023",
+			"questionGroup": "5Jhy12EBzrXNAoOym2nR",
+			"userId": "cg5F62hvFKNhOthELHIRGuUkNxL2",
+			"incorrect_answers": [
+				"Stay in bed and keep trying to sleep",
+				"Drink a glass of water",
+				"Turn on the TV"
+			],
+			"score": 3,
+			"category": "custom",
+			"difficulty": "medium",
+			"question": "What should you do if you don't fall asleep within 20 minutes of going to bed?",
+			"correct_answer": "Leave your bedroom and do something relaxing",
+			"type": "multiple-choice",
+			"id": "J9jsKLVg2AfTel5bjr7G"
+		},
+		{
+			"difficulty": "low",
+			"questionGroup": "5Jhy12EBzrXNAoOym2nR",
+			"createdAt": "Sat Apr 22 2023",
+			"userId": "cg5F62hvFKNhOthELHIRGuUkNxL2",
+			"type": "multiple-choice",
+			"score": 3,
+			"updatedAt": "Sat Apr 22 2023",
+			"correct_answer": "It can ease anxiety.",
+			"incorrect_answers": [
+				"It can make anxiety worse.",
+				"It has no effect on anxiety.",
+				"It can only help with physical pain, not mental stress."
+			],
+			"subject": "Sleep well",
+			"play": 5,
+			"question": "How can meditation help with anxiety?",
+			"category": "custom",
+			"id": "NdXNsrGiCNUEwj4uduIR"
+		},
+		{
+			"incorrect_answers": [
+				"Make it harder to fall asleep",
+				"Have no effect on sleep",
+				"Cause nightmares"
+			],
+			"score": 3,
+			"question": "What can regular physical activity do for your sleep?",
+			"questionGroup": "5Jhy12EBzrXNAoOym2nR",
+			"category": "custom",
+			"userId": "cg5F62hvFKNhOthELHIRGuUkNxL2",
+			"correct_answer": "Promote better sleep",
+			"subject": "Sleep well",
+			"updatedAt": "Sat Apr 22 2023",
+			"difficulty": "high",
+			"type": "multiple-choice",
+			"createdAt": "Sat Apr 22 2023",
+			"play": 5,
+			"id": "i3MCPzn2eYxBXnIfrHS5"
+		}
+	],
+	"userId": "cg5F62hvFKNhOthELHIRGuUkNxL2",
+	"subject": "Sleep well",
+	"source": "Sleep tips: 6 steps to better sleep\nYou're not doomed to toss and turn every night. Consider simple tips for better sleep, from setting a sleep schedule to including physical activity in your daily routine.\n\nBy Mayo Clinic Staff\nMany factors can interfere with a good night's sleep — from work stress and family responsibilities to illnesses. It's no wonder that quality sleep is sometimes elusive.\n\nYou might not be able to control the factors that interfere with your sleep. However, you can adopt habits that encourage better sleep. Start with these simple tips.\n\n1. Stick to a sleep schedule\nSet aside no more than eight hours for sleep. The recommended amount of sleep for a healthy adult is at least seven hours. Most people don't need more than eight hours in bed to be well rested.\n\nGo to bed and get up at the same time every day, including weekends. Being consistent reinforces your body's sleep-wake cycle.\n\nIf you don't fall asleep within about 20 minutes of going to bed, leave your bedroom and do something relaxing. Read or listen to soothing music. Go back to bed when you're tired. Repeat as needed, but continue to maintain your sleep schedule and wake-up time.\n\n2. Pay attention to what you eat and drink\nDon't go to bed hungry or stuffed. In particular, avoid heavy or large meals within a couple of hours of bedtime. Discomfort might keep you up.\n\nNicotine, caffeine and alcohol deserve caution, too. The stimulating effects of nicotine and caffeine take hours to wear off and can interfere with sleep. And even though alcohol might make you feel sleepy at first, it can disrupt sleep later in the night.\n\n3. Create a restful environment\nKeep your room cool, dark and quiet. Exposure to light in the evenings might make it more challenging to fall asleep. Avoid prolonged use of light-emitting screens just before bedtime. Consider using room-darkening shades, earplugs, a fan or other devices to create an environment that suits your needs.\n\nDoing calming activities before bedtime, such as taking a bath or using relaxation techniques, might promote better sleep.\n\n4. Limit daytime naps\nLong daytime naps can interfere with nighttime sleep. Limit naps to no more than one hour and avoid napping late in the day.\n\nHowever, if you work nights, you might need to nap late in the day before work to help make up your sleep debt.\n\n5. Include physical activity in your daily routine\nRegular physical activity can promote better sleep. However, avoid being active too close to bedtime.\n\nSpending time outside every day might be helpful, too.\n\n6. Manage worries\nTry to resolve your worries or concerns before bedtime. Jot down what's on your mind and then set it aside for tomorrow.\n\nStress management might help. Start with the basics, such as getting organized, setting priorities and delegating tasks. Meditation also can ease anxiety.",
+	"unit": 5,
+	"score": 0
+}

@@ -405,7 +405,7 @@ export default function EnhancedTable() {
 				updatedAt: question.updatedAt.toDate().toDateString(),
 			}))
 
-			const addQuiz = {
+			const addQuiz = await {
 				questions: questionList,
 				userId: userId,
 				subject: item.subject,
@@ -413,6 +413,8 @@ export default function EnhancedTable() {
 				unit: questionList.length,
 				score: 0,
 			}
+
+			console.log(JSON.stringify(addQuiz))
 			return addQuiz
 		})
 

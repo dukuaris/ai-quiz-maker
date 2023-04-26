@@ -21,13 +21,13 @@
 	margin-right: 15px;
 }
 
-.control-button {
+.control-button-in {
 	width: 90px;
 	font-size: medium;
 }
 
 @media (max-width: 600px) {
-	.control-button {
+	.control-button-in {
 		width: 80px;
 		font-size: x-small;
 	}

@@ -11,13 +11,9 @@ const categories = [
 		type: 'Fill in the Blank',
 		value: 2,
 	},
-	{
-		type: 'Matching',
-		value: 3,
-	},
 	// {
 	// 	type: 'Matching',
-	// 	value: 5,
+	// 	value: 3,
 	// },
 	// {
 	// 	type: 'Ranking',

@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
-import { v4 as uuidv4 } from 'uuid'
-import createSheet, { readSheet } from '../utils/createSheet'
+import createSheet from '../utils/createSheet'
 import '../styles/ListPage.css'
 import {
 	alpha,
@@ -449,7 +448,7 @@ export default function EnhancedTable() {
 				source: source,
 				subject: subject,
 				type: selectedItems[0].type,
-				userId: uuidv4(),
+				userId: userId,
 			})
 
 			const q = query(
@@ -609,7 +608,7 @@ export default function EnhancedTable() {
 					/>
 					<div className="button-box">
 						<Button
-							className="control-button"
+							className="control-button-in"
 							variant="contained"
 							color="primary"
 							sx={{
@@ -630,7 +629,7 @@ export default function EnhancedTable() {
 						</Button>
 						&nbsp;&nbsp;
 						<Button
-							className="control-button"
+							className="control-button-in"
 							variant="contained"
 							color="primary"
 							sx={{
