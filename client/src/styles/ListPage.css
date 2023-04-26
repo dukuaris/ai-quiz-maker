@@ -20,3 +20,15 @@
 .button-box {
 	margin-right: 15px;
 }
+
+.control-button {
+	width: 90px;
+	font-size: medium;
+}
+
+@media (max-width: 600px) {
+	.control-button {
+		width: 80px;
+		font-size: x-small;
+	}
+}
