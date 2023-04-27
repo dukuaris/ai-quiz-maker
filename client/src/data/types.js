@@ -1,4 +1,4 @@
-const categories = [
+const types = [
 	{
 		type: 'Multiple Choice',
 		value: 0,
@@ -29,4 +29,4 @@ const categories = [
 	// },
 ]
 
-export default categories
+export default types

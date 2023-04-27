@@ -1,0 +1,47 @@
+const translations = {
+	kr: {
+		translation: {
+			'Create Your Quiz': '문제 만들기',
+			'Please Fill all the fields': '요청란 모두를 입력하세요.',
+			'Enter Your Subject': '주제',
+			'Select Quiz Type': '문제유형',
+			'Enter Number of Questions (< 50)': '문제수 (< 50)',
+			'Enter Your Content': '내용',
+			'Enter Your URL': '웹주소',
+			'text count': '문자수',
+			Submit: '제출',
+			Clear: '삭제',
+			UPLOAD: '업로드',
+			PRACTICE: '연습',
+			DOWNLOAD: '다운로드',
+			'TRY AGAIN': '다시 하기',
+			'GO HOME': '홈으로 가기',
+			QUIT: '중단',
+			Next: '다음',
+			'Please select an option first': '답안을 먼저 선택하세요.',
+			'Multiple Choice': '사지선다형',
+			'True/False': '참/거짓',
+			'Fill in the Blank': '빈칸채우기',
+			Matching: '짝짓기',
+			'multiple-choice': '사지선다형',
+			'true-false': '참/거짓',
+			'fill-in-the-blank': '빈칸채우기',
+			Score: '점수',
+			Question: '문제',
+			Subject: '주제',
+			Type: '유형',
+			Difficulty: '난이도',
+			Category: '분류',
+			CreatedAt: '생성일',
+			'Dense padding': '줄간격 축소',
+			'My Quiz Group': '나의 문제 그룹',
+		},
+	},
+	en: {
+		translation: {
+			'Welcome to React': 'Welcome to React and react-i18next',
+		},
+	},
+}
+
+export default translations

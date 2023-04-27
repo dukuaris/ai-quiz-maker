@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router'
 import { Button, TextField, MenuItem } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import { v4 as uuidv4 } from 'uuid'
+import { useTranslation } from 'react-i18next'
 
 import {
 	setQuestions,
@@ -22,6 +23,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 	'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.5.141/build/pdf.worker.min.js'
 
 const Home = () => {
+	const { t } = useTranslation()
 	const { questions, subject, source } = useSelector((state) => state.quiz)
 	const { userId } = useSelector((state) => state.user)
 	const dispatch = useDispatch()
@@ -306,17 +308,19 @@ const Home = () => {
 	return (
 		<div className="content">
 			<div className="settings">
-				<p style={{ fontSize: 24 }}>Create Your Quiz</p>
+				<p style={{ fontSize: 24 }}>{t('Create Your Quiz')}</p>
 				{/* <div className="warning-message">
 					* 2000글자 10문제 기준 평균 50초 소요. 모바일사용시 자동잠금 해제 요망
 				</div> */}
 				<div className="settings__select">
-					{error && <ErrorMessages>Please Fill all the fields</ErrorMessages>}
+					{error && (
+						<ErrorMessages>{t('Please Fill all the fields')}</ErrorMessages>
+					)}
 					<TextField
 						className="input-box"
 						style={{ marginBottom: 25 }}
 						name="subject"
-						label="Enter Your Subject"
+						label={t('Enter Your Subject')}
 						variant="outlined"
 						onChange={(e) => {
 							setTitle(e.target.value)
@@ -326,15 +330,15 @@ const Home = () => {
 					<TextField
 						className="input-box"
 						select
-						label="Select Quiz Type"
+						label={t('Select Quiz Type')}
 						value={type}
 						onChange={(e) => setType(e.target.value)}
 						variant="outlined"
 						style={{ marginBottom: 30 }}
 					>
-						{types.map((t) => (
-							<MenuItem key={t.type} value={t.value}>
-								{t.type}
+						{types.map((cat) => (
+							<MenuItem key={cat.type} value={cat.value}>
+								{t(cat.type)}
 							</MenuItem>
 						))}
 					</TextField>
@@ -342,7 +346,7 @@ const Home = () => {
 						className="input-box"
 						style={{ marginBottom: 25 }}
 						name="unit"
-						label="Enter Number of Questions (< 50)"
+						label={t('Enter Number of Questions (< 50)')}
 						variant="outlined"
 						onChange={(e) => {
 							setNumber(e.target.value)
@@ -351,7 +355,7 @@ const Home = () => {
 					/>
 					<div className="counting">
 						<p className="count">
-							text count&nbsp;:&nbsp;{'25000 >'}&nbsp;
+							{t('text count')}&nbsp;:&nbsp;{'25000 >'}&nbsp;
 							<span style={{ color: wordCount > 25000 ? 'red' : 'black' }}>
 								{wordCount}
 							</span>{' '}
@@ -361,7 +365,7 @@ const Home = () => {
 						className="input-box"
 						style={{ marginBottom: 10 }}
 						name="content"
-						label="Enter Your Content"
+						label={t('Enter Your Content')}
 						multiline
 						rows={10}
 						variant="outlined"
@@ -372,7 +376,7 @@ const Home = () => {
 						<TextField
 							className="input-box url-box"
 							name="url"
-							label="Enter Your URL"
+							label={t('Enter Your URL')}
 							variant="outlined"
 							onChange={handleChange}
 						/>
@@ -424,7 +428,7 @@ const Home = () => {
 							onClick={handleSubmit}
 							size="small"
 						>
-							{ready ? 'Clear' : 'Submit'}
+							{ready ? t('Clear') : t('Submit')}
 						</LoadingButton>
 						<LoadingButton
 							className="control-button"
@@ -434,7 +438,7 @@ const Home = () => {
 							loading={loading}
 							size="small"
 						>
-							UPLOAD
+							{t('UPLOAD')}
 							<input
 								hidden
 								type="file"
@@ -460,7 +464,7 @@ const Home = () => {
 							}
 							size="small"
 						>
-							Practice
+							{t('PRACTICE')}
 						</Button>
 						<Button
 							className="control-button"
@@ -476,7 +480,7 @@ const Home = () => {
 							}
 							size="small"
 						>
-							Download
+							{t('DOWNLOAD')}
 						</Button>
 					</div>
 				</div>

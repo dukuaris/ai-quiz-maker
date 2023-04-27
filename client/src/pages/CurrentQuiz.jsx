@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import createSheet from '../utils/createSheet'
 import '../styles/ListPage.css'
 import {
@@ -113,6 +114,7 @@ const DEFAULT_ORDER_BY = 'question'
 const DEFAULT_ROWS_PER_PAGE = 10
 
 function EnhancedTableHead(props) {
+	const { t } = useTranslation()
 	const {
 		onSelectAllClick,
 		order,
@@ -153,7 +155,7 @@ function EnhancedTableHead(props) {
 							direction={orderBy === headCell.id ? order : 'asc'}
 							onClick={createSortHandler(headCell.id)}
 						>
-							{headCell.label}
+							{t(headCell.label)}
 							{orderBy === headCell.id ? (
 								<Box component="span" sx={visuallyHidden}>
 									{order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -292,6 +294,7 @@ EnhancedTableToolbar.propTypes = {
 }
 
 export default function EnhancedTable() {
+	const { t } = useTranslation()
 	const { userId } = useSelector((state) => state.user)
 	const { questions } = useSelector((state) => state.quiz)
 	const dispatch = useDispatch()
@@ -604,7 +607,7 @@ export default function EnhancedTable() {
 					<FormControlLabel
 						sx={{ marginLeft: 0.5 }}
 						control={<Switch checked={dense} onChange={handleChangeDense} />}
-						label="Dense padding"
+						label={t('Dense padding')}
 					/>
 					<div className="button-box">
 						<Button
@@ -627,7 +630,7 @@ export default function EnhancedTable() {
 							}
 							size="small"
 						>
-							Practice
+							{t('PRACTICE')}
 						</Button>
 						&nbsp;&nbsp;
 						<Button
@@ -646,7 +649,7 @@ export default function EnhancedTable() {
 							}
 							size="small"
 						>
-							Download
+							{t('DOWNLOAD')}
 						</Button>
 					</div>
 				</div>

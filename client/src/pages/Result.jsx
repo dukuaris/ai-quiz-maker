@@ -7,10 +7,12 @@ import {
 	setUnit,
 	resetScore,
 } from '../features/quiz/quizSlice'
+import { useTranslation } from 'react-i18next'
 import createSheet from '../utils/createSheet.js'
 import '../styles/Result.css'
 
 const Result = () => {
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
 	const { questions, subject, score } = useSelector((state) => state.quiz)
@@ -37,7 +39,7 @@ const Result = () => {
 	return (
 		<div className="result">
 			<p className="title">
-				{subject}: Score
+				{subject}: {t('Score')}
 				<br />
 				{score} / {questions.length}
 			</p>
@@ -54,7 +56,7 @@ const Result = () => {
 					style={{ width: 185 }}
 					onClick={handleSubmit}
 				>
-					Try Again
+					{t('TRY AGAIN')}
 				</Button>
 				<br />
 				<Button
@@ -65,7 +67,7 @@ const Result = () => {
 					style={{ width: 185 }}
 					onClick={() => createSheet(questions, subject)}
 				>
-					Download
+					{t('DOWNLOAD')}
 				</Button>
 				<br />
 				<Button
@@ -76,7 +78,7 @@ const Result = () => {
 					style={{ width: 185 }}
 					onClick={handleSubmit}
 				>
-					Go Home
+					{t('GO HOME')}
 				</Button>
 			</div>
 		</div>

@@ -3,10 +3,13 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from './utils/firebaseConfig'
 import { setUserId, setEmail, setImage } from './features/user/userSlice'
 import { useDispatch } from 'react-redux'
+import i18n from 'i18next'
+import { initReactI18next } from 'react-i18next'
+import LanguageDetector from 'i18next-browser-languagedetector'
 
 import Header from './components/Header'
 import Footer from './components/Footer'
-import Trivia from './pages/Trivia'
+import Introduction from './pages/Introduction'
 import Home from './pages/Home'
 import Quiz from './pages/Quiz'
 import Result from './pages/Result'
@@ -14,7 +17,21 @@ import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 import CurrentQuiz from './pages/CurrentQuiz'
 import QuizStore from './pages/QuizStore'
-import SampleTable from './pages/SampleTable'
+import translations from './utils/translations'
+
+i18n
+	.use(LanguageDetector)
+	.use(initReactI18next) // passes i18n down to react-i18next
+	.init({
+		resources: translations,
+		// lng: 'kr', // if you're using a language detector, do not define the lng option
+		// fallbackLng: 'kr',
+		debug: true,
+
+		interpolation: {
+			escapeValue: false,
+		},
+	})
 
 function App() {
 	const dispatch = useDispatch()
@@ -36,15 +53,14 @@ function App() {
 		<div className="App">
 			<Header />
 			<Routes>
+				<Route path="/intro" element={<Introduction />} />
 				<Route path="/" element={<Home />} />
-				<Route path="/trivia" element={<Trivia />} />
 				<Route path="/quiz" element={<Quiz />} />
 				<Route path="/result" element={<Result />} />
 				<Route path="/signin" element={<SignIn />} />
 				<Route path="/signup" element={<SignUp />} />
 				<Route path="/currentquiz" element={<CurrentQuiz />} />
 				<Route path="/quizstore" element={<QuizStore />} />
-				<Route path="/sampletable" element={<SampleTable />} />
 			</Routes>
 			{/* <br />
 			<Footer /> */}

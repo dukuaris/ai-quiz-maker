@@ -7,11 +7,13 @@ import {
 	setSource,
 	resetScore,
 } from '../features/quiz/quizSlice'
+import { useTranslation } from 'react-i18next'
 
 import Question from '../components/Question'
 import '../styles/Quiz.css'
 
 const Quiz = () => {
+	const { t } = useTranslation()
 	const { questions, subject, score } = useSelector((state) => state.quiz)
 	const [options, setOptions] = useState()
 	const [currQues, setCurrQues] = useState(0)
@@ -56,10 +58,10 @@ const Quiz = () => {
 			{questions ? (
 				<>
 					<div className="quizInfo">
-						<span>{questions[currQues].type}</span>
+						<span>{t(questions[currQues].type)}</span>
 						<span>
 							{/* {questions[currQues].difficulty} */}
-							Score : {score}/{questions.length}
+							{t('Score')} : {score}/{questions.length}
 						</span>
 					</div>
 					<Question

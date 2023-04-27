@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import {
 	alpha,
 	Box,
@@ -107,6 +108,7 @@ const DEFAULT_ORDER_BY = 'subject'
 const DEFAULT_ROWS_PER_PAGE = 10
 
 function EnhancedTableHead(props) {
+	const { t } = useTranslation()
 	const {
 		onSelectAllClick,
 		order,
@@ -145,7 +147,7 @@ function EnhancedTableHead(props) {
 							direction={orderBy === headCell.id ? order : 'asc'}
 							onClick={createSortHandler(headCell.id)}
 						>
-							{headCell.label}
+							{t(headCell.label)}
 							{orderBy === headCell.id ? (
 								<Box component="span" sx={visuallyHidden}>
 									{order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -169,6 +171,7 @@ EnhancedTableHead.propTypes = {
 }
 
 function EnhancedTableToolbar(props) {
+	const { t } = useTranslation()
 	const { numSelected, uploadSelectedItems } = props
 
 	return (
@@ -201,7 +204,7 @@ function EnhancedTableToolbar(props) {
 					id="tableTitle"
 					component="div"
 				>
-					My Quiz Group
+					{t('My Quiz Group')}
 				</Typography>
 			)}
 
@@ -230,6 +233,7 @@ EnhancedTableToolbar.propTypes = {
 }
 
 export default function EnhancedTable() {
+	const { t } = useTranslation()
 	const { userId } = useSelector((state) => state.user)
 	const { questions, subject, source, unit } = useSelector(
 		(state) => state.quiz
@@ -547,7 +551,7 @@ export default function EnhancedTable() {
 					<FormControlLabel
 						sx={{ marginLeft: 0.5 }}
 						control={<Switch checked={dense} onChange={handleChangeDense} />}
-						label="Dense padding"
+						label={t('Dense padding')}
 					/>
 				</div>
 			</Box>
