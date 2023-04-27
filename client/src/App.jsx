@@ -25,7 +25,7 @@ i18n
 	.init({
 		resources: translations,
 		// lng: 'kr', // if you're using a language detector, do not define the lng option
-		// fallbackLng: 'kr',
+		fallbackLng: 'kr',
 		debug: true,
 
 		interpolation: {
