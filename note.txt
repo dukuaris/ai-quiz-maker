@@ -4,7 +4,6 @@
 2. Puppeteer on Render issue (Docker)
     youtube: https://youtu.be/6cm6G78ZDmM?t=721 
 
-
 3. Puppeteer Navigation Timeout Issue 
     URL: https://ourcodeworld.com/articles/read/1106/how-to-solve-puppeteer-timeouterror-navigation-timeout-of-30000-ms-exceeded 
 

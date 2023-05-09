@@ -208,7 +208,7 @@ function EnhancedTableToolbar(props) {
 				</Typography>
 			)}
 
-			{numSelected > 0 ? (
+			{numSelected > 0 && (
 				<>
 					<Tooltip title="Upload">
 						<IconButton onClick={uploadSelectedItems}>
@@ -216,13 +216,14 @@ function EnhancedTableToolbar(props) {
 						</IconButton>
 					</Tooltip>
 				</>
-			) : (
-				<Tooltip title="Filter list">
-					<IconButton>
-						<FilterListIcon />
-					</IconButton>
-				</Tooltip>
 			)}
+			{/* // ) : (
+			// 	<Tooltip title="Filter list">
+			// 		<IconButton>
+			// 			<FilterListIcon />
+			// 		</IconButton>
+			// 	</Tooltip>
+			// )} */}
 		</Toolbar>
 	)
 }

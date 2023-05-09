@@ -18,13 +18,22 @@ import { auth, googleProvider, facebookProvider } from '../utils/firebaseConfig'
 import { FacebookAuthProvider } from 'firebase/auth'
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
 import { setImage } from '../features/user/userSlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
 
 const theme = createTheme()
 
 export default function SignIn() {
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
+	const { userId } = useSelector((state) => state.user)
+
+	useEffect(() => {
+		if (userId){
+			navigate('/')
+		}
+	}, [userId])
+	
 
 	const signInWithEmail = async (event) => {
 		event.preventDefault()

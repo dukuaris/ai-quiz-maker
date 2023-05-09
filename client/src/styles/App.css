@@ -18,7 +18,7 @@ a {
 }
 
 .app {
-	min-height: 98.5vh;
+	min-height: 100%;
 	border: 8px solid #39445a93;
 	/* background-color: yellow; */
 	margin: 5px;
@@ -120,13 +120,18 @@ a {
 .singleOption {
 	cursor: pointer;
 	width: 46%;
-	height: 65px;
-	font-size: large;
-	padding: 5px 10px;
+	height: 80px;
+	font-size: 1em;
+	padding: 5px 15px;
 	margin: 10px;
+	text-align: left;
 	border-radius: 10px;
 	box-shadow: 0 0 2px black;
-	overflow: visible;
+	overflow-y: scroll;
+}
+
+.singleOption::-webkit-scrollbar {
+	display: none;
 }
 
 @media (max-width: 614px) {
@@ -143,6 +148,7 @@ a {
 	}
 	.singleOption {
 		width: 100%;
+		height: 75px;
 		font-size: medium;
 	}
 	.title {

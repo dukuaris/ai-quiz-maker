@@ -79,11 +79,10 @@ const Header = () => {
 			<div className="header">
 				<div className="logo-box">
 					<Link to="/" className="title">
-						<img className="logo" src="questable_logo.png" alt="logo" />
-
+						<img className="logo" src="questable_transparent.png" style={{width: 45}} alt="logo" />
 						{/* <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Quiz Generator</span> */}
 					</Link>
-					<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+					<span><img className="logo" src="questable_letter_standard.png" style={{width: 200}} alt="letter" /></span>
 					{/* <img className="beta" src="beta3.png" alt="beta-logo" /> */}
 				</div>
 				{userId ? (
