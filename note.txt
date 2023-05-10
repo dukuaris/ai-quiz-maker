@@ -23,3 +23,6 @@
 
 8. "Page Not Found" after page refresh in Vercel: 
     https://dev.to/devvsakib/how-to-solve-vercel-and-netlify-page-not-found-after-page-refresh-solved-2ol7 
+
+5. 번역 API : useTranslation
+    https://react.i18next.com/latest/usetranslation-hook 

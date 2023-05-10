@@ -135,7 +135,7 @@ a {
 }
 
 @media (max-width: 614px) {
-	.header-buffer {
+	/* .header-buffer {
 		position: sticky;
 		top: 0;
 		visibility: visible;
@@ -145,7 +145,7 @@ a {
 	}
 	.header {
 		top: 30px;
-	}
+	} */
 	.singleOption {
 		width: 100%;
 		height: 75px;

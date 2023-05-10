@@ -75,15 +75,13 @@ const Header = () => {
 
 	return (
 		<>
-			<div className="header-buffer"></div>
+			{/* <div className="header-buffer"></div> */}
 			<div className="header">
 				<div className="logo-box">
 					<Link to="/" className="title">
 						<img className="logo" src="questable_transparent.png" style={{width: 45}} alt="logo" />
-						{/* <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Quiz Generator</span> */}
+						<img className="logo" src="questable_letter_bold_standard.png" style={{width: 200}} alt="letter" />
 					</Link>
-					<span><img className="logo" src="questable_letter_standard.png" style={{width: 200}} alt="letter" /></span>
-					{/* <img className="beta" src="beta3.png" alt="beta-logo" /> */}
 				</div>
 				{userId ? (
 					<div className="user-box">
